@@ -1,0 +1,39 @@
+---
+import HeaderLink from "./HeaderLink.astro";
+import "../../styles/global.css";
+import LogoutButton from "../LogoutButton";
+import EmpresaSelector from "../ui/EmpresaSelector";
+---
+
+<header>
+  <header>
+    <div class="place-items-center h-24">
+      <section class="relative mx-auto">
+        <!-- navbar -->
+        <nav
+          class="flex justify-between bg-blue-200 text-black w-screen rounded-2xl"
+        >
+          <div class="px-5 xl:px-12 py-6 flex w-full items-center">
+            <div class="sm:w-64 sm:max-w-sm">
+              <EmpresaSelector client:load />
+            </div>
+            <!-- Nav Links -->
+            <ul
+              class="hidden md:flex px-4 mx-auto font-semibold font-heading space-x-12"
+            >
+              <HeaderLink
+                href="/welcome"
+                class={"shadow-xl hover:shadow-inner focus:outline-none transition duration-100 ease-in-out transform hover:-translate-x hover:scale-105"}
+                >Welcome</HeaderLink
+              >
+            </ul>
+            <!-- Header Icons -->
+            <div class="hidden xl:flex items-center space-x-5">
+              <LogoutButton client:load />
+            </div>
+          </div>
+        </nav>
+      </section>
+    </div>
+  </header>
+</header>

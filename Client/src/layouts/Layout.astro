@@ -1,0 +1,23 @@
+---
+import ClientRouter from "astro/components/ClientRouter.astro";
+import ToasterProvider from "../components/ToasterProvider";
+import Header from "../components/astro/Header.astro";
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Astro Basics</title>
+    <ClientRouter />
+    <Header />
+  </head>
+  <body>
+    <ToasterProvider client:idle />
+    <slot />
+  </body>
+</html>
+

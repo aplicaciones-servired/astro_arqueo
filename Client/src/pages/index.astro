@@ -1,0 +1,25 @@
+---
+import ClientRouter from "astro/components/ClientRouter.astro";
+import LoginForm from "../components/LoginForm";
+import "../styles/global.css";
+import ToasterProvider from "../components/ToasterProvider";
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>arqueo</title>
+		<ClientRouter />
+	</head>
+	<body class="bg-blue-50">
+		<ToasterProvider client:idle />
+		<LoginForm client:load />
+	</body>
+</html>
+
+
+
