@@ -1,9 +1,5 @@
 import { Request, Response } from "express";
 import { arqueo, initChatBoxModel } from "../models/arqueo.model";
-import fs from "fs";
-import path from "path";
-import mime from "mime-types";
-import { blob } from "stream/consumers";
 
 export const getArqueo = async (req: Request, res: Response): Promise<void> => {
   const page = parseInt(req.query.page as string) || 1;
@@ -11,7 +7,6 @@ export const getArqueo = async (req: Request, res: Response): Promise<void> => {
   const offset = (page - 1) * pageSize;
   const zona = req.query.zona as string;
 
-  console.log("first", zona);
 
   if (zona === undefined) {
     res.status(400).json("Zona no válida");
@@ -19,7 +14,6 @@ export const getArqueo = async (req: Request, res: Response): Promise<void> => {
   }
 
   const empresa = zona === "Multired" ? "Multired" : "Servired";
-  console.log("first", empresa);
   initChatBoxModel(empresa);
 
   try {
@@ -179,7 +173,6 @@ export const getArqueo = async (req: Request, res: Response): Promise<void> => {
     });
     res.status(200).json({ count, datos: rows, page, pageSize });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -363,7 +356,6 @@ export const getArqueos = async (
       if (!buffer || buffer.length < 4) return "image/jpeg";
 
       const header = buffer.slice(0, 4).toString("hex").toUpperCase();
-      console.log("🔍 Encabezado HEX detectado:", header);
 
       if (header.startsWith("89504E47")) return "image/png"; // PNG
       if (header.startsWith("FFD8FF")) return "image/jpeg"; // JPG
@@ -378,25 +370,22 @@ export const getArqueos = async (
 
         if (Buffer.isBuffer(image)) {
           const mime = detectMimeType(image);
-          console.log("🧩 Tipo (Buffer):", mime);
           return `data:${mime};base64,${image.toString("base64")}`;
         }
 
         if (typeof image === "object" && image !== null && "data" in image) {
           const buffer = Buffer.from((image as { data: number[] }).data);
           const mime = detectMimeType(buffer);
-          console.log("🧩 Tipo (objeto Buffer):", mime);
           return `data:${mime};base64,${buffer.toString("base64")}`;
         }
 
         if (typeof image === "string") {
-          console.log("🧩 Tipo (string): base64 o ruta");
+
           return image.startsWith("data:image")
             ? image
             : `data:image/jpeg;base64,${image}`;
         }
 
-        console.warn("❌ Formato desconocido:", typeof image);
         return null;
       };
 
@@ -423,16 +412,10 @@ export const getArqueos = async (
       };
     });
 
-    console.log(
-      "Imagen base64:",
-      originalString[0]?.firma_auditoria?.slice(0, 80)
-    );
-
     res.status(200).json({
       datos: originalString,
     });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };

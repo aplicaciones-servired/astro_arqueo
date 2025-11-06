@@ -34,7 +34,6 @@ export const getloguin = async (req: Request, res: Response): Promise<void> => {
             res.status(404).json({ message: 'Usuario no encontrado' });
         }
     } catch (error) {
-        console.error(error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };

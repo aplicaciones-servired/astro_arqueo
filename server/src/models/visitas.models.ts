@@ -20,8 +20,8 @@ class Visita extends Model<
 const initChatBoxModel = (zona: string) => {
   const empresa =
     zona === "Multired"
-      ? "registrovisitasservired"
-      : "registrovisitas";
+      ? "registrovisitas"
+      : "registrovisitasservired";
   Visita.init(
     {
       nombres: { type: DataTypes.STRING },

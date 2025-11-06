@@ -62,7 +62,7 @@ export const TableArqueo = ({ datos }: PropsFooter) => {
                             <table className="min-w-full divide-y shadow-lg shadow-blue-300/50 divide-gray-200">
                                 <thead className="bg-gray-50">
                                     <tr>
-                                        <th className="py-3.5 px-4 text-sm font-semibold text-left text-gray-900">Supervisor</th>
+                                        <th className="py-3.5 px-4 text-sm font-semibold text-left text-gray-900">Realizado por</th>
                                         <th className="px-4 py-3.5 text-sm font-semibold text-left text-gray-900">Nombre Completo</th>
                                         <th className="px-4 py-3.5 text-sm font-semibold text-left text-gray-900">Sucursal</th>
                                         <th className="px-4 py-3.5 text-sm font-semibold text-left text-gray-900">Punto de venta</th>

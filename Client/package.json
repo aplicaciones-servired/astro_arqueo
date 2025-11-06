@@ -21,6 +21,7 @@
     "auth-astro": "^4.2.0",
     "axios": "^1.12.2",
     "buffer": "^6.0.3",
+    "date-fns": "^4.1.0",
     "install": "^0.13.0",
     "lucide-react": "^0.552.0",
     "react": "^19.2.0",

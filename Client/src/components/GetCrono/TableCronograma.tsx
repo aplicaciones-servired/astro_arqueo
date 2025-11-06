@@ -2,6 +2,7 @@ import { useState } from "react";
 import getFormattedDate from "../ui/getFormattedDate";
 import type { Cronograma } from "@/types/cronograma";
 import CronoDialogs from "./DalogCrono";
+import { useFilterCron } from "@/hooks/filtersCron";
 
 interface PropsFooter {
     datos: Cronograma[];
@@ -12,11 +13,10 @@ export const TableCronograma = ({ datos }: PropsFooter) => {
     const [open, setOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<Cronograma | null>(null);
 
-    //const { filteredPDV, searchPDV, setSearchPDV, searchfecha, setSearchFecha } = useFilter(datos)
+    const { filteredPDV, searchPDV, setSearchPDV, searchfecha, setSearchFecha } = useFilterCron(datos)
     return (
         <div>
-            {/* Buscador */}
-            {/* <div className="mt-6 md:flex md:items-center md:justify-between">
+            <div className="mt-6 md:flex md:items-center md:justify-between">
                 <div className="relative flex items-center mt-4 md:mt-0">
                     <input
                         type="date"
@@ -51,8 +51,7 @@ export const TableCronograma = ({ datos }: PropsFooter) => {
                         onChange={(e) => setSearchPDV(e.target.value)}
                         value={searchPDV}
                     />                </div>
-            </div> */}
-
+            </div>
             {/* Tabla */}
             <div className="flex flex-col mt-6  border-indigo-200 shadow-lg shadow-blue-300/50">
                 <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -69,7 +68,7 @@ export const TableCronograma = ({ datos }: PropsFooter) => {
                                     </tr>
                                 </thead>
                                 <tbody className="cursor-pointer bg-white divide-y divide-gray-200 hover:border-gray-300 hover:shadow-sm w-52">
-                                    {datos.map((pdv, index) => (
+                                    {filteredPDV.map((pdv, index) => (
                                         <tr key={index} className=" transition-colors hover:bg-blue-100" onClick={() => {
                                             setOpen(true);
                                             setSelectedItem(pdv)

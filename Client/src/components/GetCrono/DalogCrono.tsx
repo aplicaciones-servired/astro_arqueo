@@ -19,7 +19,6 @@ export default function CronoDialogs({
 }) {
 
     const { data } = Cronoid(id)
-    console.log('first', data)
     return (
         <Dialog
             onClose={handleClose}

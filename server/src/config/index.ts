@@ -15,7 +15,6 @@ const envSchema = z.object({
 const { success, data, error } = envSchema.safeParse(process.env);
 
 if (!success) {
-  console.error('Error en la configuraciÃ³n de las variables de entorno: ', error.format());
   process.exit(1);
 }
 

@@ -1,26 +1,25 @@
 import { useCallback, useEffect, useState } from "react";
-import type { Arqueos } from "../types/arqueo";
-
 import { toast } from "sonner";
 import { useEmpresa } from "../components/ui/useEmpresa";
 import axios from "axios";
+import type { Visitas } from "@/types/visita";
 
-interface ArqueoResponse {
-  datos: Arqueos[];
+
+interface CronoResponse {
+  datos: Visitas[];
   count: any;
   totalClients: number;
 }
 
-interface ArqueoPagi {
+interface VisitaPagi {
   totalClients: number;
 }
 
-export function useArqueo() {
-  const [data, setData] = useState<Arqueos[]>([]);
-  const [dataSegui, setDataSegui] = useState<Arqueos[]>([]);
+export function useVisita() {
+  const [data, setData] = useState<Visitas[]>([]);
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
-  const [state, setState] = useState<ArqueoPagi>({
+  const [state, setState] = useState<VisitaPagi>({
     totalClients: 0,
   });
   const [totalClients, setTotalClients] = useState();
@@ -29,13 +28,12 @@ export function useArqueo() {
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
-        const response = await axios.get<ArqueoResponse>(
-          `http://localhost:3000/arqueo?zona=${empresa}&page=${page}&pageSize=${pageSize}`
+        const response = await axios.get<CronoResponse>(
+          `http://localhost:3000/visita?zona=${empresa}&page=${page}&pageSize=${pageSize}`
         );
 
         if (response.status === 200) {
           setData(response.data.datos);
-          setDataSegui(response.data.datos);
           setTotalClients(response.data.count);
           setState((prev) => ({
             ...prev,
@@ -64,6 +62,5 @@ export function useArqueo() {
     totalClients,
     handlePageChange,
     total,
-    dataSegui
   };
 }

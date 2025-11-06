@@ -1,49 +1,73 @@
 ---
 import HeaderLink from "./HeaderLink.astro";
 import "../../styles/global.css";
-import LogoutButton from "../LogoutButton";
+import LogoutButton from "../ui/LogoutButton";
 import EmpresaSelector from "../ui/EmpresaSelector";
+
+// Estado del menú (Astro island con cliente)
+let isOpen = false;
 ---
 
-<header>
-  <header>
-    <div class="place-items-center h-24">
-      <section class="relative mx-auto">
-        <!-- navbar -->
-        <nav
-          class="flex justify-between bg-blue-200 text-black w-screen rounded-2xl"
-        >
-          <div class="px-5 xl:px-12 py-6 flex w-full items-center">
-            <div class="sm:w-64 sm:max-w-sm">
-              <EmpresaSelector client:load />
-            </div>
-            <!-- Nav Links -->
-            <ul
-              class="hidden md:flex px-4 mx-auto font-semibold font-heading space-x-12"
-            >
-              <HeaderLink
-                href="/getarqueo"
-                class={"shadow-xl hover:shadow-inner focus:outline-none transition duration-100 ease-in-out transform hover:-translate-x hover:scale-105"}
-                >Home</HeaderLink
-              >
-              <HeaderLink
-                href="/cronograma"
-                class={"shadow-xl hover:shadow-inner focus:outline-none transition duration-100 ease-in-out transform hover:-translate-x hover:scale-105"}
-                >Insertar Cronograma</HeaderLink
-              >
-              <HeaderLink
-                href="/getcronograma"
-                class={"shadow-xl hover:shadow-inner focus:outline-none transition duration-100 ease-in-out transform hover:-translate-x hover:scale-105"}
-                >Ver Cronograma</HeaderLink
-              >
-            </ul>
-            <!-- Header Icons -->
-            <div class="hidden xl:flex items-center space-x-5">
-              <LogoutButton client:load />
-            </div>
-          </div>
-        </nav>
-      </section>
+<header class="bg-blue-200 text-black rounded-2xl shadow-md">
+  <div class="container mx-auto flex items-center justify-between px-5 py-4">
+    <!-- Selector de Empresa -->
+    <div class="flex items-center space-x-4">
+      <div class="w-44">
+        <EmpresaSelector client:load />
+      </div>
     </div>
-  </header>
+
+    <!-- Botón hamburguesa (solo visible en móviles) -->
+    <button
+      type="button"
+      class="md:hidden p-2 rounded-lg hover:bg-blue-300 focus:outline-none"
+      aria-label="Abrir menú"
+      id="menu-toggle"
+    >
+      <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+
+    <!-- Links (desktop) -->
+    <ul
+      id="menu"
+      class="hidden md:flex items-center space-x-8 font-semibold font-heading"
+    >
+      <HeaderLink
+        href="/getarqueo"
+        class={"transition duration-150 ease-in-out hover:scale-105"}
+        >Home</HeaderLink
+      >
+      <HeaderLink
+        href="/cronograma"
+        class={"transition duration-150 ease-in-out hover:scale-105"}
+        >Insertar Cronograma</HeaderLink
+      >
+      <HeaderLink
+        href="/getcronograma"
+        class={"transition duration-150 ease-in-out hover:scale-105"}
+        >Ver Cronograma</HeaderLink
+      >
+      <HeaderLink
+        href="/getregistro"
+        class={"transition duration-150 ease-in-out hover:scale-105"}
+        >Registro</HeaderLink
+      >
+    </ul>
+
+    <!-- Botón Logout -->
+    <div class="hidden md:flex">
+      <LogoutButton client:load />
+    </div>
+  </div>
 </header>

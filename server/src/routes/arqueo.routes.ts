@@ -15,6 +15,6 @@ arqueoRoute.get("/getcronograma", Programacionget);
 
 arqueoRoute.post("/cronogramaid/:zona/:id", GetProgramacion);
 
-arqueoRoute.get("/visita/:zona", getVisita);
+arqueoRoute.get("/visita", getVisita);
 
 

@@ -9,7 +9,6 @@ const getFormattedDate = (dateString: string): string => {
     // Devuelve DD/MM/YYYY sin tocar la zona horaria
     return `${day}/${month}/${year}`;
   } catch (error) {
-    console.error("Error formatting date:", error);
     return dateString;
   }
 };

@@ -10,7 +10,7 @@ const Arqueo = (): JSX.Element => {
 
     return (
         <div className="container px-4 mx-auto">
-            <Exportcom data={data} />
+            <Exportcom data={data} tipo="arqueo" />
 
             <TableArqueo datos={data} />
 

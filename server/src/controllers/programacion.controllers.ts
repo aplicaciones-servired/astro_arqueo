@@ -16,11 +16,6 @@ export const PostProgramacion = async (
   const dia = data.fecha;
   const nota = data.nota;
 
-  console.log("data", puntodeventa);
-  console.log("data", zona);
-  console.log("data", nota);
-  console.log("data", dia);
-
   const empresa = zona === "Multired" ? "Multired" : "Servired";
   initCRONOGRAMA(empresa);
 
@@ -66,7 +61,6 @@ export const Programacionget = async (
     });
     res.status(200).json({ count, datos: rows, page, pageSize });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -116,12 +110,9 @@ export const GetProgramacion = async (
       };
     });
 
-    console.log("Imagen base64:", originalString[0]?.imagen?.slice(0, 80));
-
     // ✅ Enviamos el array ya transformado
     res.status(200).json({ datos: originalString });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
