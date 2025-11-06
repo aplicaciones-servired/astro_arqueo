@@ -141,10 +141,10 @@ export interface Arqueos {
   observacion34: string;
   requisito35: string;
   observacion35: string;
-  imagen_observacion: Blob;
+  imagen_observacion: string | null;
   nombre_observacion: string;
-  firma_auditoria: Blob;
-  firma_colocadora: Blob;
+  firma_auditoria: string | null;
+  firma_colocadora: string | null;
   fechavisita: string;
   horavisita: string;
   latitud: string;

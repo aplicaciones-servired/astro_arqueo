@@ -7,13 +7,13 @@ export const arqueoRoute = Router();
  
 arqueoRoute.get("/arqueo", getArqueo); // Cambiado de /login/:username a /:username
 
-arqueoRoute.get("/arqueos/:zona/:id", getArqueos);
+arqueoRoute.post("/arqueos/:zona/:id", getArqueos);
 
-arqueoRoute.post("/cronograma/:zona", PostProgramacion);
+arqueoRoute.post("/cronograma", PostProgramacion);
 
-arqueoRoute.get("/cronograma/:zona", Programacionget);
+arqueoRoute.get("/getcronograma", Programacionget);
 
-arqueoRoute.get("/cronogramaid/:zona/:id", GetProgramacion);
+arqueoRoute.post("/cronogramaid/:zona/:id", GetProgramacion);
 
 arqueoRoute.get("/visita/:zona", getVisita);
 

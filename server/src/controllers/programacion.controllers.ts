@@ -41,16 +41,16 @@ export const Programacionget = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { zona } = req.params; // la zona sí está en params
-  const { page = "1", limit = "10" } = req.query; // page y limit vienen de query
+  const page = parseInt(req.query.page as string) || 1;
+  const pageSize = parseInt(req.query.pageSize as string) || 1;
+  const offset = (page - 1) * pageSize;
+  const zona = req.query.zona as string;
 
   const empresa = zona === "Multired" ? "Multired" : "Servired";
   initCronograma(empresa);
 
   try {
-    const offset =
-      (parseInt(page as string, 10) - 1) * parseInt(limit as string, 10);
-    const getprogramacion = await getProgramacion.findAll({
+    const { count, rows } = await getProgramacion.findAndCountAll({
       attributes: [
         "id",
         "puntodeventa",
@@ -60,11 +60,11 @@ export const Programacionget = async (
         "estado",
         "imagen",
       ],
-      offset,
-      limit: parseInt(limit as string, 10),
+      limit: pageSize,
+      offset: offset,
       order: [["dia", "DESC"]],
     });
-    res.status(200).json(getprogramacion);
+    res.status(200).json({ count, datos: rows, page, pageSize });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -76,8 +76,7 @@ export const GetProgramacion = async (
   res: Response
 ): Promise<void> => {
   const data = req.params;
-  const { zona, id } = data; // la zona sí está en params
-  
+  const { zona, id } = data;
 
   const empresa = zona === "Multired" ? "Multired" : "Servired";
   initCronograma(empresa);
@@ -93,12 +92,34 @@ export const GetProgramacion = async (
         "estado",
         "imagen",
       ],
-      where: {
-        id: id,
-      },
+      where: { id: id },
       order: [["dia", "DESC"]],
     });
-    res.status(200).json(getprogramacion);
+
+    const originalString = getprogramacion.map((item: any) => {
+      let imagePath: any = item.imagen;
+
+      // Si viene como objeto tipo { type: 'Buffer', data: [...] }
+      if (imagePath && typeof imagePath === "object" && "data" in imagePath) {
+        imagePath = Buffer.from(
+          (imagePath as { data: number[] }).data
+        ).toString("base64");
+      }
+
+      const base64Image = imagePath
+        ? `data:image/jpeg;base64,${imagePath}`
+        : null;
+
+      return {
+        ...item.toJSON(),
+        imagen: base64Image,
+      };
+    });
+
+    console.log("Imagen base64:", originalString[0]?.imagen?.slice(0, 80));
+
+    // ✅ Enviamos el array ya transformado
+    res.status(200).json({ datos: originalString });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });

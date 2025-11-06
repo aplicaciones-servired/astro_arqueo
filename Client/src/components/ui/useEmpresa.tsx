@@ -8,6 +8,6 @@ interface EmpresaState {
 
 export const useEmpresa = create<EmpresaState>((set) => ({
   // 🔹 Inicia con el primer valor o vacío
-  empresa: "",
+  empresa: empresas[0] || "",
   setEmpresa: (empresa) => set({ empresa }),
 }));

@@ -1,19 +1,22 @@
 import { defineConfig, envField } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@astrojs/react";
-import netlify from '@astrojs/netlify';
-import auth from 'auth-astro';
+import netlify from "@astrojs/netlify";
+import auth from "auth-astro";
 
 export default defineConfig({
   adapter: netlify(),
-  output: 'server',
+  alias: {
+    "@": "./src", // 👈 importante el "./"
+  },
+  output: "server",
   vite: {
     plugins: [tailwindcss()],
   },
   env: {
     schema: {
-      AUTH_SECRET: envField.string({ context: 'server', access: 'public' }),
-    }
+      AUTH_SECRET: envField.string({ context: "server", access: "public" }),
+    },
   },
   integrations: [
     react(),

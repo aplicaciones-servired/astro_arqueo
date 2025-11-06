@@ -11,13 +11,18 @@
   "dependencies": {
     "@astrojs/react": "^4.4.0",
     "@auth/core": "^0.18.6",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/material": "^7.3.4",
     "@tailwindcss/vite": "^4.1.15",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "astro": "^5.14.8",
     "auth-astro": "^4.2.0",
     "axios": "^1.12.2",
+    "buffer": "^6.0.3",
     "install": "^0.13.0",
+    "lucide-react": "^0.552.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "sonner": "^2.0.7",
@@ -26,6 +31,7 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
-    "@astrojs/netlify": "^6.5.13"
+    "@astrojs/netlify": "^6.5.13",
+    "astro-pdf": "^1.7.2"
   }
 }

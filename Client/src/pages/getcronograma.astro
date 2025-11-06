@@ -1,0 +1,18 @@
+---
+
+import GetCronograma from "@/components/GetCronograma";
+import Layout from "../layouts/Layout.astro";
+import { getSession } from "auth-astro/server";
+
+const session = await getSession(Astro.request);
+
+if (!session) {
+  return Astro.redirect("/");
+}
+
+---
+
+<Layout>
+  <!-- component -->
+  <GetCronograma client:only="react" />
+</Layout>

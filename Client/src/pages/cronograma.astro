@@ -1,0 +1,18 @@
+---
+import CronogramaForm from "@/components/CronogramaForm";
+import Layout from "@/layouts/Layout.astro";
+
+import { getSession } from "auth-astro/server";
+
+const session = await getSession(Astro.request);
+if (!session) return Astro.redirect("/");
+---
+
+<Layout>
+  <div class="border w-5/12 justify-self-center mt-5 border-indigo-200 rounded-lg shadow-lg shadow-blue-300/50">
+    <h1 class="text-2xl font-bold uppercase text-center mt-4">
+      Programación De Arqueos Mensual
+    </h1>
+    <CronogramaForm client:load />
+  </div>
+</Layout>

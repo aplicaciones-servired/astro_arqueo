@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Arqueos } from "../types/arqueo";
-import axios from "axios";
+
 import { toast } from "sonner";
 import { useEmpresa } from "../components/ui/useEmpresa";
+import axios from "axios";
 
 interface ArqueoResponse {
   datos: Arqueos[];
@@ -23,7 +24,6 @@ export function useArqueo() {
   });
   const [totalClients, setTotalClients] = useState();
   const { empresa } = useEmpresa();
-  console.log(empresa);
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {

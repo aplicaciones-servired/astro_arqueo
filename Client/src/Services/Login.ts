@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { signIn } from "auth-astro/client";
 import { toast } from "sonner";
-import { defineConfig } from "auth-astro/src/config";
-
-console.log('first', defineConfig)
 
 export function useLogin() {
   const [username, setUsername] = useState("");
@@ -20,10 +17,9 @@ export function useLogin() {
           username,
           password,
           redirect: false,
-          callbackUrl: "/welcome",
+          callbackUrl: "/getarqueo",
         } as any);
 
-        console.log("🔍 Resultado de signIn:", result);
 
         // ✅ Verificamos si result existe
         if (!result) {
