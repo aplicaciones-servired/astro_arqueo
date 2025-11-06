@@ -1,6 +1,14 @@
 import { defineConfig } from "auth-astro";
 import Credentials from "@auth/core/providers/credentials";
-import { AUTH_SECRET } from "astro:env/server";
+
+let AUTH_SECRET_VALUE: string;
+
+try {
+  const { AUTH_SECRET } = await import("astro:env/server");
+  AUTH_SECRET_VALUE = AUTH_SECRET;
+} catch {
+  AUTH_SECRET_VALUE = process.env.AUTH_SECRET ?? "";
+}
 
 export default defineConfig({
   providers: [
@@ -17,22 +25,15 @@ export default defineConfig({
           body: JSON.stringify(credentials),
         });
 
-        const data = await res.json().catch((e) => {
-          return null;
-        });
+        const data = await res.json().catch(() => null);
 
-        // ⚠️ Validamos
         if (!res.ok) {
-          const message = data?.message || "Usuario no encontrado o credenciales inválidas";
-          // ⛔ Lanzamos error, no devolvemos null
-          throw new Error(message);
+          throw new Error(data?.message || "Usuario o contraseña inválidos");
         }
 
-        if (!data || !data.user) {
-          return null;
-        }
+        if (!data?.user) return null;
 
-        const user = {
+        return {
           id: data.user.id,
           name: `${data.user.names} ${data.user.lastnames}`,
           email: data.user.email,
@@ -42,10 +43,8 @@ export default defineConfig({
           sub_process: data.user.sub_process,
           state: data.user.state,
         };
-
-        return user;
       },
     }),
   ],
-  secret: AUTH_SECRET,
+  secret: AUTH_SECRET_VALUE,
 });
