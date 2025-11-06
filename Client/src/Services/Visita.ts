@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { useEmpresa } from "../components/ui/useEmpresa";
 import axios from "axios";
 import type { Visitas } from "@/types/visita";
+import { API_URL } from "@/utils/constans";
 
 
 interface CronoResponse {
@@ -28,9 +29,8 @@ export function useVisita() {
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
-        const response = await axios.get<CronoResponse>(
-          `http://localhost:3000/visita?zona=${empresa}&page=${page}&pageSize=${pageSize}`
-        );
+        //const response = await axios.get<CronoResponse>(`http://localhost:3000/visita?zona=${empresa}&page=${page}&pageSize=${pageSize}`);
+        const response = await axios.get<CronoResponse>(`${API_URL}/visita?zona=${empresa}&page=${page}&pageSize=${pageSize}`);
 
         if (response.status === 200) {
           setData(response.data.datos);

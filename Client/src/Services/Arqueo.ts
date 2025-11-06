@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Arqueos } from "../types/arqueo";
-
 import { toast } from "sonner";
 import { useEmpresa } from "../components/ui/useEmpresa";
 import axios from "axios";
+import { API_URL } from "@/utils/constans";
 
 interface ArqueoResponse {
   datos: Arqueos[];
@@ -29,10 +29,8 @@ export function useArqueo() {
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
-        const response = await axios.get<ArqueoResponse>(
-          `http://localhost:3000/arqueo?zona=${empresa}&page=${page}&pageSize=${pageSize}`
-        );
-
+        //const response = await axios.get<ArqueoResponse>(`http://localhost:3000/arqueo?zona=${empresa}&page=${page}&pageSize=${pageSize}`);
+        const response = await axios.get<ArqueoResponse>(`${API_URL}/arqueo?zona=${empresa}&page=${page}&pageSize=${pageSize}`);
         if (response.status === 200) {
           setData(response.data.datos);
           setDataSegui(response.data.datos);

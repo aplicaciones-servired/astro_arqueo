@@ -1,3 +1,4 @@
+import { API_URL } from "@/utils/constans";
 import axios from "axios";
 import { toast } from "sonner";
 
@@ -15,13 +16,19 @@ export async function CronogramaSer({ puntovdt, empresa, nota, fecha }: Crono) {
   }
 
   try {
-    toast.promise(
-      axios.post("http://localhost:3000/cronograma", {
+    // toast.promise(axios.post("http://localhost:3000/cronograma", {
+    //     puntovdt,
+    //     empresa,
+    //     nota,
+    //     fecha,
+    //   }),
+    toast.promise(axios.post(`${API_URL}/cronograma`, {
         puntovdt,
         empresa,
         nota,
         fecha,
       }),
+
       {
         loading: "Insertando cronograma...",
         success: "Se registró correctamente el cronograma",

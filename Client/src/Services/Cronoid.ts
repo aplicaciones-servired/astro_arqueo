@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { useEmpresa } from "../components/ui/useEmpresa";
 import axios from "axios";
 import type { Cronograma } from "@/types/cronograma";
+import { API_URL } from "@/utils/constans";
 
 export function Cronoid(id: number | undefined) {
   const [data, setData] = useState<Cronograma[]>([]);
@@ -11,10 +12,10 @@ export function Cronoid(id: number | undefined) {
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
-      try {
-        const response = await axios.post(
-          `http://localhost:3000/cronogramaid/${empresa}/${id}`
-        );
+      try { 
+        //const response = await axios.post(`http://localhost:3000/cronogramaid/${empresa}/${id}`);
+        const response = await axios.post(`${API_URL}/cronogramaid/${empresa}/${id}`);
+
         setData(response.data.datos);
       } catch {
         toast.error("Error al cargar los datos", { duration: 1000 });

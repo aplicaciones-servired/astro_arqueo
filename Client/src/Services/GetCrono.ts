@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { useEmpresa } from "../components/ui/useEmpresa";
 import axios from "axios";
 import type { Cronograma } from "@/types/cronograma";
+import { API_URL } from "@/utils/constans";
 
 interface CronoResponse {
   datos: Cronograma[];
@@ -27,9 +28,8 @@ export function useCrono() {
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
-        const response = await axios.get<CronoResponse>(
-          `http://localhost:3000/getcronograma?zona=${empresa}&page=${page}&pageSize=${pageSize}`
-        );
+        //const response = await axios.get<CronoResponse>(`http://localhost:3000/getcronograma?zona=${empresa}&page=${page}&pageSize=${pageSize}`);
+        const response = await axios.get<CronoResponse>(`${API_URL}/getcronograma?zona=${empresa}&page=${page}&pageSize=${pageSize}`);
 
         if (response.status === 200) {
           setData(response.data.datos);
