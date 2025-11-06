@@ -17,7 +17,7 @@ pipeline {
           def env_server = readFile(ENV_SERVER_ARQUEOS)
           def env_client = readFile(ENV_CLIENT_ARQUEOS)
           writeFile file: './server/.env', text: env_server
-          writeFile file: './client/.env', text: env_client
+          writeFile file: './Client/.env', text: env_client
         }
       }
     }
