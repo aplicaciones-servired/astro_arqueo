@@ -9,7 +9,7 @@ export default defineConfig({
   alias: {
     "@": "./src", // 👈 importante el "./"
   },
-  output: "static",
+  output: "server",
   vite: {
     plugins: [tailwindcss()],
   },

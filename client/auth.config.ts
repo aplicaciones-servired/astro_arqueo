@@ -16,7 +16,8 @@ export default defineConfig({
       async authorize(credentials) {
         if (!credentials) return null;
 
-        const res = await fetch(`${process.env.VITE_URL_API}/v2/login`, {
+        //const res = await fetch(`${process.env.VITE_URL_API}/v2/login`, {
+        const res = await fetch(`http://localhost:9010/api/v2/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(credentials),
