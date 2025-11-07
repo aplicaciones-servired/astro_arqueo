@@ -1,6 +1,6 @@
 pipeline {
   agent any
-    
+
   tools {
     nodejs 'node-v22'
   }
@@ -8,8 +8,9 @@ pipeline {
   environment {
     ENV_CLIENT_ARQUEOS = credentials('ENV_CLIENT_ARQUEOS')
     ENV_SERVER_ARQUEOS = credentials('ENV_SERVER_ARQUEOS')
+    AUTH_SECRET = credentials('AUTH_SECRET') // ⚡ Agregar el secret para auth
   }
-    
+
   stages {
     stage('Copy .env files') {
       steps {
@@ -22,46 +23,52 @@ pipeline {
       }
     }
 
-    stage('install dependencies server') {
+    stage('Install dependencies server') {
       steps {
-        script {
-          sh 'cd ./server && npm install'
+        dir('server') {
+          sh 'npm install'
         }
       }
     }
 
-    stage('install dependencies client') {
+    stage('Install & build client') {
       steps {
-        script {
-          sh 'cd ./client && npm install --legacy-peer-deps'
-          sh 'cd ./client && node --run build'
-        }
-      }
-    }
-
-    stage('down docker compose') {
-      steps {
-        script {
-          sh 'docker compose down'
-        }
-      }
-    }
-
-    stage('delete images server') {
-      steps {
-        script {
-          def images = 'arqueo-server'
-          if (sh(script: "docker images -q ${images}", returnStdout: true).trim()) {
-            sh "docker rmi ${images}"
-          } else {
-            echo "Image ${images} does not exist."
-            echo "continuing... executing next steps"
+        dir('client') {
+          withEnv([
+            "VITE_API_URL_LOGIN=${ENV_CLIENT_ARQUEOS}",
+            "VITE_URL_API=${ENV_SERVER_ARQUEOS}",
+            "AUTH_SECRET=${AUTH_SECRET}"
+          ]) {
+            sh 'npm install --legacy-peer-deps'
+            sh 'npm run build'
           }
         }
       }
     }
-    
-    stage('run docker compose') {
+
+    stage('Down Docker Compose') {
+      steps {
+        script {
+          sh 'docker compose down || echo "No docker compose to down"'
+        }
+      }
+    }
+
+    stage('Delete server images') {
+      steps {
+        script {
+          def images = 'arqueo-server'
+          def imageId = sh(script: "docker images -q ${images}", returnStdout: true).trim()
+          if (imageId) {
+            sh "docker rmi ${imageId}"
+          } else {
+            echo "Image ${images} does not exist, skipping."
+          }
+        }
+      }
+    }
+
+    stage('Run Docker Compose') {
       steps {
         script {
           sh 'docker compose up -d'
