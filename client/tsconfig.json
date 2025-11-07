@@ -11,7 +11,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    // 🔹 Ignorar archivos con errores fuera de tu código
+    "ignoreDeprecations": "5.0"
   },
   "include": [
     ".astro/types.d.ts",
@@ -20,5 +22,9 @@
     "**/*.ts",
     "**/*.tsx"
   ],
-  "exclude": ["dist", "node_modules", "node_modules/auth-astro"]
+  "exclude": [
+    "dist",
+    "node_modules",
+    "node_modules/auth-astro/src/integration.ts"
+  ]
 }
