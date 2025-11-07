@@ -42,7 +42,7 @@ export function useLogin() {
       loading: "Verificando credenciales...",
       success: () => {
         setTimeout(() => {
-          window.location.href = "/welcome";
+          window.location.href = "/getarqueo";
         }, 1500);
         return "Inicio de sesión exitoso ✅";
       },

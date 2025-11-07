@@ -3,7 +3,7 @@ import { defineConfig } from "auth-astro";
 import Credentials from "@auth/core/providers/credentials";
 
 // Usa process.env directamente, evita astro:env/server
-const AUTH_SECRET_VALUE = process.env.AUTH_SECRET ?? "";
+const AUTH_SECRET_VALUE = import.meta.env.AUTH_SECRET ?? "";
 
 export default defineConfig({
   providers: [
