@@ -1,26 +1,24 @@
 {
-  "include": [
-    ".astro/types.d.ts",
-    "types/**/*.d.ts",
-    "src/**/*",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": ["dist", "node_modules"],
   "compilerOptions": {
     "strict": true,
     "module": "esnext",
-    "moduleResolution": "node",
     "target": "esnext",
     "jsx": "react-jsx",
     "jsxImportSource": "react",
-    "ignoreDeprecations": "5.0",
+    "moduleResolution": "bundler",
     "skipLibCheck": true,
     "noEmitOnError": false,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    },
-    "include": [".astro/types.d.ts", "src", "types"]
-  }
+    }
+  },
+  "include": [
+    ".astro/types.d.ts",
+    "src/**/*",
+    "types/**/*.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": ["dist", "node_modules", "node_modules/auth-astro"]
 }
