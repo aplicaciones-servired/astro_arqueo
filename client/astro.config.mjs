@@ -9,7 +9,7 @@ export default defineConfig({
   alias: {
     "@": "./src", // 👈 importante el "./"
   },
-  output: "server",
+  output: "static",
   vite: {
     plugins: [tailwindcss()],
   },
@@ -19,7 +19,7 @@ export default defineConfig({
     },
   },
   integrations: [
-    react({
+   react({
       include: ['**/react/*'], // ← Especificar dónde están tus componentes React
       experimentalReactChildren: true
     }),
