@@ -22,49 +22,55 @@ pipeline {
       }
     }
 
-    stage('install dependencies server') {
+    stage('Install dependencies server') {
       steps {
         script {
-          sh 'cd ./server && npm install'
+          sh '''
+            cd ./server
+            npm ci || npm install
+          '''
         }
       }
     }
 
-    stage('install dependencies client') {
+    stage('Install dependencies client') {
       steps {
         script {
-          sh 'cd ./client && npm install --legacy-peer-deps'
-          sh 'cd ./client && node --run build'
+          sh '''
+            cd ./client
+            npm ci || npm install --legacy-peer-deps
+            # 🔹 Evita errores de TypeScript en node_modules
+            npm run build -- --skipLibCheck
+          '''
         }
       }
     }
 
-    stage('down docker compose') {
+    stage('Down docker compose') {
       steps {
         script {
-          sh 'docker compose down'
+          sh 'docker compose down || true'
         }
       }
     }
 
-    stage('delete images server') {
+    stage('Delete old server images') {
       steps {
         script {
-          def images = 'arqueo-server'
-          if (sh(script: "docker images -q ${images}", returnStdout: true).trim()) {
-            sh "docker rmi ${images}"
+          def image = 'arqueo-server'
+          if (sh(script: "docker images -q ${image}", returnStdout: true).trim()) {
+            sh "docker rmi ${image}"
           } else {
-            echo "Image ${images} does not exist."
-            echo "continuing... executing next steps"
+            echo "Image ${image} does not exist. Continuing..."
           }
         }
       }
     }
-    
-    stage('run docker compose') {
+
+    stage('Run docker compose') {
       steps {
         script {
-          sh 'docker compose up -d'
+          sh 'docker compose up -d --build'
         }
       }
     }

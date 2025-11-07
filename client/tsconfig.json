@@ -1,16 +1,26 @@
 {
-  "extends": "astro/tsconfigs/strict",
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"],
-  "module": "esnext",
-  "moduleResolution": "node",
-  "target": "esnext",
+  "include": [
+    ".astro/types.d.ts",
+    "types/**/*.d.ts",
+    "src/**/*",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": ["dist", "node_modules"],
   "compilerOptions": {
+    "strict": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "esnext",
     "jsx": "react-jsx",
     "jsxImportSource": "react",
     "ignoreDeprecations": "5.0",
+    "skipLibCheck": true,
+    "noEmitOnError": false,
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "types": ["./types/next-auth-react"]
   }
 }
