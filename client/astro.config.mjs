@@ -19,7 +19,10 @@ export default defineConfig({
     },
   },
   integrations: [
-    react(),
+    react({
+      include: ['**/react/*'], // ← Especificar dónde están tus componentes React
+      experimentalReactChildren: true
+    }),
     auth({
       prefix: "/api/auth",
     }),
