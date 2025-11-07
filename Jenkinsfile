@@ -30,21 +30,32 @@ pipeline {
         }
       }
     }
-
+    
     stage('Install & build client') {
       steps {
         dir('client') {
+          script {
+            // Lee el archivo .env de la credencial
+          def authEnvFile = readFile(AUTH_SECRET)
+          // Extrae la línea AUTH_SECRET=xxxx
+          def authSecretValue = authEnvFile.readLines()
+          .find { it.startsWith("AUTH_SECRET=") }
+          ?.split("=")[1]
+          ?.trim()
+          // Exporta las variables para el build
           withEnv([
             "VITE_API_URL_LOGIN=${ENV_CLIENT_ARQUEOS}",
             "VITE_URL_API=${ENV_SERVER_ARQUEOS}",
-            "AUTH_SECRET=${AUTH_SECRET}"
-          ]) {
-            sh 'npm install --legacy-peer-deps'
-            sh 'npm run build'
+            "AUTH_SECRET=${authSecretValue}"
+            ]) {
+              sh 'npm install --legacy-peer-deps'
+              sh 'npm run build'
+            }
           }
         }
       }
     }
+
 
     stage('Down Docker Compose') {
       steps {
