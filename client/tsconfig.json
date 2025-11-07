@@ -21,6 +21,6 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["./types/next-auth-react"]
+    "include": [".astro/types.d.ts", "src", "types"]
   }
 }
