@@ -2,10 +2,10 @@ import { defineConfig, envField } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@astrojs/react";
 import auth from "auth-astro";
+import { JWTAdapter } from "@auth/core/adapters/jwt"; // Adapter JWT
 
 export default defineConfig({
   output: "server",
-  adapter: undefined, // No uses Netlify si lo estás desplegando con Docker
   alias: {
     "@": "./src",
   },
@@ -24,6 +24,7 @@ export default defineConfig({
     }),
     auth({
       prefix: "/api/auth",
+      adapter: JWTAdapter({ secret: process.env.AUTH_SECRET }), // ✅ Adapter JWT
     }),
   ],
 });
