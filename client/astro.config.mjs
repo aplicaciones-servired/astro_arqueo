@@ -1,18 +1,14 @@
 import { defineConfig, envField } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@astrojs/react";
-import netlify from "@astrojs/netlify";
 import auth from "auth-astro";
-import node from "@astrojs/node";
 
 export default defineConfig({
-  adapter: node({
-    mode: "standalone" // Esto genera un servidor Node.js ejecutable
-  }),
-  alias: {
-    "@": "./src", // 👈 importante el "./"
-  },
   output: "server",
+  adapter: undefined, // No uses Netlify si lo estás desplegando con Docker
+  alias: {
+    "@": "./src",
+  },
   vite: {
     plugins: [tailwindcss()],
   },
@@ -22,9 +18,9 @@ export default defineConfig({
     },
   },
   integrations: [
-   react({
-      include: ['**/react/*'], // ← Especificar dónde están tus componentes React
-      experimentalReactChildren: true
+    react({
+      include: ["**/react/*"],
+      experimentalReactChildren: true,
     }),
     auth({
       prefix: "/api/auth",

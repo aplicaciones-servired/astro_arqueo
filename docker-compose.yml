@@ -1,5 +1,7 @@
 version: "3.7"
+
 services:
+  # --- API principal
   api_arqueo:
     build:
       context: ./server
@@ -9,14 +11,28 @@ services:
     networks:
       - red-gane-int
 
+  # --- Astro SSR (Node.js)
+  astro_app:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: astro_app
+    image: astro-server
+    expose:
+      - "4321"
+    depends_on:
+      - api_arqueo
+    networks:
+      - red-gane-int
+
+  # --- Nginx reverse proxy
   web-arqueo:
     image: nginx:stable-alpine3.19-slim
     container_name: web_arqueo
     volumes:
-      - ./client/dist:/usr/share/nginx/html
       - ./conf/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - api_arqueo
+      - astro_app
     ports:
       - "3757:3757"
     networks:

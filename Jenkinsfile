@@ -1,6 +1,6 @@
 pipeline {
   agent any
-    
+
   tools {
     nodejs 'node-v22'
   }
@@ -9,7 +9,7 @@ pipeline {
     ENV_CLIENT_ARQUEOS = credentials('ENV_CLIENT_ARQUEOS')
     ENV_SERVER_ARQUEOS = credentials('ENV_SERVER_ARQUEOS')
   }
-    
+
   stages {
     stage('Copy .env files') {
       steps {
@@ -33,13 +33,13 @@ pipeline {
       }
     }
 
-    stage('Install dependencies client & Build') {
+    stage('Install dependencies client & Build SSR') {
       steps {
         script {
           sh '''
             cd ./client
             npm install --legacy-peer-deps
-            # 🔹 Saltamos errores de tipo en dependencias externas
+            # Saltamos errores de tipo en dependencias externas
             npx tsc --skipLibCheck --noEmit || true
             npx astro build
           '''
@@ -47,7 +47,7 @@ pipeline {
       }
     }
 
-    stage('Down docker compose') {
+    stage('Stop old containers') {
       steps {
         script {
           sh 'docker compose down || true'
@@ -55,23 +55,37 @@ pipeline {
       }
     }
 
-    stage('Delete old server images') {
+    stage('Remove old server images') {
       steps {
         script {
-          def images = 'arqueo-server'
-          if (sh(script: "docker images -q ${images}", returnStdout: true).trim()) {
-            sh "docker rmi ${images}"
-          } else {
-            echo "Image ${images} does not exist, continuing..."
+          def images = ['arqueo-server', 'astro-server']
+          images.each { img ->
+            def imgId = sh(script: "docker images -q ${img}", returnStdout: true).trim()
+            if (imgId) {
+              sh "docker rmi -f ${imgId}"
+            } else {
+              echo "Image ${img} does not exist, skipping..."
+            }
           }
         }
       }
     }
-    
+
     stage('Run docker compose') {
       steps {
         script {
-          sh 'docker compose up -d'
+          sh 'docker compose up -d --build'
+        }
+      }
+    }
+    
+    stage('Verify services') {
+      steps {
+        script {
+          sh '''
+            echo "Checking running containers..."
+            docker ps
+          '''
         }
       }
     }
