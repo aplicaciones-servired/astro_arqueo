@@ -1,5 +1,6 @@
 ---
-export const prerender = false; // 👈 evita el prerender y habilita Astro.request
+// src/pages/getarqueo.astro
+export const prerender = false;
 
 import { SignedIn, SignedOut } from "@clerk/astro/react";
 import Arqueo from "../components/GetArqueos";
@@ -7,8 +8,20 @@ import Layout from "../layouts/Layout.astro";
 
 ---
 
-<SignedIn>
-  <Layout>
+<Layout>
+  <SignedIn>
     <Arqueo client:only="react" />
-  </Layout>
-</SignedIn>
+  </SignedIn>
+  
+  <SignedOut>
+    <div class="flex items-center justify-center min-h-screen">
+      <div class="text-center">
+        <h1 class="text-2xl font-bold mb-4">No autenticado</h1>
+        <p class="text-gray-600">Por favor inicia sesión para acceder a esta página.</p>
+        <a href="/" class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded">
+          Ir al Login
+        </a>
+      </div>
+    </div>
+  </SignedOut>
+</Layout>

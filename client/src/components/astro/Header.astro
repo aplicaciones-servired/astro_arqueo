@@ -1,30 +1,20 @@
 ---
+// src/components/astro/Header.astro
 import HeaderLink from "./HeaderLink.astro";
 import "../../styles/global.css";
 import LogoutButton from "../ui/LogoutButton";
 import EmpresaSelector from "../ui/EmpresaSelector";
-import { SignedIn, SignedOut } from "@clerk/astro/react";
-
-// Estado del menú (Astro island con cliente)
-let isOpen = false;
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/astro/components";
 ---
 
 <header class="bg-blue-200 text-black rounded-2xl shadow-md">
   <div class="container mx-auto flex items-center justify-between px-5 py-4">
-    
-    <SignedIn>
-      <!-- Selector de Empresa (solo para usuarios logueados) -->
-      <div class="flex items-center space-x-4">
-        <div class="w-44">
-          <EmpresaSelector client:load />
-        </div>
+    <!-- Selector de Empresa -->
+    <div class="flex items-center space-x-4">
+      <div class="w-44">
+        <EmpresaSelector client:load />
       </div>
-    </SignedIn>
-    
-    <SignedOut>
-      <!-- Logo o título para usuarios no logueados -->
-      <div class="text-xl font-bold">Mi App</div>
-    </SignedOut>
+    </div>
 
     <!-- Botón hamburguesa (solo visible en móviles) -->
     <button
@@ -47,7 +37,7 @@ let isOpen = false;
       </svg>
     </button>
 
-    <!-- Links (desktop) - Solo para usuarios logueados -->
+    <!-- Links (desktop) - Solo mostrar cuando el usuario está autenticado -->
     <SignedIn>
       <ul
         id="menu"
@@ -76,11 +66,19 @@ let isOpen = false;
       </ul>
     </SignedIn>
 
-    <!-- Botón Logout - Solo para usuarios logueados -->
-    <SignedIn>
-      <div class="hidden md:flex">
+    <!-- Botones de Auth -->
+    <div class="hidden md:flex items-center space-x-4">
+      <SignedIn>
+        <UserButton />
         <LogoutButton client:load />
-      </div>
-    </SignedIn>
+      </SignedIn>
+      <SignedOut>
+        <SignInButton mode="modal">
+          <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-150">
+            Iniciar Sesión
+          </button>
+        </SignInButton>
+      </SignedOut>
+    </div>
   </div>
 </header>

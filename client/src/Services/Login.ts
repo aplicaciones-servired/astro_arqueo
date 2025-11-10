@@ -1,4 +1,3 @@
-// hooks/useLogin.ts
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -12,9 +11,7 @@ export function useLogin() {
 
     const loginPromise = new Promise(async (resolve, reject) => {
       try {
-        console.log('🔐 Validando credenciales con backend...');
-        
-        // 1. Primero validar con tu backend tradicional
+        // 1. Validar con backend tradicional
         const res = await fetch(`http://localhost:9010/api/v2/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -22,33 +19,29 @@ export function useLogin() {
         });
 
         const text = await res.text();
-        console.log('📋 Respuesta del backend:', text);
+        console.log('📋 Respuesta backend:', text);
 
         if (!res.ok || !text.includes("Login successful")) {
           throw new Error("Credenciales inválidas");
         }
 
-        console.log('✅ Autenticación tradicional exitosa');
-
-        // 2. Crear sesión en Clerk SOLO con el username
+        // 2. Crear sesión Clerk
         const clerkRes = await fetch("/api/clerk-session", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username }), // Solo username, sin password
+          body: JSON.stringify({ username }),
         });
 
         const clerkData = await clerkRes.json();
-        console.log('📋 Respuesta de Clerk:', clerkData);
-
+        
         if (!clerkRes.ok) {
-          throw new Error(clerkData.error || "Error creando sesión Clerk");
+          throw new Error(clerkData.error || "Error sesión Clerk");
         }
 
-        console.log('✅ Sesión Clerk creada exitosamente');
         resolve(clerkRes);
         
       } catch (err: any) {
-        console.error('❌ Error en el proceso de login:', err);
+        console.error('❌ Error login:', err);
         reject(err);
       }
     });
