@@ -1,18 +1,14 @@
 ---
 export const prerender = false; // 👈 evita el prerender y habilita Astro.request
 
+import { SignedIn, SignedOut } from "@clerk/astro/react";
 import Arqueo from "../components/GetArqueos";
 import Layout from "../layouts/Layout.astro";
-import { getSession } from "auth-astro/server";
 
-const session = await getSession(Astro.request);
-
-// Si no hay sesión, redirige al inicio
-if (!session) {
-  return Astro.redirect("/");
-}
 ---
 
-<Layout>
-  <Arqueo client:only="react" />
-</Layout>
+<SignedIn>
+  <Layout>
+    <Arqueo client:only="react" />
+  </Layout>
+</SignedIn>

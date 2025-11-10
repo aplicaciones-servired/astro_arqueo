@@ -21,7 +21,7 @@
     "types/**/*.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "env.schema.mjs"  ],
   "exclude": [
     "dist",
     "node_modules",

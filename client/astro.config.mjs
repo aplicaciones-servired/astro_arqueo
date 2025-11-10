@@ -1,30 +1,27 @@
 import { defineConfig, envField } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@astrojs/react";
-import auth from "auth-astro";
-import { JWTAdapter } from "@auth/core/adapters/jwt"; // Adapter JWT
+import node from "@astrojs/node";
+import clerk from "@clerk/astro";
 
 export default defineConfig({
+  adapter: node({ mode: "standalone" }),
   output: "server",
-  alias: {
-    "@": "./src",
-  },
-  vite: {
-    plugins: [tailwindcss()],
-  },
+  alias: { "@": "./src" },
+  vite: { plugins: [tailwindcss()] },
   env: {
     schema: {
-      AUTH_SECRET: envField.string({ context: "server", access: "public" }),
+      // 🔒 clave secreta solo en el servidor
+      CLERK_SECRET_KEY: envField.string({ context: "server", access: "secret" }),
+      // 🌍 clave pública para el navegador (Clerk lo necesita en cliente)
+      PUBLIC_CLERK_PUBLISHABLE_KEY: envField.string({
+        context: "client",
+        access: "public",
+      }),
     },
   },
   integrations: [
-    react({
-      include: ["**/react/*"],
-      experimentalReactChildren: true,
-    }),
-    auth({
-      prefix: "/api/auth",
-      adapter: JWTAdapter({ secret: process.env.AUTH_SECRET }), // ✅ Adapter JWT
-    }),
+    react({ include: ["**/react/*"], experimentalReactChildren: true }),
+    clerk(),
   ],
 });

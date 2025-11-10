@@ -1,14 +1,8 @@
-import { useLogin } from "../Services/Login";
+import { useLogin } from "@/Services/Login";
+
 
 export default function LoginForm() {
-  
-  const {
-    username,
-    setUsername,
-    password,
-    setPassword,
-    handleSubmit,
-  } = useLogin();
+  const { username, setUsername, password, setPassword, handleSubmit } = useLogin();
 
   return (
     <div className="font-sans">
@@ -19,14 +13,14 @@ export default function LoginForm() {
 
           <div className="relative w-full rounded-3xl px-6 py-4 bg-gray-100 shadow-md">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-              <img loading="lazy" src={'gane.webp'} className="h-30" alt="Una descripción de mi imagen." />
+              <img loading="lazy" src={"gane.webp"} className="h-30" alt="Logo Gane" />
             </div>
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-              <form action="#" method="POST" onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
-                    Username
+                  <label htmlFor="username" className="block text-sm font-medium text-gray-900">
+                    Usuario
                   </label>
                   <div className="mt-2">
                     <input
@@ -36,17 +30,15 @@ export default function LoginForm() {
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       required
-                      className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 shadow-lg hover:bg-blue-100 focus:bg-blue-100 focus:ring-0"
+                      className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-gray-300 placeholder:text-gray-400 shadow-lg hover:bg-blue-100 focus:outline-2 focus:outline-blue-400"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <div className="flex items-center justify-between">
-                    <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
-                      Password
-                    </label>
-                  </div>
+                  <label htmlFor="password" className="block text-sm font-medium text-gray-900">
+                    Contraseña
+                  </label>
                   <div className="mt-2">
                     <input
                       name="password"
@@ -55,7 +47,7 @@ export default function LoginForm() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2  shadow-lg hover:bg-blue-100 focus:bg-blue-100 focus:ring-0"
+                      className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-gray-300 placeholder:text-gray-400 shadow-lg hover:bg-blue-100 focus:outline-2 focus:outline-blue-400"
                     />
                   </div>
                 </div>
@@ -63,8 +55,8 @@ export default function LoginForm() {
                 <div className="mt-7">
                   <button
                     type="submit"
-                    className="cursor-pointer middle none bg-linear-to-tr from-blue-600 to-red-600 w-full py-3 rounded-xl text-white shadow-xl hover:shadow-inner focus:outline-none transition duration-500 ease-in-out transform hover:-translate-x hover:scale-105">
-                    Iniciar Sesion
+                    className="cursor-pointer bg-gradient-to-tr from-blue-600 to-red-600 w-full py-3 rounded-xl text-white shadow-xl hover:shadow-inner transition-transform duration-300 hover:scale-105">
+                    Iniciar Sesión
                   </button>
                 </div>
               </form>

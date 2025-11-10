@@ -3,6 +3,7 @@ import HeaderLink from "./HeaderLink.astro";
 import "../../styles/global.css";
 import LogoutButton from "../ui/LogoutButton";
 import EmpresaSelector from "../ui/EmpresaSelector";
+import { SignedIn, SignedOut } from "@clerk/astro/react";
 
 // Estado del menú (Astro island con cliente)
 let isOpen = false;
@@ -10,12 +11,20 @@ let isOpen = false;
 
 <header class="bg-blue-200 text-black rounded-2xl shadow-md">
   <div class="container mx-auto flex items-center justify-between px-5 py-4">
-    <!-- Selector de Empresa -->
-    <div class="flex items-center space-x-4">
-      <div class="w-44">
-        <EmpresaSelector client:load />
+    
+    <SignedIn>
+      <!-- Selector de Empresa (solo para usuarios logueados) -->
+      <div class="flex items-center space-x-4">
+        <div class="w-44">
+          <EmpresaSelector client:load />
+        </div>
       </div>
-    </div>
+    </SignedIn>
+    
+    <SignedOut>
+      <!-- Logo o título para usuarios no logueados -->
+      <div class="text-xl font-bold">Mi App</div>
+    </SignedOut>
 
     <!-- Botón hamburguesa (solo visible en móviles) -->
     <button
@@ -38,36 +47,40 @@ let isOpen = false;
       </svg>
     </button>
 
-    <!-- Links (desktop) -->
-    <ul
-      id="menu"
-      class="hidden md:flex items-center space-x-8 font-semibold font-heading"
-    >
-      <HeaderLink
-        href="/getarqueo"
-        class={"transition duration-150 ease-in-out hover:scale-105"}
-        >Home</HeaderLink
+    <!-- Links (desktop) - Solo para usuarios logueados -->
+    <SignedIn>
+      <ul
+        id="menu"
+        class="hidden md:flex items-center space-x-8 font-semibold font-heading"
       >
-      <HeaderLink
-        href="/cronograma"
-        class={"transition duration-150 ease-in-out hover:scale-105"}
-        >Insertar Cronograma</HeaderLink
-      >
-      <HeaderLink
-        href="/getcronograma"
-        class={"transition duration-150 ease-in-out hover:scale-105"}
-        >Ver Cronograma</HeaderLink
-      >
-      <HeaderLink
-        href="/getregistro"
-        class={"transition duration-150 ease-in-out hover:scale-105"}
-        >Registro</HeaderLink
-      >
-    </ul>
+        <HeaderLink
+          href="/getarqueo"
+          class={"transition duration-150 ease-in-out hover:scale-105"}
+          >Home</HeaderLink
+        >
+        <HeaderLink
+          href="/cronograma"
+          class={"transition duration-150 ease-in-out hover:scale-105"}
+          >Insertar Cronograma</HeaderLink
+        >
+        <HeaderLink
+          href="/getcronograma"
+          class={"transition duration-150 ease-in-out hover:scale-105"}
+          >Ver Cronograma</HeaderLink
+        >
+        <HeaderLink
+          href="/getregistro"
+          class={"transition duration-150 ease-in-out hover:scale-105"}
+          >Registro</HeaderLink
+        >
+      </ul>
+    </SignedIn>
 
-    <!-- Botón Logout -->
-    <div class="hidden md:flex">
-      <LogoutButton client:load />
-    </div>
+    <!-- Botón Logout - Solo para usuarios logueados -->
+    <SignedIn>
+      <div class="hidden md:flex">
+        <LogoutButton client:load />
+      </div>
+    </SignedIn>
   </div>
 </header>

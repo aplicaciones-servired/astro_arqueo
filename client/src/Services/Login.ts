@@ -1,5 +1,5 @@
+// hooks/useLogin.ts
 import { useState } from "react";
-import { signIn } from "auth-astro/client";
 import { toast } from "sonner";
 
 export function useLogin() {
@@ -12,29 +12,44 @@ export function useLogin() {
 
     const loginPromise = new Promise(async (resolve, reject) => {
       try {
-        // ✅ Solución completa al error TS2353
-        const result = await signIn("credentials", {
-          username,
-          password,
-          redirect: false,
-          callbackUrl: "/getarqueo",
-        } as any);
+        console.log('🔐 Validando credenciales con backend...');
+        
+        // 1. Primero validar con tu backend tradicional
+        const res = await fetch(`http://localhost:9010/api/v2/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
 
+        const text = await res.text();
+        console.log('📋 Respuesta del backend:', text);
 
-        // ✅ Verificamos si result existe
-        if (!result) {
-          throw new Error("Error interno al iniciar sesión.");
+        if (!res.ok || !text.includes("Login successful")) {
+          throw new Error("Credenciales inválidas");
         }
 
-        // ✅ Si no fue exitoso
-        if (!result.ok) {
-          const data = await result.json().catch(() => ({}));
-          throw new Error(data?.message || "Credenciales inválidas");
+        console.log('✅ Autenticación tradicional exitosa');
+
+        // 2. Crear sesión en Clerk SOLO con el username
+        const clerkRes = await fetch("/api/clerk-session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username }), // Solo username, sin password
+        });
+
+        const clerkData = await clerkRes.json();
+        console.log('📋 Respuesta de Clerk:', clerkData);
+
+        if (!clerkRes.ok) {
+          throw new Error(clerkData.error || "Error creando sesión Clerk");
         }
 
-        setTimeout(() => resolve(result), 1000);
-      } catch (err) {
-        setTimeout(() => reject(err), 1000);
+        console.log('✅ Sesión Clerk creada exitosamente');
+        resolve(clerkRes);
+        
+      } catch (err: any) {
+        console.error('❌ Error en el proceso de login:', err);
+        reject(err);
       }
     });
 
@@ -43,16 +58,15 @@ export function useLogin() {
       success: () => {
         setTimeout(() => {
           window.location.href = "/getarqueo";
-        }, 1500);
+        }, 1000);
         return "Inicio de sesión exitoso ✅";
       },
       error: (err: any) => {
-        const msg = err?.message ?? "Usuario o contraseña incorrectos.";
+        const msg = err?.message ?? "Error al iniciar sesión.";
         setErrorString(msg);
-        setTimeout(() => setErrorString(""), 5000);
+        setTimeout(() => setErrorString(""), 4000);
         return msg;
       },
-      duration: 3000,
     });
   };
 
