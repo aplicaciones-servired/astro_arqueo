@@ -12,4 +12,4 @@ EXPOSE 4321
 # Verificar que el archivo de entry existe
 RUN ls -la ./dist/server/
 
-CMD ["node", "start"]
+CMD ["npm", "start"]
