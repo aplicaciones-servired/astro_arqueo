@@ -1,6 +1,6 @@
 pipeline {
   agent any
-
+    
   tools {
     nodejs 'node-v22'
   }
@@ -9,7 +9,7 @@ pipeline {
     ENV_CLIENT_ARQUEOS = credentials('ENV_CLIENT_ARQUEOS')
     ENV_SERVER_ARQUEOS = credentials('ENV_SERVER_ARQUEOS')
   }
-
+    
   stages {
     stage('Copy .env files') {
       steps {
@@ -22,70 +22,49 @@ pipeline {
       }
     }
 
-    stage('Install dependencies server') {
+    stage('install dependencies server') {
       steps {
         script {
-          sh '''
-            cd ./server
-            npm install --legacy-peer-deps
-          '''
+          sh 'cd ./server && npm install'
         }
       }
     }
 
-    stage('Install dependencies client & Build SSR') {
+    stage('install dependencies client') {
       steps {
         script {
-          sh '''
-            cd ./client
-            npm install --legacy-peer-deps
-            # Saltamos errores de tipo en dependencias externas
-            npx tsc --skipLibCheck --noEmit || true
-            npx astro build
-          '''
+          sh 'cd ./client && npm install --legacy-peer-deps'
+          sh 'cd ./client && node --run build'
         }
       }
     }
 
-    stage('Stop old containers') {
+    stage('down docker compose') {
       steps {
         script {
-          sh 'docker compose down || true'
+          sh 'docker compose down'
         }
       }
     }
 
-    stage('Remove old server images') {
+    stage('delete images server') {
       steps {
         script {
-          def images = ['arqueo-server', 'astro-server']
-          images.each { img ->
-            def imgId = sh(script: "docker images -q ${img}", returnStdout: true).trim()
-            if (imgId) {
-              sh "docker rmi -f ${imgId}"
-            } else {
-              echo "Image ${img} does not exist, skipping..."
-            }
+          def images = 'arqueo-server'
+          if (sh(script: "docker images -q ${images}", returnStdout: true).trim()) {
+            sh "docker rmi ${images}"
+          } else {
+            echo "Image ${images} does not exist."
+            echo "continuing... executing next steps"
           }
         }
       }
     }
-
-    stage('Run docker compose') {
-      steps {
-        script {
-          sh 'docker compose up -d --build'
-        }
-      }
-    }
     
-    stage('Verify services') {
+    stage('run docker compose') {
       steps {
         script {
-          sh '''
-            echo "Checking running containers..."
-            docker ps
-          '''
+          sh 'docker compose up -d'
         }
       }
     }
