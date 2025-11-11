@@ -17,4 +17,5 @@ ENV NODE_ENV=production
 
 EXPOSE 4321
 
-CMD ["node", "./dist/server/entry.mjs"]
+# 👇 Escuchar en todas las interfaces dentro del contenedor
+CMD ["node", "./dist/server/entry.mjs", "--host", "0.0.0.0", "--port", "4321"]
