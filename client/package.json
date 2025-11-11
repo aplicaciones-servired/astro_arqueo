@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "tsc --skipLibCheck --noEmit && astro build",
+    "build": "tsc -b && astro build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "astro preview"
   },

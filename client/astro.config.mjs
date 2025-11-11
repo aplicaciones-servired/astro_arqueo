@@ -6,17 +6,26 @@ import node from "@astrojs/node";
 import clerk from "@clerk/astro";
 
 export default defineConfig({
-  output: 'server',
+  output: "server",
   adapter: node({
-    mode: 'standalone',
+    mode: "standalone",
   }),
-  
-  // Usar process.env para compatibilidad
+
+  // 👇 Agregar esta sección para el puerto dentro del contenedor
+  server: {
+    host: true,     // Escucha en todas las interfaces (necesario en Docker)
+    port: 4321,     // Debe coincidir con el puerto que expones en el Dockerfile
+  },
+
   vite: {
     plugins: [tailwindcss()],
     define: {
-      'import.meta.env.PUBLIC_CLERK_PUBLISHABLE_KEY': JSON.stringify(process.env.PUBLIC_CLERK_PUBLISHABLE_KEY),
-      'import.meta.env.CLERK_SECRET_KEY': JSON.stringify(process.env.CLERK_SECRET_KEY),
+      "import.meta.env.PUBLIC_CLERK_PUBLISHABLE_KEY": JSON.stringify(
+        process.env.PUBLIC_CLERK_PUBLISHABLE_KEY
+      ),
+      "import.meta.env.CLERK_SECRET_KEY": JSON.stringify(
+        process.env.CLERK_SECRET_KEY
+      ),
     },
   },
 
