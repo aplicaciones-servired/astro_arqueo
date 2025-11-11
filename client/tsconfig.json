@@ -25,6 +25,5 @@
   "exclude": [
     "dist",
     "node_modules",
-    "node_modules/auth-astro/src/integration.ts"
   ]
 }

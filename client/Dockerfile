@@ -11,6 +11,7 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 COPY --from=builder /app/dist ./dist
 COPY package*.json ./
+COPY .env ./.env
 RUN npm ci --omit=dev
 
 EXPOSE 4321

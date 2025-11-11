@@ -3,13 +3,6 @@ export const prerender = false;
 
 import GetCronograma from "@/components/GetCronograma";
 import Layout from "../layouts/Layout.astro";
-import { getSession } from "auth-astro/server";
-
-const session = await getSession(Astro.request);
-
-if (!session) {
-  return Astro.redirect("/");
-}
 
 ---
 

@@ -4,10 +4,6 @@ export const prerender = false;
 import CronogramaForm from "@/components/CronogramaForm";
 import Layout from "@/layouts/Layout.astro";
 
-import { getSession } from "auth-astro/server";
-
-const session = await getSession(Astro.request);
-if (!session) return Astro.redirect("/");
 ---
 
 <Layout>

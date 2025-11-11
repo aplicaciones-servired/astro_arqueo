@@ -2,14 +2,6 @@
 export const prerender = false;
 import GetRegistro from "@/components/GetRegistro";
 import Layout from "../layouts/Layout.astro";
-import { getSession } from "auth-astro/server";
-
-const session = await getSession(Astro.request);
-
-if (!session) {
-  return Astro.redirect("/");
-}
-
 ---
 
 <Layout>

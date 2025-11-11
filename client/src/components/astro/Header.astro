@@ -1,14 +1,17 @@
 ---
-// src/components/astro/Header.astro
 import HeaderLink from "./HeaderLink.astro";
 import "../../styles/global.css";
-import LogoutButton from "../ui/LogoutButton";
 import EmpresaSelector from "../ui/EmpresaSelector";
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/astro/components";
+import {
+  SignedIn,
+  SignedOut,
+  SignOutButton,
+} from "@clerk/astro/components";
 ---
 
 <header class="bg-blue-200 text-black rounded-2xl shadow-md">
   <div class="container mx-auto flex items-center justify-between px-5 py-4">
+
     <!-- Selector de Empresa -->
     <div class="flex items-center space-x-4">
       <div class="w-44">
@@ -16,69 +19,24 @@ import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/astro/comp
       </div>
     </div>
 
-    <!-- Botón hamburguesa (solo visible en móviles) -->
-    <button
-      type="button"
-      class="md:hidden p-2 rounded-lg hover:bg-blue-300 focus:outline-none"
-      aria-label="Abrir menú"
-      id="menu-toggle"
-    >
-      <svg
-        class="w-6 h-6"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M4 6h16M4 12h16M4 18h16"></path>
-      </svg>
-    </button>
-
-    <!-- Links (desktop) - Solo mostrar cuando el usuario está autenticado -->
+    <!-- Links solo si el usuario está logueado -->
     <SignedIn>
-      <ul
-        id="menu"
-        class="hidden md:flex items-center space-x-8 font-semibold font-heading"
-      >
-        <HeaderLink
-          href="/getarqueo"
-          class={"transition duration-150 ease-in-out hover:scale-105"}
-          >Home</HeaderLink
-        >
-        <HeaderLink
-          href="/cronograma"
-          class={"transition duration-150 ease-in-out hover:scale-105"}
-          >Insertar Cronograma</HeaderLink
-        >
-        <HeaderLink
-          href="/getcronograma"
-          class={"transition duration-150 ease-in-out hover:scale-105"}
-          >Ver Cronograma</HeaderLink
-        >
-        <HeaderLink
-          href="/getregistro"
-          class={"transition duration-150 ease-in-out hover:scale-105"}
-          >Registro</HeaderLink
-        >
+      <ul class="hidden md:flex items-center space-x-8 font-semibold">
+        <HeaderLink href="/getarqueo" class="hover:scale-105 transition">Home</HeaderLink>
+        <HeaderLink href="/cronograma" class="hover:scale-105 transition">Insertar Cronograma</HeaderLink>
+        <HeaderLink href="/getcronograma" class="hover:scale-105 transition">Ver Cronograma</HeaderLink>
+        <HeaderLink href="/getregistro" class="hover:scale-105 transition">Registro</HeaderLink>
       </ul>
     </SignedIn>
 
-    <!-- Botones de Auth -->
+    <!-- Botón de cerrar sesión -->
     <div class="hidden md:flex items-center space-x-4">
-      <SignedIn>
-        <UserButton />
-        <LogoutButton client:load />
-      </SignedIn>
-      <SignedOut>
-        <SignInButton mode="modal">
-          <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-150">
-            Iniciar Sesión
-          </button>
-        </SignInButton>
-      </SignedOut>
+      <SignOutButton asChild>
+        <button class="cursor-pointer rounded-lg bg-gradient-to-tr from-blue-600 to-pink-400 py-2 px-4 text-white font-bold shadow hover:shadow-lg">
+          Cerrar Sesión
+        </button>
+      </SignOutButton>
     </div>
+
   </div>
 </header>

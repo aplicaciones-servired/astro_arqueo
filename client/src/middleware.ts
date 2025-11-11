@@ -1,3 +1,4 @@
-import { clerkMiddleware } from '@clerk/astro/server'
+// src/middleware.ts
+import { clerkMiddleware } from "@clerk/astro/server";
 
-export const onRequest = clerkMiddleware()
+export const onRequest = clerkMiddleware();
