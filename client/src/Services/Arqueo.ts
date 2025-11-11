@@ -29,8 +29,8 @@ export function useArqueo() {
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
-        const response = await axios.get<ArqueoResponse>(`http://localhost:3000/arqueo?zona=${empresa}&page=${page}&pageSize=${pageSize}`);
-        //const response = await axios.get<ArqueoResponse>(`${API_URL}/arqueo?zona=${empresa}&page=${page}&pageSize=${pageSize}`);
+        //const response = await axios.get<ArqueoResponse>(`http://localhost:3000/arqueo?zona=${empresa}&page=${page}&pageSize=${pageSize}`);
+        const response = await axios.get<ArqueoResponse>(`${API_URL}/arqueo?zona=${empresa}&page=${page}&pageSize=${pageSize}`);
         if (response.status === 200) {
           setData(response.data.datos);
           setDataSegui(response.data.datos);
