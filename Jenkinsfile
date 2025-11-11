@@ -34,7 +34,8 @@ pipeline {
       steps {
         script {
           sh 'cd ./client && npm install --legacy-peer-deps'
-          sh 'cd ./client && node --run build'
+          // REMOVER esta línea: sh 'cd ./client && node --run build'
+          // El build se hace en el Dockerfile, no aquí
         }
       }
     }
@@ -47,24 +48,43 @@ pipeline {
       }
     }
 
-    stage('delete images server') {
+    stage('delete images') {
       steps {
         script {
-          def images = 'arqueo-server'
-          if (sh(script: "docker images -q ${images}", returnStdout: true).trim()) {
-            sh "docker rmi ${images}"
-          } else {
-            echo "Image ${images} does not exist."
-            echo "continuing... executing next steps"
+          // Eliminar ambas imágenes para forzar rebuild
+          def images = ['arqueo-server', 'web-arqueo']
+          images.each { image ->
+            if (sh(script: "docker images -q ${image}", returnStdout: true).trim()) {
+              sh "docker rmi -f ${image}"
+            } else {
+              echo "Image ${image} does not exist."
+            }
           }
         }
       }
     }
     
-    stage('run docker compose') {
+    stage('build and run docker compose') {
       steps {
         script {
+          // Forzar rebuild de todas las imágenes
+          sh 'docker compose build --no-cache'
           sh 'docker compose up -d'
+        }
+      }
+    }
+
+    stage('verify services') {
+      steps {
+        script {
+          sleep(30) // Esperar que los servicios estén listos
+          // Verificar que los contenedores estén corriendo
+          sh 'docker ps'
+          // Verificar que web_arqueo escucha en el puerto correcto
+          sh '''
+            docker exec web_arqueo netstat -tlnp | grep 4321 || echo "Puerto 4321 no encontrado"
+            docker exec nginx_proxy wget -q -O- http://web_arqueo:4321 > /dev/null && echo "Conexión exitosa" || echo "Error de conexión"
+          '''
         }
       }
     }
