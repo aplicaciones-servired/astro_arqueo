@@ -1,21 +1,15 @@
-# Etapa de build
-FROM node:20-alpine AS build
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm install --legacy-peer-deps
-
-COPY . .
-RUN npm run build
-
 # Etapa final (servidor SSR)
 FROM node:20-alpine
 WORKDIR /app
 
 COPY --from=build /app /app
 ENV NODE_ENV=production
+ENV HOST=0.0.0.0
+ENV PORT=4321
 
 EXPOSE 4321
 
-# 👇 Escuchar en todas las interfaces dentro del contenedor
-CMD ["node", "./dist/server/entry.mjs", "--host", "0.0.0.0", "--port", "4321"]
+# Verificar que el archivo de entry existe
+RUN ls -la ./dist/server/
+
+CMD ["node", "./dist/server/entry.mjs"]
