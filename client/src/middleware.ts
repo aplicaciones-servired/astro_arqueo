@@ -7,12 +7,13 @@ const isProtectedRoute = createRouteMatcher([
   "/cronograma(.*)",
   "/getcronograma(.*)",
   "/getregistro(.*)",
+  "/api(.*)",
 ]);
 
 const isLoginPage = createRouteMatcher(["/"]);
 
-
-export const onRequest = clerkMiddleware(async (auth, context, next) => { // <-- 1. Añade 'async' aquí
+export const onRequest = clerkMiddleware(async (auth, context, next) => {
+  // <-- 1. Añade 'async' aquí
   const { userId, redirectToSignIn } = auth();
   const url = new URL(context.request.url);
 
@@ -29,14 +30,17 @@ export const onRequest = clerkMiddleware(async (auth, context, next) => { // <--
   }
 
   // 2. Usa 'await' para obtener la respuesta real de la promesa
-  const response = await next(); 
+  const response = await next();
 
   // Si la ruta actual es una página protegida o la página de login,
   // añade cabeceras para prevenir la caché del navegador.
   if (isProtectedRoute(context.request) || isLoginPage(context.request)) {
-    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    response.headers.set('Pragma', 'no-cache');
-    response.headers.set('Expires', '0');
+    response.headers.set(
+      "Cache-Control",
+      "no-store, no-cache, must-revalidate, proxy-revalidate"
+    );
+    response.headers.set("Pragma", "no-cache");
+    response.headers.set("Expires", "0");
   }
 
   // Devuelve la respuesta modificada
