@@ -29,6 +29,17 @@ export const onRequest = clerkMiddleware(async (auth, context, next) => {
     return Response.redirect(`${url.origin}/getarqueo`, 302);
   }
 
+  // Redirigir raíz (/)
+  if (url.pathname === "/") {
+    if (userId) {
+      return Response.redirect(`${url.origin}/getarqueo`, 302);
+    } else {
+      return Response.redirect(`${url.origin}/`, 302);
+    }
+  }
+
+  // --- Manejo de la caché ---
+
   // 2. Usa 'await' para obtener la respuesta real de la promesa
   const response = await next();
 
