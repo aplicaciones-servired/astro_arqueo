@@ -73,20 +73,5 @@ pipeline {
         }
       }
     }
-
-    stage('verify services') {
-      steps {
-        script {
-          sleep(30) // Esperar que los servicios estén listos
-          // Verificar que los contenedores estén corriendo
-          sh 'docker ps'
-          // Verificar que web_arqueo escucha en el puerto correcto
-          sh '''
-            docker exec web_arqueo netstat -tlnp | grep 4321 || echo "Puerto 4321 no encontrado"
-            docker exec nginx_proxy wget -q -O- http://web_arqueo:4321 > /dev/null && echo "Conexión exitosa" || echo "Error de conexión"
-          '''
-        }
-      }
-    }
   }
 }
