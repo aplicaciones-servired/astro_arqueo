@@ -34,7 +34,16 @@ import { SignedIn, UserButton } from "@clerk/astro/components";
 
     <!-- Botón de cerrar sesión -->
     <div class="hidden md:flex items-center space-x-4">
-      <UserButton afterSignOutUrl="/" showName />
+      <UserButton
+        afterSignOutUrl="/"
+        showName
+        appearance={{
+          elements: {
+            userButtonMenuItem__manageAccount: { display: "none" },
+            userButtonMenuItem__addAccount: { display: "none" },
+          },
+        }}
+      />
     </div>
   </div>
 </header>

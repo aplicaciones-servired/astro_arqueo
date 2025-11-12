@@ -5,6 +5,7 @@ import ToasterProvider from "../components/ToasterProvider";
 import Header from "../components/astro/Header.astro";
 import "../styles/global.css";
 import { ViewTransitions } from "astro:transitions";
+import ClerkWrapper from "@/components/ClerkWrapper";
 const user = await Astro.locals.currentUser();
 
 console.log("first", user?.privateMetadata);
@@ -21,10 +22,11 @@ console.log("first", user?.privateMetadata);
     <Header />
   </head>
   <body>
-    <ToasterProvider client:idle />
-    <ViewTransitions />
-
-    <slot slot="fallback" />
-    <ClientRouter />
+    <ClerkWrapper client:load>
+      <ToasterProvider client:idle />
+      <ViewTransitions />
+      <slot slot="fallback" />
+      <ClientRouter />
+    </ClerkWrapper>
   </body>
 </html>

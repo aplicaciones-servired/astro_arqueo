@@ -5,6 +5,17 @@ import "../styles/global.css";
 
 <div class="min-h-screen flex items-center justify-center bg-gray-50 p-4">
   <div class="w-full max-w-md">
-    <SignIn redirectUrl="/getarqueo" />
+    <SignIn
+      redirectUrl="/getarqueo"
+      appearance={{
+        elements: {
+          // Oculta el enlace para registrarse
+          footerAction__signUp: { display: "none" },
+        },
+      }}
+      path="/"
+      routing="path"
+      signUpUrl="/"
+    />
   </div>
 </div>
