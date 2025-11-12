@@ -9,7 +9,7 @@ const isProtectedRoute = createRouteMatcher([
   "/getregistro(.*)",
 ]);
 
-const isLoginPage = createRouteMatcher(["/login"]);
+const isLoginPage = createRouteMatcher(["/"]);
 
 
 export const onRequest = clerkMiddleware(async (auth, context, next) => { // <-- 1. Añade 'async' aquí
@@ -33,7 +33,7 @@ export const onRequest = clerkMiddleware(async (auth, context, next) => { // <--
     if (userId) {
       return Response.redirect(`${url.origin}/getarqueo`, 302);
     } else {
-      return Response.redirect(`${url.origin}/login`, 302);
+      return Response.redirect(`${url.origin}/`, 302);
     }
   }
 
