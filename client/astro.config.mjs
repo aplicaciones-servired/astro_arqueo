@@ -4,6 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@astrojs/react";
 import node from "@astrojs/node";
 import clerk from "@clerk/astro";
+import { esES } from '@clerk/localizations'
 
 export default defineConfig({
   output: "server",
@@ -32,6 +33,7 @@ export default defineConfig({
   integrations: [
     react(),
     clerk({
+      localization: esES,
       publishableKey: process.env.PUBLIC_CLERK_PUBLISHABLE_KEY,
       secretKey: process.env.CLERK_SECRET_KEY,
     }),

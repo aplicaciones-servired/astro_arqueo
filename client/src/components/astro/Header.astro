@@ -2,16 +2,11 @@
 import HeaderLink from "./HeaderLink.astro";
 import "../../styles/global.css";
 import EmpresaSelector from "../ui/EmpresaSelector";
-import {
-  SignedIn,
-  SignedOut,
-  SignOutButton,
-} from "@clerk/astro/components";
+import { SignedIn, UserButton } from "@clerk/astro/components";
 ---
 
 <header class="bg-blue-200 text-black rounded-2xl shadow-md">
   <div class="container mx-auto flex items-center justify-between px-5 py-4">
-
     <!-- Selector de Empresa -->
     <div class="flex items-center space-x-4">
       <div class="w-44">
@@ -22,21 +17,24 @@ import {
     <!-- Links solo si el usuario está logueado -->
     <SignedIn>
       <ul class="hidden md:flex items-center space-x-8 font-semibold">
-        <HeaderLink href="/getarqueo" class="hover:scale-105 transition">Home</HeaderLink>
-        <HeaderLink href="/cronograma" class="hover:scale-105 transition">Insertar Cronograma</HeaderLink>
-        <HeaderLink href="/getcronograma" class="hover:scale-105 transition">Ver Cronograma</HeaderLink>
-        <HeaderLink href="/getregistro" class="hover:scale-105 transition">Registro</HeaderLink>
+        <HeaderLink href="/getarqueo" class="hover:scale-105 transition"
+          >Home</HeaderLink
+        >
+        <HeaderLink href="/cronograma" class="hover:scale-105 transition"
+          >Insertar Cronograma</HeaderLink
+        >
+        <HeaderLink href="/getcronograma" class="hover:scale-105 transition"
+          >Ver Cronograma</HeaderLink
+        >
+        <HeaderLink href="/getregistro" class="hover:scale-105 transition"
+          >Registro</HeaderLink
+        >
       </ul>
     </SignedIn>
 
     <!-- Botón de cerrar sesión -->
     <div class="hidden md:flex items-center space-x-4">
-      <SignOutButton asChild>
-        <button class="cursor-pointer rounded-lg bg-gradient-to-tr from-blue-600 to-pink-400 py-2 px-4 text-white font-bold shadow hover:shadow-lg">
-          Cerrar Sesión
-        </button>
-      </SignOutButton>
+      <UserButton afterSignOutUrl="/login" showName />
     </div>
-
   </div>
 </header>

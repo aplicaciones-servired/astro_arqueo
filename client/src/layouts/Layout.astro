@@ -5,6 +5,9 @@ import ToasterProvider from "../components/ToasterProvider";
 import Header from "../components/astro/Header.astro";
 import "../styles/global.css";
 import { ViewTransitions } from "astro:transitions";
+const user = await Astro.locals.currentUser();
+
+console.log("first", user?.privateMetadata);
 ---
 
 <!doctype html>
@@ -18,9 +21,10 @@ import { ViewTransitions } from "astro:transitions";
     <Header />
   </head>
   <body>
-      <ToasterProvider client:idle />
-      <ViewTransitions />
-      <slot />
-      <ClientRouter />
+    <ToasterProvider client:idle />
+    <ViewTransitions />
+
+    <slot slot="fallback" />
+    <ClientRouter />
   </body>
 </html>
