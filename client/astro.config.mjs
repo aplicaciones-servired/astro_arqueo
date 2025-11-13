@@ -1,10 +1,10 @@
 // astro.config.mjs
-import { defineConfig } from "astro/config";
+import { defineConfig, envField } from "astro/config"; // 👈 falta importar envField
 import tailwindcss from "@tailwindcss/vite";
 import react from "@astrojs/react";
 import node from "@astrojs/node";
 import clerk from "@clerk/astro";
-import { esES } from '@clerk/localizations'
+import { esES } from "@clerk/localizations";
 
 export default defineConfig({
   output: "server",
@@ -12,17 +12,26 @@ export default defineConfig({
     mode: "standalone",
   }),
 
-  // 👇 Agregar esta sección para el puerto dentro del contenedor
+  // 👇 Configuración del servidor (útil en Docker)
   server: {
-    host: true,     // Escucha en todas las interfaces (necesario en Docker)
-    port: 4321,     // Debe coincidir con el puerto que expones en el Dockerfile
+    host: true, // Escucha en todas las interfaces
+    port: 4321, // Asegúrate de exponer este puerto en tu Dockerfile
   },
 
+  // 👇 Validación y exposición de variables de entorno
   env: {
     schema: {
-      PUBLIC_URL_API: envField.string({ context: "server", access: "public", optional: true }),
-      PUBLIC_API_URL_LOGIN: envField.number({ context: "server", access: "public", optional: true }),
-    }
+      PUBLIC_URL_API: envField.string({
+        context: "server",
+        access: "public",
+        optional: true,
+      }),
+      PUBLIC_API_URL_LOGIN: envField.string({
+        context: "server",
+        access: "public",
+        optional: true,
+      }),
+    },
   },
 
   vite: {
