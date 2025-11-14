@@ -19,17 +19,11 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
-    // Define explícitamente las variables públicas
     define: {
-      "import.meta.env.PUBLIC_CLERK_PUBLISHABLE_KEY": JSON.stringify(
-        process.env.PUBLIC_CLERK_PUBLISHABLE_KEY
-      ),
-      "import.meta.env.PUBLIC_URL_API": JSON.stringify(
-        process.env.PUBLIC_URL_API
-      ),
-      "import.meta.env.PUBLIC_API_URL_LOGIN": JSON.stringify(
-        process.env.PUBLIC_API_URL_LOGIN
-      ),
+      "import.meta.env.PUBLIC_CLERK_PUBLISHABLE_KEY": JSON.stringify(process.env.PUBLIC_CLERK_PUBLISHABLE_KEY),
+      "import.meta.env.PUBLIC_URL_API": JSON.stringify(process.env.PUBLIC_URL_API),
+      "import.meta.env.PUBLIC_API_URL_LOGIN": JSON.stringify(process.env.PUBLIC_API_URL_LOGIN),
+      "import.meta.env.PUBLIC_CLERK_FRONTEND_API": JSON.stringify(process.env.PUBLIC_CLERK_FRONTEND_API),
     },
   },
 
