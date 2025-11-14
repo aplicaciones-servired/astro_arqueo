@@ -54,7 +54,7 @@ export default defineConfig({
         "https://clerk.arqueos.serviredgane.cloud/npm/@clerk/clerk-js@5/dist/clerk.browser.js",
 
       // Dominio del frontend del tenant Clerk
-      domain: "clerk.arqueos.serviredgane.cloud",
+      domain: "accounts.arqueos.serviredgane.cloud",
     }),
   ],
 });

@@ -6,16 +6,15 @@ interface ClerkWrapperProps {
   children: React.ReactNode;
 }
 
-// Obtén la clave pública de tus variables de entorno
 const clerkPubKey = import.meta.env.PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 const ClerkWrapper: React.FC<ClerkWrapperProps> = ({ children }) => {
   if (!clerkPubKey) {
-    throw new Error("Missing PUBLIC_CLERK_PUBLISHABLE_KEY environment variable");
+    throw new Error("Missing PUBLIC_CLERK_PUBLISHABLE_KEY");
   }
-  
+
   return (
-    <ClerkProvider publishableKey={clerkPubKey} >
+    <ClerkProvider publishableKey={clerkPubKey}>
       {children}
     </ClerkProvider>
   );
