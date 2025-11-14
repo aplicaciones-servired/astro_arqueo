@@ -8,7 +8,7 @@ import { X } from 'lucide-react';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 
-import { Arqueoid } from '@/Services/Arqueoid';
+import { useArqueoId } from '@/Services/Arqueoid';
 
 export default function CustomizedDialogs({
     open,
@@ -20,7 +20,7 @@ export default function CustomizedDialogs({
     id: number | undefined
 }) {
 
-    const { data } = Arqueoid(id)
+    const { data } = useArqueoId(id)
 
     return (
         <Dialog

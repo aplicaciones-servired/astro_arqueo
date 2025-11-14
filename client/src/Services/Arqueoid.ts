@@ -6,7 +6,7 @@ import { useEmpresa } from "../components/ui/useEmpresa";
 import axios from "axios";
 import { API_URL } from "@/utils/constans";
 
-export function Arqueoid(id: number | undefined) {
+export function useArqueoId(id: number | undefined) {
   const [data, setData] = useState<Arqueos[]>([]);
   const { empresa } = useEmpresa();
   console.log("apiUrl", API_URL);
