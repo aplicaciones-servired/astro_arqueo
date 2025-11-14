@@ -6,7 +6,7 @@ COPY package*.json ./
 RUN npm install --legacy-peer-deps
 
 COPY . .
-RUN npm run build  # Esto ejecuta "astro build" según tu package.json
+RUN npm run build
 
 # Etapa final (servidor SSR)
 FROM node:20-alpine
