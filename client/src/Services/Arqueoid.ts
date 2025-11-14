@@ -9,12 +9,15 @@ import { API_URL } from "@/utils/constans";
 export function Arqueoid(id: number | undefined) {
   const [data, setData] = useState<Arqueos[]>([]);
   const { empresa } = useEmpresa();
-
+  const apiUrl = import.meta.env.PUBLIC_URL_API;
+  console.log("apiUrl", apiUrl);
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
         //const response = await axios.post(`http://localhost:3000/arqueos/${empresa}/${id}`);
-        const response = await axios.post(`${API_URL}/arqueos/${empresa}/${id}`);
+        const response = await axios.post(
+          `${apiUrl}/arqueos/${empresa}/${id}`
+        );
 
         setData(response.data.datos);
       } catch {
@@ -26,7 +29,6 @@ export function Arqueoid(id: number | undefined) {
     const intervalId = setInterval(fetchData, 300000);
     return () => clearInterval(intervalId);
   }, []);
-
 
   return {
     data,

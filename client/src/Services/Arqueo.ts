@@ -25,14 +25,15 @@ export function useArqueo() {
   });
   const [totalClients, setTotalClients] = useState();
   const { empresa } = useEmpresa();
-  console.log("PROD_API_URL", import.meta.env.PUBLIC_URL_API);
+  const apiUrl = import.meta.env.PUBLIC_URL_API;
+  console.log('apiUrl', apiUrl)
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
         //const response = await axios.get<ArqueoResponse>(`http://localhost:3000/arqueo?zona=${empresa}&page=${page}&pageSize=${pageSize}`);
         const response = await axios.get<ArqueoResponse>(
-          `${API_URL}/arqueo?zona=${empresa}&page=${page}&pageSize=${pageSize}`
+          `${apiUrl}/arqueo?zona=${empresa}&page=${page}&pageSize=${pageSize}`
         );
         if (response.status === 200) {
           setData(response.data.datos);
