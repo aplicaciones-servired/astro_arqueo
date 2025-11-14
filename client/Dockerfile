@@ -17,5 +17,5 @@ ENV NODE_ENV=production
 
 EXPOSE 4321
 
-# Comando directo con parámetros explícitos
+# Comando directo con parÃ¡metros explÃ­citos
 CMD ["node", "./dist/server/entry.mjs", "--host", "0.0.0.0", "--port", "4321"]
