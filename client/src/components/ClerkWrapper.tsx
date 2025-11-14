@@ -15,7 +15,7 @@ const ClerkWrapper: React.FC<ClerkWrapperProps> = ({ children }) => {
   }
   
   return (
-    <ClerkProvider publishableKey={clerkPubKey}>
+    <ClerkProvider publishableKey={clerkPubKey} >
       {children}
     </ClerkProvider>
   );
