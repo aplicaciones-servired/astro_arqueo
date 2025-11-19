@@ -22,12 +22,12 @@ console.log("first", user?.privateMetadata);
     <Header />
   </head>
   <body>
-    <ToasterProvider client:idle />
-    <ViewTransitions />
-    <ClientRouter />
     <!-- ✅ CORREGIDO -->
     <ClerkWrapper client:load>
-      <slot /> 
+      <slot />
+      <ToasterProvider client:idle />
+      <ViewTransitions />
+      <ClientRouter />
     </ClerkWrapper>
   </body>
 </html>
