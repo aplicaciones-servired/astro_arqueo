@@ -16,15 +16,18 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
+      args:
+        PUBLIC_URL_API: ${PUBLIC_URL_API}
+        PUBLIC_CLERK_PUBLISHABLE_KEY: ${PUBLIC_CLERK_PUBLISHABLE_KEY}
+        CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
     container_name: web_arqueo
     image: web-arqueo
     expose:
       - "4321"
     environment:
-      - PUBLIC_CLERK_PUBLISHABLE_KEY=${PUBLIC_CLERK_PUBLISHABLE_KEY}
-      - CLERK_SECRET_KEY=${CLERK_SECRET_KEY}
-      - PUBLIC_URL_API=${PUBLIC_URL_API}
-      - PUBLIC_API_URL_LOGIN=${PUBLIC_API_URL_LOGIN}
+      PUBLIC_URL_API: ${PUBLIC_URL_API}
+      PUBLIC_CLERK_PUBLISHABLE_KEY: ${PUBLIC_CLERK_PUBLISHABLE_KEY}
+      CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
     depends_on:
       - api_arqueo
     networks:
