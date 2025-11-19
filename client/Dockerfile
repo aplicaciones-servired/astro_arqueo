@@ -5,10 +5,13 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --legacy-peer-deps
 
+# 👇 Asegura que .env entre al build (porque Astro usa variables PUBLIC_ en build-time)
+COPY .env .env
+
 COPY . .
 RUN npm run build
 
-# Etapa final (servidor SSR)
+# Etapa final (SSR)
 FROM node:20-alpine
 WORKDIR /app
 
@@ -17,5 +20,4 @@ ENV NODE_ENV=production
 
 EXPOSE 4321
 
-# Comando directo con parÃ¡metros explÃ­citos
 CMD ["node", "./dist/server/entry.mjs", "--host", "0.0.0.0", "--port", "4321"]
