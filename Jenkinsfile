@@ -24,8 +24,6 @@ pipeline {
           writeFile file: './server/.env', text: env_server
           writeFile file: './client/.env', text: env_client_completo  // ✅ USAR EL COMBINADO
           
-          // ✅ Crear archivo .env para nginx (en la raíz)
-          writeFile file: './.env', text: "CLERK_SECRET_KEY=${CLERK_SECRET_KEY}"
           
           // Verificar que se crearon los archivos
           sh 'ls -la ./server/.env'
