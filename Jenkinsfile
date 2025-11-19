@@ -8,7 +8,7 @@ pipeline {
   environment {
     ENV_CLIENT_ARQUEOS = credentials('ENV_CLIENT_ARQUEOS')
     ENV_SERVER_ARQUEOS = credentials('ENV_SERVER_ARQUEOS')
-    CLERK_SECRET_KEY = credentials('CLERK_SECRET_KEY')  // ✅ NUEVA CREDENCIAL
+    CLERK_SECRET_KEY = credentials('CLERK_SECRET_KEY')
   }
     
   stages {
@@ -17,10 +17,14 @@ pipeline {
         script {
           def env_server = readFile(ENV_SERVER_ARQUEOS)
           def env_client = readFile(ENV_CLIENT_ARQUEOS)
-          writeFile file: './server/.env', text: env_server
-          writeFile file: './client/.env', text: env_client
           
-          // ✅ CREAR ARCHIVO .env para nginx con la clave de Clerk
+          // ✅ CORREGIDO: Combinar env_client + CLERK_SECRET_KEY
+          def env_client_completo = env_client + "\nCLERK_SECRET_KEY=${CLERK_SECRET_KEY}\n"
+          
+          writeFile file: './server/.env', text: env_server
+          writeFile file: './client/.env', text: env_client_completo  // ✅ USAR EL COMBINADO
+          
+          // ✅ Crear archivo .env para nginx (en la raíz)
           writeFile file: './.env', text: "CLERK_SECRET_KEY=${CLERK_SECRET_KEY}"
           
           // Verificar que se crearon los archivos
@@ -28,6 +32,7 @@ pipeline {
           sh 'ls -la ./client/.env'
           sh 'ls -la ./.env'
           sh 'cat ./client/.env | grep PUBLIC_URL_API'
+          sh 'cat ./client/.env | grep CLERK_SECRET_KEY'  // ✅ VERIFICAR QUE ESTÁ
         }
       }
     }
