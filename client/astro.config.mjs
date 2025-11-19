@@ -24,6 +24,7 @@ export default defineConfig({
       localization: esES,
       publishableKey: process.env.PUBLIC_CLERK_PUBLISHABLE_KEY,
       secretKey: process.env.CLERK_SECRET_KEY,
+      proxyUrl: 'https://arqueos.serviredgane.cloud/__clerk'
     }),
   ],
 });

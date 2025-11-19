@@ -8,6 +8,7 @@ pipeline {
   environment {
     ENV_CLIENT_ARQUEOS = credentials('ENV_CLIENT_ARQUEOS')
     ENV_SERVER_ARQUEOS = credentials('ENV_SERVER_ARQUEOS')
+    CLERK_SECRET_KEY = credentials('CLERK_SECRET_KEY')  // ✅ NUEVA CREDENCIAL
   }
     
   stages {
@@ -18,9 +19,14 @@ pipeline {
           def env_client = readFile(ENV_CLIENT_ARQUEOS)
           writeFile file: './server/.env', text: env_server
           writeFile file: './client/.env', text: env_client
+          
+          // ✅ CREAR ARCHIVO .env para nginx con la clave de Clerk
+          writeFile file: './.env', text: "CLERK_SECRET_KEY=${CLERK_SECRET_KEY}"
+          
           // Verificar que se crearon los archivos
           sh 'ls -la ./server/.env'
           sh 'ls -la ./client/.env'
+          sh 'ls -la ./.env'
           sh 'cat ./client/.env | grep PUBLIC_URL_API'
         }
       }
@@ -82,7 +88,8 @@ pipeline {
     stage('run docker compose') {
       steps {
         script {
-          sh 'docker compose up -d'
+          // ✅ Usar el archivo .env con la clave de Clerk
+          sh 'docker compose --env-file ./.env up -d'
         }
       }
     }

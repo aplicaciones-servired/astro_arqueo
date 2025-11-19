@@ -6,6 +6,7 @@ interface ClerkWrapperProps {
   children: React.ReactNode;
 }
 
+// ✅ CORRECTO: Usar PUBLISHABLE_KEY para publishableKey
 const clerkPubKey = import.meta.env.PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 const ClerkWrapper: React.FC<ClerkWrapperProps> = ({ children }) => {
@@ -14,7 +15,11 @@ const ClerkWrapper: React.FC<ClerkWrapperProps> = ({ children }) => {
   }
 
   return (
-    <ClerkProvider publishableKey={clerkPubKey}>
+    <ClerkProvider 
+      publishableKey={clerkPubKey}
+      // ✅ OPCIONAL: Si necesitas configurar el proxy en el cliente también
+      clerkJSUrl={import.meta.env.PUBLIC_CLERK_PROXY_URL}
+    >
       {children}
     </ClerkProvider>
   );

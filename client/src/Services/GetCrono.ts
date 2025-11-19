@@ -26,22 +26,10 @@ export function useCrono() {
   const { empresa } = useEmpresa();
 
   useEffect(() => {
-    console.log("🔍 Debug useCrono:", {
-      API_URL,
-      empresa,
-      page,
-      pageSize,
-      fullURL: `${API_URL}/getcronograma?zona=${empresa}&page=${page}&pageSize=${pageSize}`,
-    });
-  }, []);
-
-  useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
         //const response = await axios.get<CronoResponse>(`http://localhost:3000/getcronograma?zona=${empresa}&page=${page}&pageSize=${pageSize}`);
-        const response = await axios.get<CronoResponse>(
-          `${API_URL}/getcronograma?zona=${empresa}&page=${page}&pageSize=${pageSize}`
-        );
+        const response = await axios.get<CronoResponse>(`${API_URL}/getcronograma?zona=${empresa}&page=${page}&pageSize=${pageSize}`);
 
         if (response.status === 200) {
           setData(response.data.datos);
