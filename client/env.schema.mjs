@@ -5,8 +5,7 @@ export default defineConfig({
   env: {
     schema: {
       PUBLIC_CLERK_PUBLISHABLE_KEY: z.string(),
-      CLERK_SECRET_KEY: z.string(),
-      PUBLIC_URL_API: z.string().url(), // Validar que sea URL
+      PUBLIC_URL_API: z.string(),
     },
   },
 });
