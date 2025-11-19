@@ -14,10 +14,10 @@ pipeline {
     stage('Copy .env files') {
       steps {
         script {
-          def env_server = readFile(ENV_SERVER_ARQUEOS)
-          def env_client = readFile(ENV_CLIENT_ARQUEOS)
-          writeFile file: './server/.env', text: env_server
-          writeFile file: './client/.env', text: env_client
+          writeFile file: './server/.env', text: readTrusted(ENV_SERVER_ARQUEOS).trim()
+          writeFile file: './client/.env', text: readTrusted(ENV_CLIENT_ARQUEOS).trim()
+          sh "sed -i 's/\\r\$//' ./server/.env"
+          sh "sed -i 's/\\r\$//' ./client/.env"
         }
       }
     }
