@@ -1,11 +1,16 @@
-FROM node:20-alpine
+# Base de Node.js versión 18
+FROM node:slim
+
+# Cambiar a la carpeta de la aplicación
 WORKDIR /app
 
-COPY package*.json ./
-RUN yarn install
-
+# Instalar dependencias
 COPY . .
 
+RUN yarn
+
+# Exponer el puerto
 EXPOSE 3000
 
+# Comando para ejecutar la aplicación
 CMD ["yarn", "start"]
