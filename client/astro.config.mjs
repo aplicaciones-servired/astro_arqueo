@@ -22,7 +22,6 @@ export default defineConfig({
     react(),
     clerk({
       localization: esES,
-      proxyUrl: 'https://arqueos.serviredgane.cloud/__clerk'
     }),
   ],
 });
