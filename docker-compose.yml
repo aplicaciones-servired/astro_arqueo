@@ -10,6 +10,8 @@ services:
     image: arqueo-server
     networks:
       - red-gane-int
+    env_file:
+      - ./server/.env
 
   # --- Frontend Astro SSR (Node)
   web_arqueo:
@@ -24,6 +26,11 @@ services:
       - api_arqueo
     networks:
       - red-gane-int
+    env_file:
+      - ./client/.env
+    # Opcional: montar el .env como volumen en desarrollo
+    volumes:
+      - ./client/.env:/app/.env:ro
 
   # --- Reverse Proxy Nginx
   proxy_nginx:

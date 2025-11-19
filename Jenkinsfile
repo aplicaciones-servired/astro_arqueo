@@ -18,6 +18,10 @@ pipeline {
           def env_client = readFile(ENV_CLIENT_ARQUEOS)
           writeFile file: './server/.env', text: env_server
           writeFile file: './client/.env', text: env_client
+          // Verificar que se crearon los archivos
+          sh 'ls -la ./server/.env'
+          sh 'ls -la ./client/.env'
+          sh 'cat ./client/.env | grep PUBLIC_URL_API'
         }
       }
     }
