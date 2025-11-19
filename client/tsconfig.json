@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "noEmit": true, // ⬅ NO generar ningún .js
+    "declaration": true, // ⬅ SÍ generar archivos .d.ts
+    "declarationDir": "./types", // ⬅ Carpeta para los tipos generados
     "strict": true,
     "module": "esnext",
     "target": "esnext",
@@ -20,10 +23,8 @@
     "src/**/*",
     "types/**/*.d.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "env.schema.mjs"  ],
-  "exclude": [
-    "dist",
-    "node_modules",
-  ]
+    "**/*.tsx",
+    "env.schema.mjs"
+  ],
+  "exclude": ["dist", "node_modules", "src/**/*.js"]
 }
