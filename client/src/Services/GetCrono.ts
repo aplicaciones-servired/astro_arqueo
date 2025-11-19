@@ -5,7 +5,6 @@ import axios from "axios";
 import type { Cronograma } from "@/types/cronograma";
 import { API_URL } from "@/utils/constans";
 
-
 interface CronoResponse {
   datos: Cronograma[];
   count: any;
@@ -23,7 +22,7 @@ export function useCrono() {
   const [state, setState] = useState<CronoPagi>({
     totalClients: 0,
   });
-  const [totalClients, setTotalClients] = useState();
+  const [totalClients, setTotalClients] = useState<number>(0);
   const { empresa } = useEmpresa();
 
   // DEBUG
@@ -36,7 +35,7 @@ export function useCrono() {
     const fetchData = async (): Promise<void> => {
       try {
         const url = `${import.meta.env.PUBLIC_URL_API}/getcronograma?zona=${empresa}&page=${page}&pageSize=${pageSize}`;
-        console.log('Making request to:', url); // DEBUG
+        console.log('Making request to:', url);
         
         const response = await axios.get<CronoResponse>(url);
 
@@ -49,7 +48,7 @@ export function useCrono() {
           }));
         }
       } catch (error) {
-        console.error('Error details:', error); // DEBUG
+        console.error('Error details:', error);
         toast.error("Error al cargar los datos", { duration: 1000 });
       }
     };
@@ -59,5 +58,18 @@ export function useCrono() {
     return () => clearInterval(intervalId);
   }, [page, pageSize, empresa]);
 
-  // ... resto del código
+  const total = Math.ceil(state.totalClients / pageSize);
+
+  const handlePageChange = useCallback((newPage: number) => {
+    setPage(newPage);
+  }, []);
+
+  // Asegúrate de retornar todas estas propiedades
+  return {
+    data,
+    page,
+    totalClients,
+    handlePageChange,
+    total,
+  };
 }
