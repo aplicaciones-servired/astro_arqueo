@@ -4,7 +4,7 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/astro/server";
 // Define qué rutas deben estar protegidas y sin caché
 const isProtectedRoute = createRouteMatcher([
   "/getarqueo(.*)",
-  "/cronograma(.*)",
+  "/cronograma(.*)", 
   "/getcronograma(.*)",
   "/getregistro(.*)",
   "/api(.*)",
@@ -13,7 +13,6 @@ const isProtectedRoute = createRouteMatcher([
 const isLoginPage = createRouteMatcher(["/"]);
 
 export const onRequest = clerkMiddleware(async (auth, context, next) => {
-  // <-- 1. Añade 'async' aquí
   const { userId, redirectToSignIn } = auth();
   const url = new URL(context.request.url);
 
@@ -31,7 +30,7 @@ export const onRequest = clerkMiddleware(async (auth, context, next) => {
 
   // --- Manejo de la caché ---
 
-  // 2. Usa 'await' para obtener la respuesta real de la promesa
+  // Usa 'await' para obtener la respuesta real de la promesa
   const response = await next();
 
   // Si la ruta actual es una página protegida o la página de login,
@@ -47,4 +46,9 @@ export const onRequest = clerkMiddleware(async (auth, context, next) => {
 
   // Devuelve la respuesta modificada
   return response;
+}, {
+  authorizedParties: [
+    'https://arqueos.serviredgane.cloud',
+    'http://localhost:4321'  // tu dominio real del frontend
+  ],
 });

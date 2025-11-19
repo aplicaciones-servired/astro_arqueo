@@ -25,7 +25,7 @@ export function useArqueo() {
   });
   const [totalClients, setTotalClients] = useState();
   const { empresa } = useEmpresa();
-  console.log('apiUrl', API_URL)
+  console.log('API_URL', API_URL)
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
