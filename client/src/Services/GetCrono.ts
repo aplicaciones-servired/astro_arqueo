@@ -22,22 +22,26 @@ export function useCrono() {
   const [state, setState] = useState<CronoPagi>({
     totalClients: 0,
   });
-  const [totalClients, setTotalClients] = useState<number>(0);
+  const [totalClients, setTotalClients] = useState();
   const { empresa } = useEmpresa();
 
-  // DEBUG
   useEffect(() => {
-    console.log('API_URL from env:', import.meta.env.PUBLIC_URL_API);
-    console.log('Full URL:', `${import.meta.env.PUBLIC_URL_API}/getcronograma?zona=${empresa}&page=${page}&pageSize=${pageSize}`);
+    console.log("🔍 Debug useCrono:", {
+      API_URL,
+      empresa,
+      page,
+      pageSize,
+      fullURL: `${API_URL}/getcronograma?zona=${empresa}&page=${page}&pageSize=${pageSize}`,
+    });
   }, []);
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
-        const url = `${import.meta.env.PUBLIC_URL_API}/getcronograma?zona=${empresa}&page=${page}&pageSize=${pageSize}`;
-        console.log('Making request to:', url);
-        
-        const response = await axios.get<CronoResponse>(url);
+        //const response = await axios.get<CronoResponse>(`http://localhost:3000/getcronograma?zona=${empresa}&page=${page}&pageSize=${pageSize}`);
+        const response = await axios.get<CronoResponse>(
+          `${API_URL}/getcronograma?zona=${empresa}&page=${page}&pageSize=${pageSize}`
+        );
 
         if (response.status === 200) {
           setData(response.data.datos);
@@ -47,8 +51,7 @@ export function useCrono() {
             totalClients: response.data.count,
           }));
         }
-      } catch (error) {
-        console.error('Error details:', error);
+      } catch {
         toast.error("Error al cargar los datos", { duration: 1000 });
       }
     };
@@ -64,7 +67,6 @@ export function useCrono() {
     setPage(newPage);
   }, []);
 
-  // Asegúrate de retornar todas estas propiedades
   return {
     data,
     page,

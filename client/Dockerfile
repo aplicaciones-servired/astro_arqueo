@@ -8,6 +8,11 @@ COPY .env ./
 RUN npm install --legacy-peer-deps
 
 COPY . .
+
+# Inyectar variables de entorno DURANTE EL BUILD
+ENV PUBLIC_URL_API=/api
+ENV PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_Y2xlcmsuYXJxdWVvcy5zZXJ2aXJlZGdhbmUuY2xvdWQk
+
 RUN npm run build
 
 # Etapa final (servidor SSR)
