@@ -33,9 +33,9 @@ services:
       - ./client/.env:/app/.env:ro
 
   # --- Reverse Proxy Nginx
-  proxy_nginx:
+  proxy_arqueo:
     image: nginx:stable-alpine3.19-slim
-    container_name: nginx_proxy
+    container_name: proxy_arqueo
     depends_on:
       - web_arqueo
       - api_arqueo
