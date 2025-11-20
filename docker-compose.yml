@@ -34,7 +34,7 @@ services:
 
   # --- Reverse Proxy Nginx
   proxy_arqueo:
-    image: nginx:stable-alpine3.19-slim
+    image: nginx:alpine
     container_name: proxy_arqueo
     depends_on:
       - web_arqueo
