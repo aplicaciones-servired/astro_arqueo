@@ -28,7 +28,6 @@ pipeline {
           // Verificar que se crearon los archivos
           sh 'ls -la ./server/.env'
           sh 'ls -la ./client/.env'
-          sh 'ls -la ./.env'
           sh 'cat ./client/.env | grep PUBLIC_URL_API'
           sh 'cat ./client/.env | grep CLERK_SECRET_KEY'  // ✅ VERIFICAR QUE ESTÁ
         }
