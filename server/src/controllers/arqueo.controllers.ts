@@ -3,7 +3,7 @@ import { arqueo, initChatBoxModel } from "../models/arqueo.model";
 
 export const getArqueo = async (req: Request, res: Response): Promise<void> => {
   const page = parseInt(req.query.page as string) || 1;
-  const pageSize = parseInt(req.query.pageSize as string) || 1;
+  const pageSize = parseInt(req.query.pageSize as string) || 10;
   const offset = (page - 1) * pageSize;
   const zona = req.query.zona as string;
 

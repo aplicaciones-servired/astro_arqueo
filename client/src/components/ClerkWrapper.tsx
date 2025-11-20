@@ -14,7 +14,10 @@ const ClerkWrapper: React.FC<ClerkWrapperProps> = ({ children }) => {
   }
 
   return (
-    <ClerkProvider publishableKey={clerkPubKey}>
+    <ClerkProvider 
+      publishableKey={clerkPubKey}
+      proxyUrl="https://arqueos.serviredgane.cloud/api/auth"  // ← AÑADE ESTO
+    >
       {children}
     </ClerkProvider>
   );
