@@ -27,6 +27,16 @@ export function useArqueo() {
   const { empresa } = useEmpresa();
   console.log("API_URL", API_URL);
 
+    // 🔥 DEBUG COMPLETO
+  console.log("🔧 DEBUG useArqueo:", {
+    API_URL,
+    empresa,
+    page,
+    pageSize,
+    fullURL: `${API_URL}/arqueo?zona=${empresa}&page=${page}&pageSize=${pageSize}`
+  });
+
+
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
