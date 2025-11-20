@@ -1,21 +1,17 @@
 {
   "compilerOptions": {
-    "noEmit": true, // ⬅ NO generar ningún .js
-    "declaration": true, // ⬅ SÍ generar archivos .d.ts
-    "declarationDir": "./types", // ⬅ Carpeta para los tipos generados
+    "noEmit": true,
     "strict": true,
-    "module": "esnext",
-    "target": "esnext",
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "jsxImportSource": "react",
-    "moduleResolution": "bundler",
     "skipLibCheck": true,
-    "noEmitOnError": false,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
-    // 🔹 Ignorar archivos con errores fuera de tu código
     "ignoreDeprecations": "5.0"
   },
   "include": [
