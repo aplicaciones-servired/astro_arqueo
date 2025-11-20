@@ -32,7 +32,7 @@ export function useArqueo() {
       try {
         //const response = await axios.get<ArqueoResponse>(`http://localhost:3000/arqueo?zona=${empresa}&page=${page}&pageSize=${pageSize}`);
         const response = await axios.get<ArqueoResponse>(
-          `${API_URL}/arqueo?zona=${empresa}&page=${page}&pageSize=${pageSize}`
+          `/api/arqueo?zona=${empresa}&page=${page}&pageSize=${pageSize}`
         );
         if (response.status === 200) {
           setData(response.data.datos);
