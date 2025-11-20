@@ -8,28 +8,28 @@ pipeline {
   environment {
     ENV_CLIENT_ARQUEOS = credentials('ENV_CLIENT_ARQUEOS')
     ENV_SERVER_ARQUEOS = credentials('ENV_SERVER_ARQUEOS')
-    CLERK_SECRET_KEY = credentials('CLERK_SECRET_KEY')
+    CLERK_SECRET_KEY   = credentials('CLERK_SECRET_KEY')
   }
     
   stages {
+
     stage('Copy .env files') {
       steps {
         script {
           def env_server = readFile(ENV_SERVER_ARQUEOS)
           def env_client = readFile(ENV_CLIENT_ARQUEOS)
           
-          // ✅ CORREGIDO: Combinar env_client + CLERK_SECRET_KEY
+          // Añadir clave Clerk al env del cliente
           def env_client_completo = env_client + "\nCLERK_SECRET_KEY=${CLERK_SECRET_KEY}\n"
           
           writeFile file: './server/.env', text: env_server
-          writeFile file: './client/.env', text: env_client_completo  // ✅ USAR EL COMBINADO
+          writeFile file: './client/.env', text: env_client_completo
           
-          
-          // Verificar que se crearon los archivos
+          // Verificar
           sh 'ls -la ./server/.env'
           sh 'ls -la ./client/.env'
           sh 'cat ./client/.env | grep PUBLIC_URL_API'
-          sh 'cat ./client/.env | grep CLERK_SECRET_KEY'  // ✅ VERIFICAR QUE ESTÁ
+          sh 'cat ./client/.env | grep CLERK_SECRET_KEY'
         }
       }
     }
@@ -67,7 +67,6 @@ pipeline {
             sh "docker rmi ${images}"
           } else {
             echo "Image ${images} does not exist."
-            echo "continuing... executing next steps"
           }
         }
       }
@@ -81,7 +80,6 @@ pipeline {
             sh "docker rmi ${images}"
           } else {
             echo "Image ${images} does not exist."
-            echo "continuing... executing next steps"
           }
         }
       }
@@ -90,8 +88,9 @@ pipeline {
     stage('run docker compose') {
       steps {
         script {
-          // ✅ Usar el archivo .env con la clave de Clerk
-          sh 'docker compose --env-file ./.env up -d'
+          // ❌ Ya no usamos --env-file porque no existe un .env global
+          // ✅ docker-compose cargará automáticamente server/.env y client/.env
+          sh 'docker compose up -d'
         }
       }
     }
