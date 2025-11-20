@@ -15,19 +15,24 @@ const isLoginPage = createRouteMatcher(["/"]);
 export const onRequest = clerkMiddleware(async (auth, context, next) => {
   const { userId, redirectToSignIn } = auth();
   const url = new URL(context.request.url);
+  const pathname = url.pathname;
 
-  // --- ⛔ EXCLUIR API del middleware ---
-  if (url.pathname.startsWith("/api/")) {
+  // --- ⛔ EXCLUIR COMPLETAMENTE API del middleware ---
+  if (pathname.startsWith("/api/") || pathname === "/api") {
+    console.log("✅ API route excluded from Clerk:", pathname);
     return next(); // dejar pasar sin Clerk
   }
 
   // --- 🔐 Autenticación para el FRONTEND ---
+  console.log("🔐 Frontend route:", pathname);
 
   if (!userId && isProtectedRoute(context.request)) {
+    console.log("🚫 Unauthorized, redirecting to signin");
     return redirectToSignIn({ returnBackUrl: url.href });
   }
 
   if (userId && isLoginPage(context.request)) {
+    console.log("✅ Logged in, redirecting to /getarqueo");
     return Response.redirect(`${url.origin}/getarqueo`, 302);
   }
 
@@ -47,6 +52,7 @@ export const onRequest = clerkMiddleware(async (auth, context, next) => {
 }, {
   authorizedParties: [
     "https://arqueos.serviredgane.cloud",
-    "http://localhost:4321"
+    "http://localhost:4321",
+    "http://localhost:3000"
   ],
 });
