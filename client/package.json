@@ -7,7 +7,7 @@
     "build": "astro build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "astro preview",
-    "start": "node ./dist/server/entry.mjs --host 0.0.0.0 --port 4321"
+    "start": "node ./dist/server/entry.mjs, --host, 0.0.0.0, --port, 4321"
   },
   "dependencies": {
     "@astrojs/node": "^9.5.0",
