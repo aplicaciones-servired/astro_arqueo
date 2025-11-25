@@ -19,24 +19,17 @@ export const onRequest = clerkMiddleware(async (auth, context, next) => {
 
   // --- ⛔ EXCLUIR COMPLETAMENTE API del middleware ---
   if (pathname.startsWith("/api/") || pathname === "/api") {
-    console.log("✅ API route excluded from Clerk:", pathname);
     return next(); // dejar pasar sin Clerk
   }
 
-  // --- 🔐 Autenticación para el FRONTEND ---
-  console.log("🔐 Frontend route:", pathname);
-
   if (!userId && isProtectedRoute(context.request)) {
-    console.log("🚫 Unauthorized, redirecting to signin");
     return redirectToSignIn({ returnBackUrl: url.href });
   }
 
   if (userId && isLoginPage(context.request)) {
-    console.log("✅ Logged in, redirecting to /getarqueo");
     return Response.redirect(`${url.origin}/getarqueo`, 302);
   }
 
-  // --- 🧹 Cache control ---
   const response = await next();
 
   if (isProtectedRoute(context.request) || isLoginPage(context.request)) {
