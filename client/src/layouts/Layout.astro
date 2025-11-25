@@ -1,5 +1,4 @@
 ---
-// src/layouts/Layout.astro
 import ClientRouter from "astro/components/ClientRouter.astro";
 import ToasterProvider from "../components/ToasterProvider";
 import Header from "../components/astro/Header.astro";
@@ -22,12 +21,13 @@ console.log("first", user?.privateMetadata);
     <Header />
   </head>
   <body>
-    <!-- ✅ CORREGIDO -->
-    <ClerkWrapper client:load>
-      <slot />
-      <ToasterProvider client:idle />
-      <ViewTransitions />
-      <ClientRouter />
-    </ClerkWrapper>
+    <!-- ✅ ToasterProvider ENVUELVE TODO -->
+    <ToasterProvider client:load>
+      <ClerkWrapper client:load>
+        <slot />
+        <ViewTransitions />
+        <ClientRouter />
+      </ClerkWrapper>
+    </ToasterProvider>
   </body>
 </html>

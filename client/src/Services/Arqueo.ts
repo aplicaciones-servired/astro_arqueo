@@ -25,26 +25,13 @@ export function useArqueo() {
   });
   const [totalClients, setTotalClients] = useState();
   const { empresa } = useEmpresa();
-  console.log("API_URL", API_URL);
-
-    // 🔥 DEBUG COMPLETO
-  console.log("🔧 DEBUG useArqueo:", {
-    API_URL,
-    empresa,
-    page,
-    pageSize,
-    fullURL: `${API_URL}/arqueo?zona=${empresa}&page=${page}&pageSize=${pageSize}`
-  });
-
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
         const url = `${API_URL}/arqueo?zona=${empresa}&page=${page}&pageSize=${pageSize}`;
-        console.log("🔍 Fetching from:", url); // 👈 AÑADE ESTO
 
         const response = await axios.get<ArqueoResponse>(url);
-        console.log("✅ Response status:", response.status); // 👈 Y ESTO
 
         if (response.status === 200) {
           setData(response.data.datos);
@@ -56,7 +43,6 @@ export function useArqueo() {
           }));
         }
       } catch (error) {
-        console.error("❌ Error fetching data:", error); // 👈 Y ESTO
         toast.error("Error al cargar los datos", { duration: 1000 });
       }
     };
