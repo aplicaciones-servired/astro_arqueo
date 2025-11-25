@@ -1,6 +1,6 @@
 ---
 import ClientRouter from "astro/components/ClientRouter.astro";
-import ToasterProvider from "../components/ToasterProvider";
+import ToasterProvider from "../components/ToasterProvider.astro";
 import Header from "../components/astro/Header.astro";
 import "../styles/global.css";
 import { ViewTransitions } from "astro:transitions";
@@ -21,8 +21,7 @@ console.log("first", user?.privateMetadata);
     <Header />
   </head>
   <body>
-    <!-- ✅ ToasterProvider ENVUELVE TODO -->
-    <ToasterProvider client:load>
+    <ToasterProvider>
       <ClerkWrapper client:load>
         <slot />
         <ViewTransitions />
