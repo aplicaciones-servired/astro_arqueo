@@ -18,7 +18,7 @@ function filterByFecha (pdv: Arqueos[], searchFecha: string): Arqueos[] {
 
 function filterByPDV (pdv: Arqueos[], searchPDV: string): Arqueos[] {
   return pdv.filter(({ puntodeventa }) =>
-    puntodeventa?.toString().includes(searchPDV.toLowerCase()) ?? false
+    puntodeventa?.toString().toLowerCase().includes(searchPDV.toLowerCase()) ?? false
   )
 }
 
@@ -28,8 +28,8 @@ export function useFilter (pdv: Arqueos[]): FilterPDV {
 
   const filteredPDV = useMemo(() => {
     let filtered = pdv
-    if (searchfecha.length > 0) filtered = filterByFecha(filtered, searchfecha)
-    if (searchPDV.length > 0) filtered = filterByPDV(filtered, searchPDV)
+    if (searchfecha) filtered = filterByFecha(filtered, searchfecha)
+    if (searchPDV) filtered = filterByPDV(filtered, searchPDV)
     return filtered
   }, [pdv, searchPDV, searchfecha])
 
