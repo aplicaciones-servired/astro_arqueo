@@ -1,8 +1,7 @@
 import { Router } from "express";
 import {
   getArqueo,
-  getArqueos,
-  PostArqueoinsert,
+  getArqueos
 } from "../controllers/arqueo.controllers";
 import {
   Programacionget,
@@ -18,8 +17,6 @@ arqueoRoute.get("/arqueo", getArqueo); // Cambiado de /login/:username a /:usern
 arqueoRoute.post("/arqueos/:zona/:id", getArqueos);
 
 arqueoRoute.post("/cronograma", PostProgramacion);
-
-arqueoRoute.post("/getarqueo_insert", PostArqueoinsert);
 
 arqueoRoute.get("/getcronograma", Programacionget);
 

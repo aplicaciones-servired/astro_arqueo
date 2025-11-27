@@ -57,7 +57,7 @@ export const Exportcom = ({ data, tipo }: PropsExport) => {
     };
 
     return (
-        <section className="container px-4">
+        <section className="container px-4 mt-5 ">
             <div className="mb-6 p-4 bg-white border border-indigo-200 rounded-lg shadow-lg shadow-blue-300/50">
                 <h3 className="text-lg font-medium text-gray-700 mb-4">
                     Exportar {tipo === 'arqueo' ? 'Arqueos' : 'Cronogramas'}
