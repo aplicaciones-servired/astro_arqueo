@@ -6,7 +6,7 @@ import { useArqueo } from '@/Services/Arqueo';
 
 function GetRegistro(): JSX.Element {
 
-    const { data, page, handlePageChange, total } = useVisita();
+    const { data } = useVisita();
     
     const { dataSegui } = useArqueo();
     return (

@@ -5,21 +5,42 @@ import type { Cronograma } from '@/types/cronograma';
 interface PropsExport {
   registros: Arqueos[] | Cronograma[];
   nombreArchivo?: string;
+  empresa?: string;
 }
 
-export const exportarAExcel = async ({ registros, nombreArchivo = 'Reporte' }: PropsExport): Promise<void> => {
+export const exportarAExcel = async ({ registros, nombreArchivo = 'Reporte', empresa }: PropsExport): Promise<void> => {
+  if (!registros || registros.length === 0) return;
+
   const wb = new Workbook();
   const ws = wb.addWorksheet('Registros');
-  
-  // Establecer encabezados
-  const headers = Object.keys(registros[0]);
+
+  const headersSet = new Set<string>();
+  registros.forEach(r => Object.keys(r as any).forEach(k => headersSet.add(k)));
+  const headers = Array.from(headersSet);
   ws.addRow(headers);
-  
-  // Agregar los registros
+
   registros.forEach((registro) => {
-    ws.addRow(Object.values(registro));
+    const row = headers.map(h => {
+      const v = (registro as any)[h];
+      if (v === null || v === undefined) return '';
+      if (typeof v === 'object') {
+        try { return JSON.stringify(v); } catch { return String(v); }
+      }
+      return v;
+    });
+    ws.addRow(row);
   });
 
-  // Guardar el archivo
-  await wb.xlsx.writeFile(`${nombreArchivo.toUpperCase()} POR FECHA.xlsx`);
+  try {
+    const buffer = await wb.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${nombreArchivo.toUpperCase()} POR FECHA ${empresa ? empresa.toUpperCase() : ''}.xlsx`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error('Error generando Excel:', err);
+  }
 };

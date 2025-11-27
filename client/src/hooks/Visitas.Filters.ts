@@ -8,6 +8,8 @@ interface FilterPDV {
   searchPDV: string
   searchPDS: string
   searchPVDS: string
+  searchFecha: string
+  setSearchFecha: React.Dispatch<React.SetStateAction<string>>
   setSearchPDV: React.Dispatch<React.SetStateAction<string>>
   setSearchPDS: React.Dispatch<React.SetStateAction<string>>
   setSearchPVDS: React.Dispatch<React.SetStateAction<string>>
@@ -33,10 +35,18 @@ function filterByPDV (pdv: Visitas[], searchPDV: string): Visitas[] {
   })
 }
 
+function filterByFecha (pdv: Visitas[], searchFecha: string): Visitas[] {
+  return pdv.filter(({ fechavisita }) =>
+    fechavisita?.toLowerCase().includes(searchFecha.toLowerCase()) ?? false
+  )
+}
+
+
 export function useFilterPro (pdv: Visitas[]): FilterPDV {
   const [searchPDV, setSearchPDV] = useState('')
   const [searchPDS, setSearchPDS] = useState('')
   const [searchPVDS, setSearchPVDS] = useState('')
+  const [searchFecha, setSearchFecha] = useState('')
 
   const filteredPDV = useMemo(() => {
     let filtered = pdv
@@ -48,9 +58,9 @@ export function useFilterPro (pdv: Visitas[]): FilterPDV {
     if (searchPDV.length > 0) {
       filtered = filterByPDV(filtered, searchPDV)
     }
-
+    if (searchFecha) filtered = filterByFecha(filtered, searchFecha)
     return filtered
-  }, [pdv, searchPDV, searchPDS, searchPVDS])
+  }, [pdv, searchPDV, searchPDS, searchPVDS, searchFecha])
 
   return {
     searchPDV,
@@ -59,6 +69,8 @@ export function useFilterPro (pdv: Visitas[]): FilterPDV {
     setSearchPDV,
     setSearchPDS,
     setSearchPVDS,
-    filteredPDV
+    filteredPDV,
+    searchFecha,
+    setSearchFecha
   }
 }

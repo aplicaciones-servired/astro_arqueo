@@ -9,12 +9,20 @@ interface PropsFooter {
 
 
 const TableVista = ({ datos }: PropsFooter): JSX.Element => {
-    const { searchPDS, filteredPDV } = useFilterPro(datos)
+    const { searchFecha, setSearchFecha, filteredPDV } = useFilterPro(datos)
 
     return (
         <>
             <div className="flex flex-col mt-6  border-indigo-200 shadow-lg shadow-blue-300/50">
-             <h1 className='text-center font-bold'>Visitas realizados Hoy</h1>
+                <h1 className='text-center font-bold'>Visitas realizados Hoy</h1>
+                <div className="relative flex center items-center mt-4 md:mt-0">
+                    <input
+                        type="date"
+                        className="block text-center w-full py-1.5 pr-5 border-indigo-200 shadow-lg shadow-blue-300/50  text-gray-700 bg-white border rounded-lg md:w-80 placeholder-gray-400 pl-11 focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                        onChange={(e) => setSearchFecha(e.target.value)}
+                        value={searchFecha}
+                    />
+                </div>
                 <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                         <div className="overflow-hidden border border-gray-200 rounded-lg">

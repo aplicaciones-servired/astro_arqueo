@@ -26,6 +26,7 @@
     "buffer": "^6.0.3",
     "date-fns": "^4.1.0",
     "exceljs": "^4.4.0",
+    "file-saver": "^2.0.5",
     "install": "^0.13.0",
     "jspdf": "^3.0.4",
     "jspdf-autotable": "^5.0.2",
