@@ -15,7 +15,7 @@ interface ArqueoPagi {
   totalClients: number;
 }
 
-export function useArqueo() {
+export function useArqueo(fecha?: string, PDV?: string) {
   const [data, setData] = useState<Arqueos[]>([]);
   const [dataSegui, setDataSegui] = useState<Arqueos[]>([]);
   const [page, setPage] = useState(1);
@@ -25,11 +25,19 @@ export function useArqueo() {
   });
   const [totalClients, setTotalClients] = useState();
   const { empresa } = useEmpresa();
-
+  
+ 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
-        const url = `${API_URL}/arqueo?zona=${empresa}&page=${page}&pageSize=${pageSize}`;
+        let url = `${API_URL}/arqueo?zona=${empresa}&page=${page}&pageSize=${pageSize}`;
+        if (fecha) {
+          url += `&fechavisita=${fecha}`;
+          console.log("URL con fecha:", url);
+        }
+        if (PDV) {
+          url += `&puntodeventa=${PDV}`;
+        }
 
         const response = await axios.get<ArqueoResponse>(url);
 
@@ -50,7 +58,7 @@ export function useArqueo() {
     void fetchData();
     const intervalId = setInterval(fetchData, 300000);
     return () => clearInterval(intervalId);
-  }, [page, pageSize, empresa]);
+  }, [page, pageSize, empresa, fecha, PDV]);
 
   const total = Math.ceil(state.totalClients / pageSize);
 

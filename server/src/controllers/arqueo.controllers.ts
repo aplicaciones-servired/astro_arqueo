@@ -1,12 +1,15 @@
 import { Request, Response } from "express";
 import { arqueo, initChatBoxModel } from "../models/arqueo.model";
+import { Sequelize } from "sequelize";
+const { Op, fn, col, where: sequelizeWhere } = require("sequelize");
 
 export const getArqueo = async (req: Request, res: Response): Promise<void> => {
   const page = parseInt(req.query.page as string) || 1;
   const pageSize = parseInt(req.query.pageSize as string) || 10;
   const offset = (page - 1) * pageSize;
   const zona = req.query.zona as string;
-
+  const fechavisita = req.query.fechavisita as string;
+  const puntodeventa = req.query.puntodeventa as string;
   if (zona === undefined) {
     res.status(400).json("Zona no válida");
     return;
@@ -14,6 +17,19 @@ export const getArqueo = async (req: Request, res: Response): Promise<void> => {
 
   const empresa = zona === "Multired" ? "Multired" : "Servired";
   initChatBoxModel(empresa);
+
+  let whereClause: any = {};
+
+  if (fechavisita) {
+    // Comparación por solo la fecha, sin horas ⬇⬇
+    whereClause[Op.and] = [
+      sequelizeWhere(fn("DATE", col("fechavisita")), "=", fechavisita),
+    ];
+  }
+
+  if (puntodeventa) {
+    whereClause.puntodeventa = { [Op.like]: `%${puntodeventa}%` };
+  }
 
   try {
     const { count, rows } = await arqueo.findAndCountAll({
@@ -166,9 +182,13 @@ export const getArqueo = async (req: Request, res: Response): Promise<void> => {
         "latitud",
         "longitud",
       ],
+      where: whereClause,
       limit: pageSize,
       offset: offset,
-      order: [["fechavisita", "DESC"]],
+      order: [
+        ["fechavisita", "DESC"],
+        ["id", "DESC"],
+      ],
     });
     res.status(200).json({ count, datos: rows, page, pageSize });
   } catch (error) {
