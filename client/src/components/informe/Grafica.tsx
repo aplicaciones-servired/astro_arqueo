@@ -1,0 +1,76 @@
+import * as React from "react";
+import { BarChart } from "@mui/x-charts/BarChart";
+import { Cronograma } from "@/types/cronograma";
+import { useFilterPro } from "@/hooks/InformeFilter";
+
+export default function SimpleCharts({
+  datos,
+}: {
+  datos: Cronograma[];
+}): React.JSX.Element {
+  const { filteredPDV } = useFilterPro(datos);
+
+  const totalEnEspera = filteredPDV.filter(
+    (pdv) => pdv.estado === "En Espera"
+  ).length;
+
+  const totalEjecutados = filteredPDV.filter(
+    (pdv) => pdv.estado === "Realizado"
+  ).length;
+
+  const Retiro = filteredPDV.filter(
+    (pdv) => pdv.nota === "AQUEO DE RETIRO"
+  ).length;
+
+  const Cerrados = filteredPDV.filter((pdv) => pdv.estado === "Cerrado").length;
+
+  const resumenCerrados: Record<string, { cantidad: number; estado: string }> =
+    {};
+
+  filteredPDV.forEach((pdv) => {
+    if (pdv.estado === "Cerrado") {
+      resumenCerrados[pdv.puntodeventa] = {
+        cantidad: (resumenCerrados[pdv.puntodeventa]?.cantidad ?? 0) + 1,
+        estado: pdv.estado, // siempre "Cerrado"
+      };
+    }
+  });
+
+  const listaCerrados = Object.entries(resumenCerrados).map(
+    ([punto, { cantidad, estado }]) => ({ punto, cantidad, estado })
+  );
+
+  return (
+    <section className="flex justify-start">
+      <BarChart
+        xAxis={[
+          {
+            id: "categorias",
+            data: [
+              "Programados",
+              "Sin Ejecutar",
+              "Ejecutados",
+              "Por Retiro",
+              "Cerrados",
+            ],
+            scaleType: "band", // 👈 asegura que use etiquetas de texto
+          },
+        ]}
+        series={[
+          {
+            data: [
+              filteredPDV.length,
+              totalEnEspera,
+              totalEjecutados,
+              Retiro,
+              Cerrados,
+            ],
+          },
+        ]}
+        height={400}
+        width={600}
+        borderRadius={23}
+      />
+    </section>
+  );
+}

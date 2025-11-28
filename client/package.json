@@ -21,6 +21,7 @@
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.5",
     "@mui/material": "^7.3.5",
+    "@mui/x-charts": "^8.20.0",
     "@tailwindcss/vite": "^4.1.17",
     "axios": "^1.13.2",
     "buffer": "^6.0.3",

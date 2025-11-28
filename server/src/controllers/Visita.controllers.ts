@@ -39,7 +39,6 @@ export const getVisita = async (req: Request, res: Response): Promise<void> => {
       limit: pageSize,
       offset: offset,
       order: [["fechavisita", "DESC"]],
-      logging: (sql: string) => console.log("\n📌 SQL Ejecutado:\n", sql, "\n"),
     });
 
     res.status(200).json({ count, datos: rows, page, pageSize });

@@ -116,3 +116,39 @@ export const GetProgramacion = async (
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+export const ProgramacionInforme = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const zona = req.query.zona as string;
+  const fechaInicio = req.query.fechaInicio as string;
+  const fechaFin = req.query.fechaFin as string;
+
+  const empresa = zona === "Multired" ? "Multired" : "Servired";
+  initCronograma(empresa);
+
+  const Op = require("sequelize").Op;
+
+  // 🔥 Solo aplicar filtro de fechas si ambas están presentes
+  const whereClause: any = {
+    empresa: empresa,
+  };
+
+  if (fechaInicio && fechaFin) {
+    whereClause.dia = {
+      [Op.between]: [fechaInicio, fechaFin],
+    };
+  }
+
+  try {
+    const { count, rows } = await getProgramacion.findAndCountAll({
+      attributes: ["id", "puntodeventa", "dia", "empresa", "nota", "estado"],
+      where: whereClause,
+      order: [["dia", "DESC"]],
+    });
+    res.status(200).json({ count, datos: rows });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
