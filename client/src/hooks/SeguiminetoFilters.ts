@@ -1,19 +1,17 @@
 import { useMemo, useState } from "react";
 import { format, parse } from "date-fns";
-import type { Arqueos } from "@/types/arqueo";
+import { Arqueos } from "@/types/arqueo";
 
 interface FilterPDV {
   filteredPDV: Arqueos[];
-  searchPDV: string;
-  searchPDS: string;
-  searchPVDS: string;
-  setSearchPDV: React.Dispatch<React.SetStateAction<string>>;
-  setSearchPDS: React.Dispatch<React.SetStateAction<string>>;
-  setSearchPVDS: React.Dispatch<React.SetStateAction<string>>;
+  searchFecha: string;
+  setSearchFecha: React.Dispatch<React.SetStateAction<string>>;
 }
 
+// 🔥 Filtra por el día actual localmente SOLO si no hay búsqueda por fecha
 function filterByToday(pdv: Arqueos[]): Arqueos[] {
   const hoy = format(new Date(), "yyyy-MM-dd");
+
   return pdv.filter(({ fechavisita }) => {
     if (!fechavisita) return false;
     const parsedDate = parse(fechavisita, "yyyy-MM-dd", new Date());
@@ -21,33 +19,23 @@ function filterByToday(pdv: Arqueos[]): Arqueos[] {
   });
 }
 
-function filterByFecha(pdv: Arqueos[], searchFecha: string): Arqueos[] {
-  return pdv.filter(
-    ({ fechavisita }) =>
-      fechavisita?.toLowerCase().includes(searchFecha.toLowerCase()) ?? false
-  );
-}
-
 export function useFilterPro(pdv: Arqueos[]): FilterPDV {
-  const [searchPDV, setSearchPDV] = useState("");
-  const [searchPDS, setSearchPDS] = useState("");
-  const [searchPVDS, setSearchPVDS] = useState("");
-
-  const safePDV = Array.isArray(pdv) ? pdv : []; // ✅ evita crash si pdv no es array
+  const [searchFecha, setSearchFecha] = useState("");
 
   const filteredPDV = useMemo(() => {
-    let filtered = filterByToday(safePDV);
-    if (searchPDV) filtered = filterByFecha(filtered, searchPDV);
+    let filtered = pdv;
+
+    // ❗ Si NO hay fecha seleccionada → filtrar por hoy
+    if (!searchFecha) {
+      filtered = filterByToday(filtered);
+    }
+
     return filtered;
-  }, [safePDV, searchPDS, searchPDV]);
+  }, [pdv, searchFecha]);
 
   return {
-    searchPDV,
-    searchPDS,
-    searchPVDS,
-    setSearchPDV,
-    setSearchPDS,
-    setSearchPVDS,
     filteredPDV,
+    searchFecha,
+    setSearchFecha,
   };
 }

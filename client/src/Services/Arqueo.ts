@@ -25,15 +25,13 @@ export function useArqueo(fecha?: string, PDV?: string) {
   });
   const [totalClients, setTotalClients] = useState();
   const { empresa } = useEmpresa();
-  
- 
+
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
         let url = `${API_URL}/arqueo?zona=${empresa}&page=${page}&pageSize=${pageSize}`;
         if (fecha) {
           url += `&fechavisita=${fecha}`;
-          console.log("URL con fecha:", url);
         }
         if (PDV) {
           url += `&puntodeventa=${PDV}`;

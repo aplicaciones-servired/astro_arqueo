@@ -442,9 +442,7 @@ export default function generatePDF(data: any) {
 
       doc.addImage(imageData, "JPEG", 20, yPosition, imgWidth, imgHeight);
       yPosition += imgHeight + 8;
-    } catch (error) {
-      console.error(`Error al agregar imagen ${title}:`, error);
-    }
+    } catch (error) {}
   };
 
   // Agregar las imágenes disponibles
