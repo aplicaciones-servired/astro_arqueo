@@ -1,9 +1,10 @@
 import { Workbook } from "exceljs";
 import type { Arqueos } from "../../types/arqueo";
 import type { Cronograma } from "@/types/cronograma";
+import { Visitas } from "@/types/visita";
 
 interface PropsExport {
-  registros: Arqueos[] | Cronograma[];
+  registros: Arqueos[] | Cronograma[] | Visitas[];
   nombreArchivo?: string;
   empresa?: string;
 }

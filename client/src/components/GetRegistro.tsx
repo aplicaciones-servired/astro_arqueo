@@ -12,22 +12,14 @@ function GetRegistro(): JSX.Element {
   const { dataSegui } = useArqueo(fecha);
   return (
     <>
-      <div className="flex  gap-72 w-full p-4 ">
-        <div className="flex">
-          <TableVista
-            datos={data}
-            fecha_visita={fecha_visita}
-            setFecha_visita={setFecha_visita}
-          />
-        </div>
+      <div className="flex w-full p-4 justify-between items-start gap-3">
+        <TableVista
+          datos={data}
+          fecha_visita={fecha_visita}
+          setFecha_visita={setFecha_visita}
+        />
 
-        <div className="flex">
-          <TableSeguimiento
-            datos={dataSegui}
-            fecha={fecha}
-            setFecha={setFecha}
-          />
-        </div>
+        <TableSeguimiento datos={dataSegui} fecha={fecha} setFecha={setFecha} />
       </div>
     </>
   );
