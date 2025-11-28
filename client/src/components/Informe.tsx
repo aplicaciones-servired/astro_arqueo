@@ -20,9 +20,9 @@ const InformeComponent = (): JSX.Element => {
         setFechaFin={setFechaFin}
       />
       <div className="flex w-full p-4 justify-between items-start gap-3">
-        <Cerrados datos={data} />
+        <Cerrados datos={data} fechaInicio={fechaInicio} fechaFin={fechaFin} />
 
-        <Grafica datos={data} />
+        <Grafica datos={data} fechaInicio={fechaInicio} fechaFin={fechaFin} />
       </div>
     </div>
   );

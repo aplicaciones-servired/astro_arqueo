@@ -6,48 +6,136 @@ import { SignedIn, UserButton } from "@clerk/astro/components";
 ---
 
 <header class="bg-blue-200 text-black rounded-2xl shadow-md">
-  <div class="container mx-auto flex items-center justify-between px-5 py-4">
-    <!-- Selector de Empresa -->
-    <div class="flex items-center space-x-4">
-      <div class="w-44">
-        selecionar empresa:
-        <EmpresaSelector client:load />
+  <div class="container mx-auto px-5 py-4">
+    <div class="flex items-center justify-between">
+      <!-- Selector de Empresa -->
+      <div class="flex items-center space-x-4">
+        <div class="w-44">
+          selecionar empresa:
+          <EmpresaSelector client:load />
+        </div>
       </div>
+
+      <!-- Links Desktop -->
+      <SignedIn>
+        <ul class="hidden md:flex items-center space-x-8 font-semibold">
+          <HeaderLink href="/getarqueo" class="hover:scale-105 transition"
+            >Home</HeaderLink
+          >
+          <!-- <HeaderLink href="/cronograma" class="hover:scale-105 transition"
+            >Insertar Cronograma</HeaderLink
+          >
+          <HeaderLink href="/getcronograma" class="hover:scale-105 transition"
+            >Ver Cronograma</HeaderLink
+          > -->
+          <HeaderLink href="/getregistro" class="hover:scale-105 transition"
+            >Registro</HeaderLink
+          >
+          <!-- <HeaderLink href="/informe" class="hover:scale-105 transition"
+            >Informe</HeaderLink
+          > -->
+        </ul>
+      </SignedIn>
+
+      <!-- Botón de cerrar sesión Desktop -->
+      <div class="hidden md:flex items-center space-x-4">
+        <UserButton
+          afterSignOutUrl="/"
+          showName
+          appearance={{
+            elements: {
+              userButtonMenuItem__manageAccount: { display: "none" },
+              userButtonMenuItem__addAccount: { display: "none" },
+            },
+          }}
+        />
+      </div>
+
+      <!-- Botón Menú Móvil (Hamburguesa) -->
+      <button
+        id="menu-btn"
+        class="md:hidden text-gray-700 focus:outline-none p-2"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-8 w-8"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16m-7 6h7"></path>
+        </svg>
+      </button>
     </div>
 
-    <!-- Links solo si el usuario está logueado -->
-    <SignedIn>
-      <ul class="hidden md:flex items-center space-x-8 font-semibold">
-        <HeaderLink href="/getarqueo" class="hover:scale-105 transition"
-          >Home</HeaderLink
-        >
-        <!-- <HeaderLink href="/cronograma" class="hover:scale-105 transition"
-          >Insertar Cronograma</HeaderLink
-        >
-        <HeaderLink href="/getcronograma" class="hover:scale-105 transition"
-          >Ver Cronograma</HeaderLink
-        > -->
-        <HeaderLink href="/getregistro" class="hover:scale-105 transition"
-          >Registro</HeaderLink
-        >
-        <!-- <HeaderLink href="/informe" class="hover:scale-105 transition"
-          >Informe</HeaderLink
-        > -->
-      </ul>
-    </SignedIn>
-
-    <!-- Botón de cerrar sesión -->
-    <div class="hidden md:flex items-center space-x-4">
-      <UserButton
-        afterSignOutUrl="/"
-        showName
-        appearance={{
-          elements: {
-            userButtonMenuItem__manageAccount: { display: "none" },
-            userButtonMenuItem__addAccount: { display: "none" },
-          },
-        }}
-      />
+    <!-- Menú Móvil Desplegable -->
+    <div
+      id="mobile-menu"
+      class="hidden flex-col mt-4 space-y-4 border-t border-blue-300 pt-4 md:hidden"
+    >
+      <SignedIn>
+        <ul class="flex flex-col space-y-3 font-semibold text-center">
+          <HeaderLink href="/getarqueo" class="block hover:text-blue-600"
+            >Home</HeaderLink
+          >
+          <!-- <HeaderLink href="/cronograma" class="block hover:text-blue-600"
+            >Insertar Cronograma</HeaderLink
+          >
+          <HeaderLink href="/getcronograma" class="block hover:text-blue-600"
+            >Ver Cronograma</HeaderLink
+          > -->
+          <HeaderLink href="/getregistro" class="block hover:text-blue-600"
+            >Registro</HeaderLink
+          >
+          <!-- <HeaderLink href="/informe" class="block hover:text-blue-600"
+            >Informe</HeaderLink
+          > -->
+        </ul>
+        <!-- UserButton Móvil -->
+        <div class="flex justify-center pt-2">
+          <UserButton
+            afterSignOutUrl="/"
+            showName
+            appearance={{
+              elements: {
+                userButtonMenuItem__manageAccount: { display: "none" },
+                userButtonMenuItem__addAccount: { display: "none" },
+              },
+            }}
+          />
+        </div>
+      </SignedIn>
     </div>
   </div>
 </header>
+
+<script>
+  function initMenu() {
+    const menuBtn = document.getElementById("menu-btn");
+    const mobileMenu = document.getElementById("mobile-menu");
+
+    // Limpiar eventos anteriores para evitar duplicados si se ejecuta varias veces
+    const newMenuBtn = menuBtn?.cloneNode(true);
+    if (menuBtn && newMenuBtn) {
+      menuBtn.parentNode?.replaceChild(newMenuBtn, menuBtn);
+    }
+
+    if (newMenuBtn && mobileMenu) {
+      newMenuBtn.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
+        mobileMenu.classList.toggle("flex");
+      });
+    }
+  }
+
+  // Ejecutar al cargar la página
+  initMenu();
+
+  // Soporte para View Transitions de Astro (si las usas en el futuro)
+  document.addEventListener("astro:page-load", initMenu);
+  document.addEventListener("astro:after-swap", initMenu);
+</script>

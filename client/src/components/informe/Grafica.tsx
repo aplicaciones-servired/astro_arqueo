@@ -2,13 +2,24 @@ import * as React from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { Cronograma } from "@/types/cronograma";
 import { useFilterPro } from "@/hooks/InformeFilter";
+import { useEffect } from "react";
 
 export default function SimpleCharts({
   datos,
+  fechaInicio,
+  fechaFin,
 }: {
   datos: Cronograma[];
+  fechaInicio: string;
+  fechaFin: string;
 }): React.JSX.Element {
-  const { filteredPDV } = useFilterPro(datos);
+  const { filteredPDV, setFechaInicioInform, setFechaFinInform } =
+    useFilterPro(datos);
+
+  useEffect(() => {
+    setFechaInicioInform(fechaInicio);
+    setFechaFinInform(fechaFin);
+  }, [fechaInicio, fechaFin]);
 
   const totalEnEspera = filteredPDV.filter(
     (pdv) => pdv.estado === "En Espera"
@@ -35,10 +46,6 @@ export default function SimpleCharts({
       };
     }
   });
-
-  const listaCerrados = Object.entries(resumenCerrados).map(
-    ([punto, { cantidad, estado }]) => ({ punto, cantidad, estado })
-  );
 
   return (
     <section className="flex justify-start">
