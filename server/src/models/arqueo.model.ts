@@ -5,6 +5,9 @@ import {
   InferCreationAttributes,
   DataTypes,
 } from "sequelize";
+import { Usuarios } from "./Usuario.models";
+import { Personas } from "./personas.models";
+import { TBUsuarios } from "./Tbusuario.model";
 
 class arqueo extends Model<
   InferAttributes<arqueo>,

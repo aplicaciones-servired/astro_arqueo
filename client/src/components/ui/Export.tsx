@@ -23,7 +23,12 @@ export const exportarAExcel = async ({
   registros.forEach((r) =>
     Object.keys(r as any).forEach((k) => headersSet.add(k))
   );
-  const headers = Array.from(headersSet);
+
+  // ⛔ Excluir campos no deseados (puedes agregar más)
+  const headers = Array.from(headersSet).filter(
+    (key) => key !== "id" && key !== "_id" && key !== "ip"
+  );
+
   ws.addRow(headers);
 
   registros.forEach((registro) => {
@@ -55,5 +60,7 @@ export const exportarAExcel = async ({
     }.xlsx`;
     a.click();
     window.URL.revokeObjectURL(url);
-  } catch (err) {}
+  } catch (err) {
+    console.error("Error exportando Excel:", err);
+  }
 };

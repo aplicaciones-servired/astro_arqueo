@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { arqueo, initChatBoxModel } from "../models/arqueo.model";
 import { Sequelize } from "sequelize";
+import { TBUsuarios } from "../models/Tbusuario.model";
 const { Op, fn, col, where: sequelizeWhere } = require("sequelize");
 
 export const getArqueo = async (req: Request, res: Response): Promise<void> => {
@@ -190,8 +191,28 @@ export const getArqueo = async (req: Request, res: Response): Promise<void> => {
         ["id", "DESC"],
       ],
     });
-    res.status(200).json({ count, datos: rows, page, pageSize });
+
+    const datosConSupervisor = await Promise.all(
+      rows.map(async (row: any) => {
+        const rowData = row.toJSON();
+
+        // Query TBUsuarios to find the user by login (supervisor field)
+        const usuario = await TBUsuarios.findOne({
+          where: { login: rowData.supervisor },
+          attributes: ["nombre"],
+          raw: true,
+        });
+
+        return {
+          nombreSupervisor: usuario?.nombre || "SIN NOMBRE REGISTRADO",
+          ...rowData,
+        };
+      })
+    );
+
+    res.status(200).json({ count, datos: datosConSupervisor, page, pageSize });
   } catch (error) {
+    console.error("Error en getArqueo:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };

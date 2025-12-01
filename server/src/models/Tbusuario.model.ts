@@ -1,4 +1,4 @@
-import { getPoolUsuario } from "../connections/dbUsuario";
+import { getPoolTBUsuario } from "../connections/dbtbusert";
 import {
   Model,
   InferAttributes,
@@ -6,9 +6,9 @@ import {
   DataTypes,
 } from "sequelize";
 
-class Usuarios extends Model<
-  InferAttributes<Usuarios>,
-  InferCreationAttributes<Usuarios>
+class TBUsuarios extends Model<
+  InferAttributes<TBUsuarios>,
+  InferCreationAttributes<TBUsuarios>
 > {
   declare id: number;
   declare login: string;
@@ -19,7 +19,7 @@ class Usuarios extends Model<
   declare imei: string;
 }
 
-Usuarios.init(
+TBUsuarios.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -34,11 +34,11 @@ Usuarios.init(
     imei: { type: DataTypes.STRING },
   },
   {
-    sequelize: getPoolUsuario,
-    modelName: "Usuarios",
+    sequelize: getPoolTBUsuario,
+    modelName: "TBUsuarios",
     tableName: "tbusuario",
     timestamps: false,
   }
 );
 
-export { Usuarios };
+export { TBUsuarios };

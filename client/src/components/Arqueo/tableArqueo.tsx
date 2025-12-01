@@ -3,7 +3,6 @@ import CustomizedDialogs from "./DalogArqueo";
 import type { Arqueos } from "@/types/arqueo";
 import { useFilter } from "@/hooks/useFilters";
 import getFormattedDate from "../ui/getFormattedDate";
-import { useArqueo } from "@/Services/Arqueo";
 
 interface PropsFooter {
   datos: Arqueos[];
@@ -83,7 +82,7 @@ export const TableArqueo = ({
                       Realizado por
                     </th>
                     <th className="px-4 py-3.5 text-sm font-semibold text-left text-gray-900">
-                      Nombre Completo
+                      Realizado a
                     </th>
                     <th className="px-4 py-3.5 text-sm font-semibold text-left text-gray-900">
                       Sucursal
@@ -107,7 +106,7 @@ export const TableArqueo = ({
                       }}
                     >
                       <td className="px-4 py-4 text-sm font-medium text-gray-900">
-                        {pdv.supervisor}
+                        {pdv.nombreSupervisor}
                       </td>
                       <td className="px-4 py-4 text-sm text-gray-700">
                         {pdv.nombres}
