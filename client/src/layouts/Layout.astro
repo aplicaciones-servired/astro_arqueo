@@ -20,13 +20,15 @@ const user = await Astro.locals.currentUser();
     <title>Arqueo Multiempresa</title>
     <Header />
   </head>
+
   <body>
-    <!-- ✅ CORREGIDO -->
+    <!-- Clerk solo envuelve lo interactivo -->
     <ClerkWrapper client:load>
       <slot />
       <ToasterProvider client:load />
-      <ViewTransitions />
       <ClientRouter />
     </ClerkWrapper>
+
+    <ViewTransitions />
   </body>
 </html>

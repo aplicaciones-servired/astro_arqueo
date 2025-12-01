@@ -1,3 +1,4 @@
 @import "tailwindcss";
-@import "sonner/css";
+@import "sonner/dist/styles.css";
+
 
