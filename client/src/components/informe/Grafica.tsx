@@ -30,7 +30,7 @@ export default function SimpleCharts({
   ).length;
 
   const Retiro = filteredPDV.filter(
-    (pdv) => pdv.nota === "AQUEO DE RETIRO"
+    (pdv) => pdv.nota === "ARQUEO DE RETIRO"
   ).length;
 
   const Cerrados = filteredPDV.filter((pdv) => pdv.estado === "Cerrado").length;

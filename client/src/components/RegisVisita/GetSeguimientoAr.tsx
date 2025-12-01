@@ -57,7 +57,7 @@ const TableSeguimiento = ({
                       Realizado por
                     </th>
                     <th className="px-4 py-3.5 text-sm font-semibold text-left text-gray-900">
-                      Nombres
+                      Realizado a
                     </th>
                     <th className="px-4 py-3.5 text-sm font-semibold text-left text-gray-900">
                       Punto de Venta
@@ -77,7 +77,7 @@ const TableSeguimiento = ({
                       className=" transition-colors hover:bg-blue-100"
                     >
                       <td className="px-4 py-4 text-sm font-medium text-gray-900">
-                        {pdv.supervisor}
+                        {pdv.nombreSupervisor}
                       </td>
                       <td className="px-4 py-4 text-sm font-medium text-gray-900">
                         {pdv.nombres}

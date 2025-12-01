@@ -24,7 +24,7 @@ const user = await Astro.locals.currentUser();
     <!-- ✅ CORREGIDO -->
     <ClerkWrapper client:load>
       <slot />
-      <ToasterProvider client:idle />
+      <ToasterProvider client:load />
       <ViewTransitions />
       <ClientRouter />
     </ClerkWrapper>

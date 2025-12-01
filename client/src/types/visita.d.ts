@@ -1,8 +1,9 @@
 export interface Visitas {
-  nombres: string
-  documento: string
-  sucursal: string
-  supervisor: string
-  fechavisita: string
-  horavisita: string
+  nombres: string;
+  nombreSupervisor: string;
+  documento: string;
+  sucursal: string;
+  supervisor: string;
+  fechavisita: string;
+  horavisita: string;
 }

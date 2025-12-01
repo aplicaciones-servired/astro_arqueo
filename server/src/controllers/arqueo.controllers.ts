@@ -392,87 +392,97 @@ export const getArqueos = async (
       order: [["fechavisita", "DESC"]],
     });
 
-    const originalString = Chat.map((item: any) => {
-      let imagePath_observacion: any = item.imagen_observacion;
+    const datosConTransformacion = await Promise.all(
+      Chat.map(async (item: any) => {
+        const data = item.toJSON();
+        let imagePath_observacion: any = item.imagen_observacion;
 
-      const convertToBase64 = (image: any): string | null => {
-        if (!image) return null;
+        const usuario = await TBUsuarios.findOne({
+          where: { login: data.supervisor },
+          attributes: ["nombre"],
+          raw: true,
+        });
 
-        let buffer: Buffer | null = null;
+        const convertToBase64 = (image: any): string | null => {
+          if (!image) return null;
 
-        if (Buffer.isBuffer(image)) {
-          buffer = image;
-        } else if (
-          typeof image === "object" &&
-          image !== null &&
-          "data" in image
-        ) {
-          buffer = Buffer.from((image as { data: number[] }).data);
-        }
+          let buffer: Buffer | null = null;
 
-        if (buffer) {
-          // Check for binary image headers
-          const header = buffer.slice(0, 4).toString("hex").toUpperCase();
-
-          if (header.startsWith("89504E47")) {
-            return `data:image/png;base64,${buffer.toString("base64")}`;
+          if (Buffer.isBuffer(image)) {
+            buffer = image;
+          } else if (
+            typeof image === "object" &&
+            image !== null &&
+            "data" in image
+          ) {
+            buffer = Buffer.from((image as { data: number[] }).data);
           }
-          if (header.startsWith("FFD8FF")) {
+
+          if (buffer) {
+            // Check for binary image headers
+            const header = buffer.slice(0, 4).toString("hex").toUpperCase();
+
+            if (header.startsWith("89504E47")) {
+              return `data:image/png;base64,${buffer.toString("base64")}`;
+            }
+            if (header.startsWith("FFD8FF")) {
+              return `data:image/jpeg;base64,${buffer.toString("base64")}`;
+            }
+
+            // If not binary, try interpreting as string (Base64 or Data URI)
+            const str = buffer.toString("utf-8");
+            if (str.startsWith("data:image")) return str;
+
+            // Check for Base64 signatures in the string
+            if (str.startsWith("iVBOR")) {
+              // PNG Base64
+              return `data:image/png;base64,${str}`;
+            }
+            if (str.startsWith("/9j/")) {
+              // JPG Base64
+              return `data:image/jpeg;base64,${str}`;
+            }
+
+            // Fallback for unknown binary or text
             return `data:image/jpeg;base64,${buffer.toString("base64")}`;
           }
 
-          // If not binary, try interpreting as string (Base64 or Data URI)
-          const str = buffer.toString("utf-8");
-          if (str.startsWith("data:image")) return str;
-
-          // Check for Base64 signatures in the string
-          if (str.startsWith("iVBOR")) {
-            // PNG Base64
-            return `data:image/png;base64,${str}`;
-          }
-          if (str.startsWith("/9j/")) {
-            // JPG Base64
-            return `data:image/jpeg;base64,${str}`;
+          if (typeof image === "string") {
+            return image.startsWith("data:image")
+              ? image
+              : `data:image/jpeg;base64,${image}`;
           }
 
-          // Fallback for unknown binary or text
-          return `data:image/jpeg;base64,${buffer.toString("base64")}`;
+          return null;
+        };
+
+        // Si viene como objeto tipo { type: 'Buffer', data: [...] }
+        if (
+          imagePath_observacion &&
+          typeof imagePath_observacion === "object" &&
+          "data" in imagePath_observacion
+        ) {
+          imagePath_observacion = Buffer.from(
+            (imagePath_observacion as { data: number[] }).data
+          ).toString("base64");
         }
 
-        if (typeof image === "string") {
-          return image.startsWith("data:image")
-            ? image
-            : `data:image/jpeg;base64,${image}`;
-        }
+        const base64Image = imagePath_observacion
+          ? `data:image/jpeg;base64,${imagePath_observacion}`
+          : null;
 
-        return null;
-      };
-
-      // Si viene como objeto tipo { type: 'Buffer', data: [...] }
-      if (
-        imagePath_observacion &&
-        typeof imagePath_observacion === "object" &&
-        "data" in imagePath_observacion
-      ) {
-        imagePath_observacion = Buffer.from(
-          (imagePath_observacion as { data: number[] }).data
-        ).toString("base64");
-      }
-
-      const base64Image = imagePath_observacion
-        ? `data:image/jpeg;base64,${imagePath_observacion}`
-        : null;
-
-      return {
-        ...item.toJSON(),
-        imagen_observacion: base64Image,
-        firma_auditoria: convertToBase64(item.firma_auditoria),
-        firma_colocadora: convertToBase64(item.firma_colocadora),
-      };
-    });
+        return {
+          ...item.toJSON(),
+          nombreSupervisor: usuario?.nombre || "SIN NOMBRE REGISTRADO",
+          imagen_observacion: base64Image,
+          firma_auditoria: convertToBase64(item.firma_auditoria),
+          firma_colocadora: convertToBase64(item.firma_colocadora),
+        };
+      })
+    );
 
     res.status(200).json({
-      datos: originalString,
+      datos: datosConTransformacion,
     });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
