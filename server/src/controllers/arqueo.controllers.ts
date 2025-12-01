@@ -371,16 +371,6 @@ export const getArqueos = async (
       order: [["fechavisita", "DESC"]],
     });
 
-    const detectMimeType = (buffer: Buffer): string => {
-      if (!buffer || buffer.length < 4) return "image/jpeg";
-
-      const header = buffer.slice(0, 4).toString("hex").toUpperCase();
-
-      if (header.startsWith("89504E47")) return "image/png"; // PNG
-      if (header.startsWith("FFD8FF")) return "image/jpeg"; // JPG
-      return "image/jpeg";
-    };
-
     const originalString = Chat.map((item: any) => {
       let imagePath_observacion: any = item.imagen_observacion;
 

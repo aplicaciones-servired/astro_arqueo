@@ -28,7 +28,6 @@ export function useCronoInforme(fechaInicio?: string, fechaFin?: string) {
 
         if (response.status === 200) {
           setData(response.data.datos);
-          console.log(response.data.datos);
           setTotalClients(response.data.count);
         }
       } catch {

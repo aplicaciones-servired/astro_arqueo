@@ -68,7 +68,6 @@ export default function CustomizedDialogs({
       ></IconButton>
       {data.map(
         (items, index) => (
-          console.log(items.firma_auditoria),
           (
             <DialogContent dividers key={index}>
               <Typography gutterBottom>
