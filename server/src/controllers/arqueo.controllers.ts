@@ -387,15 +387,45 @@ export const getArqueos = async (
       const convertToBase64 = (image: any): string | null => {
         if (!image) return null;
 
+        let buffer: Buffer | null = null;
+
         if (Buffer.isBuffer(image)) {
-          const mime = detectMimeType(image);
-          return `data:${mime};base64,${image.toString("base64")}`;
+          buffer = image;
+        } else if (
+          typeof image === "object" &&
+          image !== null &&
+          "data" in image
+        ) {
+          buffer = Buffer.from((image as { data: number[] }).data);
         }
 
-        if (typeof image === "object" && image !== null && "data" in image) {
-          const buffer = Buffer.from((image as { data: number[] }).data);
-          const mime = detectMimeType(buffer);
-          return `data:${mime};base64,${buffer.toString("base64")}`;
+        if (buffer) {
+          // Check for binary image headers
+          const header = buffer.slice(0, 4).toString("hex").toUpperCase();
+
+          if (header.startsWith("89504E47")) {
+            return `data:image/png;base64,${buffer.toString("base64")}`;
+          }
+          if (header.startsWith("FFD8FF")) {
+            return `data:image/jpeg;base64,${buffer.toString("base64")}`;
+          }
+
+          // If not binary, try interpreting as string (Base64 or Data URI)
+          const str = buffer.toString("utf-8");
+          if (str.startsWith("data:image")) return str;
+
+          // Check for Base64 signatures in the string
+          if (str.startsWith("iVBOR")) {
+            // PNG Base64
+            return `data:image/png;base64,${str}`;
+          }
+          if (str.startsWith("/9j/")) {
+            // JPG Base64
+            return `data:image/jpeg;base64,${str}`;
+          }
+
+          // Fallback for unknown binary or text
+          return `data:image/jpeg;base64,${buffer.toString("base64")}`;
         }
 
         if (typeof image === "string") {
