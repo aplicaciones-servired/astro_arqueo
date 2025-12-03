@@ -3,17 +3,26 @@ import { SignIn } from "@clerk/astro/components";
 import "../styles/global.css";
 ---
 
-<div class="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-  <div class="w-full max-w-md">
-    <SignIn
-      redirectUrl="/getarqueo"
-      appearance={{
-        elements: {
-          // Oculta el enlace para registrarse
-          footerAction__signUp: { display: "none" },
-        },
-      }}
-      signUpUrl="/"
-    />
-  </div>
-</div>
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div class="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div class="w-full max-w-md">
+        <SignIn
+          redirectUrl="/getarqueo"
+          appearance={{
+            elements: {
+              // Oculta el enlace para registrarse
+              footerAction__signUp: { display: "none" },
+            },
+          }}
+          signUpUrl="/"
+        />
+      </div>
+    </div>
+  </body>
+</html>
