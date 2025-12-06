@@ -13,6 +13,8 @@ const isProtectedRoute = createRouteMatcher([
   "/getregistro(.*)",
   "/informe(.*)",
   "/api(.*)",
+  "/sign-in(.*)",
+  "/sign-up(.*)",
 ]);
 
 // Página de login

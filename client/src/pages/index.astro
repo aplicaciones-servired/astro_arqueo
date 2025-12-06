@@ -1,4 +1,7 @@
 ---
+// filepath: d:\proyectos_new\astro_arqueo\client\src\pages\index.astro
+export const prerender = false;
+
 import { SignIn } from "@clerk/astro/components";
 import "../styles/global.css";
 ---
@@ -8,19 +11,23 @@ import "../styles/global.css";
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Inicia sesión en el sistema de arqueos Multiempresa" />
+    <link rel="icon" type="image/png" href="/arq.png" />
+    <title>Iniciar Sesión - Arqueo Multiempresa</title>
   </head>
   <body>
     <div class="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div class="w-full max-w-md">
         <SignIn
-          redirectUrl="/getarqueo"
+          afterSignInUrl="/getregistro"
+          signUpUrl="/"
           appearance={{
             elements: {
-              // Oculta el enlace para registrarse
+              rootBox: "mx-auto",
+              card: "shadow-xl rounded-lg",
               footerAction__signUp: { display: "none" },
             },
           }}
-          signUpUrl="/"
         />
       </div>
     </div>
