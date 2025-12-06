@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import { arqueo, initChatBoxModel } from "../models/arqueo.model";
-import { Sequelize } from "sequelize";
 import { TBUsuarios } from "../models/Tbusuario.model";
-const { Op, fn, col, where: sequelizeWhere } = require("sequelize");
+const { Op } = require("sequelize");
 
 export const getArqueo = async (req: Request, res: Response): Promise<void> => {
   const page = parseInt(req.query.page as string) || 1;
@@ -11,6 +10,9 @@ export const getArqueo = async (req: Request, res: Response): Promise<void> => {
   const zona = req.query.zona as string;
   const fechavisita = req.query.fechavisita as string;
   const puntodeventa = req.query.puntodeventa as string;
+  const fechaInicio = req.query.fechaInicio as string;
+  const fechaFin = req.query.fechaFin as string;
+
   if (zona === undefined) {
     res.status(400).json("Zona no válida");
     return;
@@ -21,19 +23,23 @@ export const getArqueo = async (req: Request, res: Response): Promise<void> => {
 
   let whereClause: any = {};
 
-  if (fechavisita) {
-    // Comparación por solo la fecha, sin horas ⬇⬇
-    whereClause[Op.and] = [
-      sequelizeWhere(fn("DATE", col("fechavisita")), "=", fechavisita),
-    ];
+if (fechaInicio && fechaFin) {
+    whereClause.fechavisita = {
+      [Op.between]: [fechaInicio, fechaFin],
+    };
+  } else if (fechavisita) {
+    whereClause.fechavisita = {
+      [Op.eq]: fechavisita,
+    };
   }
-
   if (puntodeventa) {
-    whereClause.puntodeventa = { [Op.like]: `%${puntodeventa}%` };
+    whereClause.puntodeventa = {
+      [Op.like]: `%${puntodeventa}%`,
+    };
   }
 
   try {
-    const { count, rows } = await arqueo.findAndCountAll({
+    const ChatArqueo = await arqueo.findAll({
       attributes: [
         "supervisor",
         "id",
@@ -192,8 +198,10 @@ export const getArqueo = async (req: Request, res: Response): Promise<void> => {
       ],
     });
 
+    const count = await arqueo.count({ where: whereClause });
+
     const datosConSupervisor = await Promise.all(
-      rows.map(async (row: any) => {
+      ChatArqueo.map(async (row: any) => {
         const rowData = row.toJSON();
 
         // Query TBUsuarios to find the user by login (supervisor field)
@@ -210,7 +218,7 @@ export const getArqueo = async (req: Request, res: Response): Promise<void> => {
       })
     );
 
-    res.status(200).json({ count, datos: datosConSupervisor, page, pageSize });
+    res.status(200).json({ count: count, datos: datosConSupervisor, page, pageSize });
   } catch (error) {
     console.error("Error en getArqueo:", error);
     res.status(500).json({ message: "Internal Server Error" });

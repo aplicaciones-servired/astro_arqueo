@@ -9,6 +9,9 @@ export const getVisita = async (req: Request, res: Response): Promise<void> => {
   const offset = (page - 1) * pageSize;
   const zona = req.query.zona as string;
   const fechavisita = req.query.fechavisita as string;
+    const fechaInicio = req.query.fechaInicio as string;
+  const fechaFin = req.query.fechaFin as string;
+
   if (zona === undefined) {
     res.status(400).json("Zona no válida");
     return;
@@ -19,15 +22,18 @@ export const getVisita = async (req: Request, res: Response): Promise<void> => {
 
   let whereClause: any = {};
 
-  if (fechavisita) {
-    // Comparación por solo la fecha, sin horas ⬇⬇
-    whereClause[Op.and] = [
-      sequelizeWhere(fn("DATE", col("fechavisita")), "=", fechavisita),
-    ];
+  if (fechaInicio && fechaFin) {
+    whereClause.fechavisita = {
+      [Op.between]: [fechaInicio, fechaFin],
+    };
+  } else if (fechavisita) {
+    whereClause.fechavisita = {
+      [Op.eq]: fechavisita,
+    };
   }
 
   try {
-    const { count, rows } = await Visita.findAndCountAll({
+    const ChatVisita = await Visita.findAll({
       attributes: [
         "nombres",
         "documento",
@@ -42,8 +48,10 @@ export const getVisita = async (req: Request, res: Response): Promise<void> => {
       order: [["fechavisita", "DESC"]],
     });
 
+    const count = await Visita.count({ where: whereClause });
+
     const datosConSupervisor = await Promise.all(
-      rows.map(async (row: any) => {
+      ChatVisita.map(async (row: any) => {
         const rowData = row.toJSON();
 
         // Query TBUsuarios to find the user by login (supervisor field)

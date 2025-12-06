@@ -7,10 +7,11 @@ import Button from "../ui/Button";
 import { API_URL } from "@/utils/constans";
 import { useEmpresa } from "../ui/useEmpresa";
 import axios from "axios";
+import { Visitas } from "@/types/visita";
 
 interface PropsExport {
-  data: Arqueos[] | Cronograma[];
-  tipo: "arqueo" | "cronograma";
+  data: Arqueos[] | Cronograma[] | Visitas[];
+  tipo: "arqueo" | "cronograma" | "visita";
 }
 
 export const Exportcom = ({ data, tipo }: PropsExport) => {
@@ -40,63 +41,75 @@ export const Exportcom = ({ data, tipo }: PropsExport) => {
       toast.error("La fecha de inicio no puede ser mayor a la fecha fin");
       return;
     }
-
-    try {
-      // Traer todos los registros desde el backend (sin paginar)
+    const promesa = (async () => {
       const base =
         typeof API_URL === "string" ? API_URL.replace(/\/+$/, "") : API_URL;
       if (!base) {
-        toast.error("API_URL inválida en frontend", { duration: 2000 });
-        return;
+        throw new Error("API_URL inválida en frontend");
       }
 
       const url =
         tipo === "arqueo"
-          ? `${base}/arqueo?zona=${empresa}&page=1&pageSize=1000000`
-          : `${base}/getcronograma?zona=${empresa}&page=1&pageSize=1000000`;
+          ? `${base}/arqueo?zona=${empresa}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&pageSize=1000000`
+          : tipo === "visita"
+            ? `${base}/visita?zona=${empresa}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&pageSize=1000000`
+            : `${base}/getcronograma?zona=${empresa}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&pageSize=1000000`;
 
       const response = await axios.get(url);
       const todos: any[] = response.data?.datos ?? response.data ?? [];
 
-      // Filtrar por rango de fechas (campo distinto según tipo)
       const registrosFiltrados = todos.filter((item: any) => {
-        const fecha =
-          tipo === "arqueo" ? new Date(item.fechavisita) : new Date(item.dia);
-        return fecha >= inicio && fecha <= fin;
+        let itemFecha: string;
+
+        if (tipo === "arqueo" || tipo === "visita") {
+          itemFecha = new Date(item.fechavisita).toISOString().split("T")[0];
+        } else {
+          itemFecha = new Date(item.dia).toISOString().split("T")[0];
+        }
+
+        return itemFecha >= fechaInicio && itemFecha <= fechaFin;
       });
 
-      if (registrosFiltrados.length > 0) {
-        toast.success(`Se exportarán ${registrosFiltrados.length} registros`);
-        if (tipo === "arqueo") {
-          exportarAExcel({
-            registros: registrosFiltrados as Arqueos[],
-            nombreArchivo: "Arqueos",
-            empresa: empresa,
-          });
-        } else {
-          exportarAExcel({
-            registros: registrosFiltrados as Cronograma[],
-            nombreArchivo: "Cronogramas",
-            empresa: empresa,
-          });
-        }
-      } else {
-        toast.info(
-          "No hay registros para exportar en el rango de fechas seleccionado"
-        );
+      if (registrosFiltrados.length === 0) {
+        throw new Error("No hay registros para exportar en el rango seleccionado");
       }
-    } catch (err) {
-      toast.error("Error al obtener registros para exportar", {
-        duration: 2000,
-      });
-    }
+
+      if (tipo === "arqueo") {
+        exportarAExcel({
+          registros: registrosFiltrados as Arqueos[],
+          nombreArchivo: "Arqueos",
+          empresa: empresa,
+        });
+      } else if (tipo === "visita") {
+        exportarAExcel({
+          registros: registrosFiltrados as Visitas[],
+          nombreArchivo: "Visitas",
+          empresa: empresa,
+        });
+      } else {
+        exportarAExcel({
+          registros: registrosFiltrados as Cronograma[],
+          nombreArchivo: "Cronogramas",
+          empresa: empresa,
+        });
+      }
+
+      return registrosFiltrados.length;
+    })();
+
+    toast.promise(promesa, {
+      loading: "Consultando registros...",
+      success: (count) => `Se exportaron ${count} registros`,
+      error: (err) => err.message || "Error al obtener registros",
+      duration: 9000,
+    });
   };
 
   return (
     <section className="container px-4 mt-5 ">
       <div className="mb-6 p-4 bg-white border border-indigo-200 rounded-lg shadow-lg shadow-blue-300/50">
         <h3 className="text-lg font-medium text-gray-700 mb-4">
-          Exportar {tipo === "arqueo" ? "Arqueos" : "Cronogramas"}
+          Exportar {tipo === "arqueo" ? "Arqueos" : tipo === "visita" ? "Visitas" : "Cronogramas "}
         </h3>
 
         <div className="flex flex-col md:flex-row gap-4">

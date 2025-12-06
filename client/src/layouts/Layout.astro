@@ -19,16 +19,14 @@ const user = await Astro.locals.currentUser();
     <meta name="generator" content={Astro.generator} />
     <title>Arqueo Multiempresa</title>
     <Header />
+    <ViewTransitions />
   </head>
 
-  <body>
-    <!-- Clerk solo envuelve lo interactivo -->
-    <ClerkWrapper client:load>
-      <slot />
-      <ToasterProvider client:load />
-      <ClientRouter />
+  <body >
+     <ClerkWrapper client:load>
+      <main transition:animate="slide">
+        <slot />
+      </main>
     </ClerkWrapper>
-
-    <ViewTransitions />
   </body>
 </html>

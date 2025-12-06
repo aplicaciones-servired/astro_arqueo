@@ -46,7 +46,7 @@ export const onRequest = clerkMiddleware(
     if (
       userId &&
       isProtectedRoute(context.request) &&
-      role !== "admin" &&
+      role !== "admi" &&
       role !== "auditoria"
     ) {
       clerkClient(context).sessions.revokeSession(sessionId);

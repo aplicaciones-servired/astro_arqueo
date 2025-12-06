@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import {
   initCronograma,
   initCRONOGRAMA,
@@ -40,12 +41,22 @@ export const Programacionget = async (
   const pageSize = parseInt(req.query.pageSize as string) || 1;
   const offset = (page - 1) * pageSize;
   const zona = req.query.zona as string;
+  const fechaInicio = req.query.fechaInicio as string;
+  const fechaFin = req.query.fechaFin as string;
 
   const empresa = zona === "Multired" ? "Multired" : "Servired";
   initCronograma(empresa);
 
+  let whereClause: any = {};
+
+  if (fechaInicio && fechaFin) {
+    whereClause.fechavisita = {
+      [Op.between]: [fechaInicio, fechaFin],
+    };
+  }
+
   try {
-    const { count, rows } = await getProgramacion.findAndCountAll({
+    const Getcrono = await getProgramacion.findAll({
       attributes: [
         "id",
         "puntodeventa",
@@ -53,13 +64,16 @@ export const Programacionget = async (
         "empresa",
         "nota",
         "estado",
-        "imagen",
       ],
+      where: whereClause,
       limit: pageSize,
       offset: offset,
       order: [["dia", "DESC"]],
     });
-    res.status(200).json({ count, datos: rows, page, pageSize });
+
+    const count = await getProgramacion.count({ where: whereClause });
+
+    res.status(200).json({ count: count, datos: Getcrono, page, pageSize });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
