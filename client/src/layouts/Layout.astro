@@ -1,5 +1,5 @@
 ---
-// src/layouts/Layout.astro
+// filepath: d:\proyectos_new\astro_arqueo\client\src\layouts\Layout.astro
 import ClientRouter from "astro/components/ClientRouter.astro";
 import ToasterProvider from "../components/ToasterProvider";
 import Header from "../components/astro/Header.astro";
@@ -8,22 +8,33 @@ import { ViewTransitions } from "astro:transitions";
 import ClerkWrapper from "@/components/ClerkWrapper";
 
 const user = await Astro.locals.currentUser();
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { 
+  title = "Arqueo Multiempresa", 
+  description = "Sistema de gestión de arqueos para Multired y Servired. Gestiona registros, cronogramas y reportes de visitas." 
+} = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/arq.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/png" href="/arq.png" />
     <meta name="generator" content={Astro.generator} />
-    <title>Arqueo Multiempresa</title>
+    <title>{title}</title>
     <Header />
     <ViewTransitions />
   </head>
 
-  <body >
-     <ClerkWrapper client:load>
+  <body>
+    <ClerkWrapper client:load>
       <main transition:animate="slide">
         <slot />
       </main>
