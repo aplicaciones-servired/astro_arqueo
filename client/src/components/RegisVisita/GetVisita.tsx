@@ -62,7 +62,7 @@ const TableVista = ({
                       Nombre Completo
                     </th>
                     <th className="px-4 py-3.5 text-sm font-semibold text-left text-gray-900">
-                      Sucursal
+                      Punto de Venta
                     </th>
                     <th className="px-4 py-3.5 text-sm font-semibold text-left text-gray-900">
                       Fecha Visita
@@ -85,7 +85,7 @@ const TableVista = ({
                         {pdv.nombres}
                       </td>
                       <td className="px-4 py-4 text-sm text-gray-700">
-                        {pdv.sucursal}
+                        {pdv.nombrePuntoDeVenta}
                       </td>
                       <td className="px-4 py-4 text-sm text-gray-700">
                         {getFormattedDate(pdv.fechavisita)}
