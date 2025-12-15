@@ -19,15 +19,26 @@ export const exportarAExcel = async ({
   const wb = new Workbook();
   const ws = wb.addWorksheet("Registros");
 
-  const headersSet = new Set<string>();
-  registros.forEach((r) =>
-    Object.keys(r as any).forEach((k) => headersSet.add(k))
-  );
-
-  // ⛔ Excluir campos no deseados (puedes agregar más)
-  const headers = Array.from(headersSet).filter(
-    (key) => key !== "id" && key !== "_id" && key !== "ip"
-  );
+  // Definir orden específico según el tipo de registro
+  let headers: string[] = [];
+  
+  if (registros.length > 0) {
+    const firstRecord = registros[0] as any;
+    
+    // Detectar tipo de registro basado en campos presentes
+    if ('horavisita' in firstRecord && 'nombrePuntoDeVenta' in firstRecord) {
+      // Es una Visita
+      headers = ['nombres', 'documento', 'sucursal', 'horavisita', 'nombrePuntoDeVenta', 'fechavisita', 'nombreSupervisor', 'supervisor'];
+    } else if ('dia' in firstRecord) {
+      // Es un Cronograma
+      const allKeys = Object.keys(firstRecord);
+      headers = allKeys.filter(key => key !== "id" && key !== "_id" && key !== "ip");
+    } else {
+      // Es un Arqueo u otro tipo
+      const allKeys = Object.keys(firstRecord);
+      headers = allKeys.filter(key => key !== "id" && key !== "_id" && key !== "ip");
+    }
+  }
 
   ws.addRow(headers);
 
