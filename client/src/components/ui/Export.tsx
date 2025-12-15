@@ -42,7 +42,11 @@ export const exportarAExcel = async ({
     }
   }
 
-  ws.addRow(headers);
+  const headerRow = ws.addRow(headers);
+  
+  // Aplicar formato a los encabezados
+  headerRow.font = { bold: true };
+  headerRow.alignment = { vertical: 'middle', horizontal: 'center' };
 
   // Si es visita, agrupar por persona, punto de venta y fecha para calcular tiempos
   if (esVisita) {
@@ -134,6 +138,16 @@ export const exportarAExcel = async ({
       ws.addRow(row);
     });
   }
+
+  // Ajustar automáticamente el ancho de las columnas
+  ws.columns.forEach((column) => {
+    let maxLength = 0;
+    column.eachCell?.({ includeEmpty: true }, (cell) => {
+      const cellValue = cell.value ? cell.value.toString() : '';
+      maxLength = Math.max(maxLength, cellValue.length);
+    });
+    column.width = Math.min(Math.max(maxLength + 2, 10), 50);
+  });
 
   try {
     const buffer = await wb.xlsx.writeBuffer();
