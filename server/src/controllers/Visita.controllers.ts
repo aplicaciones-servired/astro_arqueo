@@ -24,8 +24,14 @@ export const getVisita = async (req: Request, res: Response): Promise<void> => {
   let whereClause: any = {};
 
   if (fechaInicio && fechaFin) {
+    // Agregar un día a fechaFin para incluir todo el día
+    const fechaFinAjustada = new Date(fechaFin);
+    fechaFinAjustada.setDate(fechaFinAjustada.getDate() + 1);
+    const fechaFinStr = fechaFinAjustada.toISOString().split('T')[0];
+    
     whereClause.fechavisita = {
-      [Op.between]: [fechaInicio, fechaFin],
+      [Op.gte]: fechaInicio,
+      [Op.lt]: fechaFinStr,
     };
   } else if (fechavisita) {
     whereClause.fechavisita = {
