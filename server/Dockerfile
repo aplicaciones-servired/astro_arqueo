@@ -1,27 +1,16 @@
-# =========================
-# Etapa de build
-# =========================
-FROM node:20-slim AS build
+# Base de Node.js versión 18
+FROM node:slim
+
+# Cambiar a la carpeta de la aplicación
 WORKDIR /app
 
-RUN corepack enable
-
-# Copiar solo dependencias
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
-
-# Copiar código (SIN node_modules)
+# Instalar dependencias
 COPY . .
 
-# =========================
-# Runtime
-# =========================
-FROM node:20-slim
-WORKDIR /app
+RUN yarn
 
-COPY --from=build /app /app
-
-ENV NODE_ENV=production
+# Exponer el puerto
 EXPOSE 3000
 
-CMD ["pnpm", "start"]
+# Comando para ejecutar la aplicación
+CMD ["yarn", "start"]
