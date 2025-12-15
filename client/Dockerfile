@@ -22,7 +22,7 @@ WORKDIR /app
 COPY --from=build /app /app
 ENV NODE_ENV=production
 
-# Asegurar que el .env esté disponible
+# Asegurar que el .env estÃ© disponible
 COPY --from=build /app/.env ./
 
 EXPOSE 4321

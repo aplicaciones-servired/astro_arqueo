@@ -1,7 +1,7 @@
-# Base de Node.js versión 18
+# Base de Node.js versiÃ³n 18
 FROM node:slim
 
-# Cambiar a la carpeta de la aplicación
+# Cambiar a la carpeta de la aplicaciÃ³n
 WORKDIR /app
 
 # Instalar dependencias
@@ -12,5 +12,5 @@ RUN yarn
 # Exponer el puerto
 EXPOSE 3000
 
-# Comando para ejecutar la aplicación
+# Comando para ejecutar la aplicaciÃ³n
 CMD ["yarn", "start"]
