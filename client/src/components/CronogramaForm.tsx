@@ -149,9 +149,11 @@ export default function CronogramaForm() {
 
         if (exitososTotal > 0) {
             toast.success(`✅ ${exitososTotal} cronogramas creados para ${puntosConDias.length} puntos`);
-            // Limpiamos todos los días después de guardar
+            // Limpiamos todos los campos después de guardar
             setDiasPorPunto({});
             setPuntoSeleccionado("");
+            setEmpresa("");
+            setNota("");
         }
     };
 
@@ -362,26 +364,14 @@ export default function CronogramaForm() {
                             </div>
                         )}
 
-                    {/* Botones de guardar */}
-                    <div className="mt-6 flex flex-wrap justify-center gap-3">
-                        <button
-                            onClick={handleSubmit}
-                            disabled={!puntoSeleccionado || diasSeleccionados.length === 0}
-                            className={`px-5 py-2.5 rounded-lg font-bold text-sm shadow-lg transition-all transform ${
-                                puntoSeleccionado && diasSeleccionados.length > 0
-                                    ? 'bg-linear-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 hover:scale-105 hover:shadow-xl cursor-pointer'
-                                    : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60'
-                            }`}
-                        >
-                            💾 Guardar Punto Actual ({diasSeleccionados.length})
-                        </button>
-
+                    {/* Botón de guardar */}
+                    <div className="mt-6 flex justify-center">
                         <button
                             onClick={handleSubmitTodos}
                             disabled={Object.keys(diasPorPunto).length === 0}
-                            className={`px-5 py-2.5 rounded-lg font-bold text-sm shadow-lg transition-all transform ${
+                            className={`px-8 py-3 rounded-lg font-bold text-base shadow-xl transition-all transform ${
                                 Object.keys(diasPorPunto).length > 0
-                                    ? 'bg-linear-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 hover:scale-105 hover:shadow-xl cursor-pointer'
+                                    ? 'bg-linear-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 hover:scale-105 hover:shadow-2xl cursor-pointer'
                                     : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60'
                             }`}
                         >
