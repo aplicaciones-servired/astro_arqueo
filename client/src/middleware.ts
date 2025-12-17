@@ -80,6 +80,7 @@ export const onRequest = clerkMiddleware(
       "http://localhost:4321",
       "http://localhost:3000",
       "http://localhost:4322", // 👈 agrega este
+      "http://10.98.98.104:4321"
     ],
   }
 );

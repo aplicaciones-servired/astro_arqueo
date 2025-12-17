@@ -11,15 +11,19 @@ interface FilterPDV {
 }
 
 function filterByFecha (pdv: Cronograma[], searchFecha: string): Cronograma[] {
-  return pdv.filter(({ dia }) =>
-    dia?.toLowerCase().includes(searchFecha.toLowerCase()) ?? false
-  )
+  return pdv.filter(({ dia }) => {
+    if (!dia) return false;
+    // Extraer solo la fecha (YYYY-MM-DD) sin la hora
+    const diaStr = dia.split('T')[0];
+    return diaStr.includes(searchFecha);
+  })
 }
 
 function filterByPDV (pdv: Cronograma[], searchPDV: string): Cronograma[] {
-  return pdv.filter(({ puntodeventa }) =>
-    puntodeventa?.toString().includes(searchPDV.toLowerCase()) ?? false
-  )
+  return pdv.filter(({ puntodeventa }) => {
+    if (!puntodeventa) return false;
+    return puntodeventa.toLowerCase().includes(searchPDV.toLowerCase());
+  })
 }
 
 export function useFilterCron (pdv: Cronograma[]): FilterPDV {
