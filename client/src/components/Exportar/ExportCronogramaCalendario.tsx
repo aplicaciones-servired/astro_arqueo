@@ -136,11 +136,12 @@ export const exportarCronogramaCalendario = async ({
         // Determinar color según el estado (convertir a minúsculas para comparar)
         const estadoLower = diaData.estado?.toLowerCase() || '';
         const esCerrado = estadoLower.includes('cerrado') || estadoLower.includes('cerrada');
+        const esRealizado = estadoLower.includes('Realizado'.toLowerCase());
         
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
-          fgColor: { argb: esCerrado ? 'FFFF0000' : 'FF92D050' } // Rojo si está cerrado, verde si no
+          fgColor: { argb: esCerrado ? 'FFFF0000' : esRealizado ? 'FF00FF00' : 'FF87CEEB' } // Rojo si está cerrado, verde si realizado, azul claro si está en espera
         };
         cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
       }
@@ -165,6 +166,41 @@ export const exportarCronogramaCalendario = async ({
       right: { style: 'thin' }
     };
   });
+
+  // Agregar leyenda de colores al final
+  ws.addRow([]); // Fila vacía
+  const leyendaTitulo = ws.addRow(['LEYENDA DE ESTADOS:']);
+  leyendaTitulo.font = { bold: true, size: 12 };
+  
+  // Fila con azul claro - En Espera
+  const rowEspera = ws.addRow(['En Espera / Pendiente', '']);
+  rowEspera.getCell(1).fill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: 'FF87CEEB' }
+  };
+  rowEspera.getCell(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+  rowEspera.getCell(1).alignment = { vertical: 'middle', horizontal: 'center' };
+  
+  // Fila con verde - Realizado
+  const rowRealizado = ws.addRow(['Realizado', '']);
+  rowRealizado.getCell(1).fill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: 'FF00FF00' }
+  };
+  rowRealizado.getCell(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+  rowRealizado.getCell(1).alignment = { vertical: 'middle', horizontal: 'center' };
+  
+  // Fila con rojo - Cerrado
+  const rowCerrado = ws.addRow(['Cerrado', '']);
+  rowCerrado.getCell(1).fill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: 'FFFF0000' }
+  };
+  rowCerrado.getCell(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+  rowCerrado.getCell(1).alignment = { vertical: 'middle', horizontal: 'center' };
 
   // Generar archivo
   const buffer = await wb.xlsx.writeBuffer();
