@@ -113,27 +113,27 @@ export const exportarCronogramaCalendario = async ({
     // Contar días programados
     const diasProgramados = cronogramasPunto.length;
     
-    // Crear array de valores para los días
+    // Crear array de valores para los días con información de estado
     const valoresDias = dias.map(dia => {
       const fechaBuscada = `${año}-${String(mes).padStart(2, '0')}-${String(dia.numero).padStart(2, '0')}`;
       
-      const tieneCronograma = cronogramasPunto.some(c => {
-        // Extraer solo la fecha sin hora
+      const cronogramaDelDia = cronogramasPunto.find(c => {
         const fechaCrono = c.dia.split('T')[0];
-        const coincide = fechaCrono === fechaBuscada;
-        
-        // Debug detallado para PALACE, SONOCO y ESPAÑA
-        if ((punto === 'PALACE' || punto === 'SONOCO' || punto === 'ESPAÑA') && (coincide || dia.numero <= 5)) {
-          console.log(`${punto} día ${dia.numero}: buscada="${fechaBuscada}", crono="${fechaCrono}", coincide=${coincide}`);
-        }
-        
-        return coincide;
+        return fechaCrono === fechaBuscada;
       });
       
-      return tieneCronograma ? '1' : '';
+      if (cronogramaDelDia) {
+        // Retornar objeto con valor y estado
+        return {
+          valor: '1',
+          estado: cronogramaDelDia.estado
+        };
+      }
+      
+      return { valor: '', estado: null };
     });
 
-    const row = ws.addRow([punto, diasProgramados, ...valoresDias]);
+    const row = ws.addRow([punto, diasProgramados, ...valoresDias.map(v => v.valor)]);
     
     // Aplicar estilo a la fila
     row.alignment = { vertical: 'middle', horizontal: 'center' };
@@ -144,14 +144,21 @@ export const exportarCronogramaCalendario = async ({
       right: { style: 'thin' }
     };
 
-    // Colorear celdas con cronogramas
-    valoresDias.forEach((valor, index) => {
-      if (valor === '1') {
+    // Colorear celdas con cronogramas según su estado
+    valoresDias.forEach((diaData, index) => {
+      if (diaData.valor === '1') {
         const cell = row.getCell(index + 3); // +3 porque las primeras dos columnas son punto y total
+        
+        // Determinar color según el estado (convertir a minúsculas para comparar)
+        const estadoLower = diaData.estado?.toLowerCase() || '';
+        const esCerrado = estadoLower.includes('cerrado') || estadoLower.includes('cerrada');
+        
+        console.log(`Celda ${punto} día ${index + 1}: estado="${diaData.estado}", esCerrado=${esCerrado}`);
+        
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
-          fgColor: { argb: 'FF92D050' } // Verde
+          fgColor: { argb: esCerrado ? 'FFFF0000' : 'FF92D050' } // Rojo si está cerrado, verde si no
         };
         cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
       }
