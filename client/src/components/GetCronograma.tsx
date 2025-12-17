@@ -3,6 +3,7 @@ import { RenderFooterClients } from './paginationArq'
 import { useCrono } from '@/Services/GetCrono';
 import { TableCronograma } from './GetCrono/TableCronograma';
 import { Exportcom } from './Exportcom';
+import { ExportCronogramaBtn } from './ExportCronogramaBtn';
 
 
 const GetCronograma = (): JSX.Element => {
@@ -12,7 +13,7 @@ const GetCronograma = (): JSX.Element => {
 
     return (
         <div className="container px-4 mx-auto">
-            <Exportcom data={data} tipo="cronograma" />
+            <ExportCronogramaBtn data={data} />
             
             <TableCronograma datos={data} />
 
