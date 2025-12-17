@@ -41,9 +41,6 @@ export const ExportCronogramaBtn = ({ data }: Props) => {
                 return;
             }
 
-            console.log('Total datos obtenidos del servidor:', todosLosDatos.length);
-            console.log('Mes seleccionado:', mes, 'Año:', año);
-
             await exportarCronogramaCalendario({
                 registros: todosLosDatos,
                 nombreArchivo: "Cronograma_Calendario",

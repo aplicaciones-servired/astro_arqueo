@@ -44,12 +44,6 @@ export const exportarCronogramaCalendario = async ({
     return mesRegistro === mes && añoRegistro === año;
   });
 
-  console.log('Registros totales:', registros.length);
-  console.log('Registros filtrados:', registrosFiltrados.length);
-  console.log('Datos PALACE:', registrosFiltrados.filter(r => r.puntodeventa?.toUpperCase().includes('PALACE')));
-  console.log('Datos SONOCO:', registrosFiltrados.filter(r => r.puntodeventa?.toUpperCase().includes('SONOCO')));
-  console.log('Datos ESPAÑA:', registrosFiltrados.filter(r => r.puntodeventa?.toUpperCase().includes('ESPAÑA')));
-
   // Lista completa de puntos de venta
   const todosPuntos = [
     "PALACE", "PORTAL DE JD 1", "PORTAL DE JD 2", "PORTAL DEL JORDAN 1", "PORTAL DEL JORDAN 2",
@@ -100,16 +94,6 @@ export const exportarCronogramaCalendario = async ({
       r.puntodeventa?.toUpperCase().trim() === punto.toUpperCase().trim()
     );
     
-    // Debug para puntos con cronogramas
-    if (cronogramasPunto.length > 0) {
-      console.log(`${punto}: ${cronogramasPunto.length} cronogramas`, 
-        cronogramasPunto.map(c => {
-          const fechaCompleta = c.dia;
-          const fechaSolo = c.dia.split('T')[0];
-          return { fechaCompleta, fechaSolo };
-        }));
-    }
-    
     // Contar días programados
     const diasProgramados = cronogramasPunto.length;
     
@@ -152,8 +136,6 @@ export const exportarCronogramaCalendario = async ({
         // Determinar color según el estado (convertir a minúsculas para comparar)
         const estadoLower = diaData.estado?.toLowerCase() || '';
         const esCerrado = estadoLower.includes('cerrado') || estadoLower.includes('cerrada');
-        
-        console.log(`Celda ${punto} día ${index + 1}: estado="${diaData.estado}", esCerrado=${esCerrado}`);
         
         cell.fill = {
           type: 'pattern',
