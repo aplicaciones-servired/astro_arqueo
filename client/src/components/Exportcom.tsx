@@ -1,17 +1,20 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import type { Arqueos } from "@/types/arqueo";
-import { exportarAExcel } from "../ui/Export";
+import { exportarAExcel } from "./Exportar/Export";
 import type { Cronograma } from "@/types/cronograma";
-import Button from "../ui/Button";
+import Button from "./ui/Button";
 import { API_URL } from "@/utils/constans";
-import { useEmpresa } from "../ui/useEmpresa";
+import { useEmpresa } from "./ui/useEmpresa";
 import axios from "axios";
 import { Visitas } from "@/types/visita";
+import { exportarAExcelGlob } from "./Exportar/ExporGlob";
+import { exportarVisitasAExcel } from "./Exportar/ExportVisita";
+import { ArqueoManual } from "@/types/arqueomanual";
 
 interface PropsExport {
-  data: Arqueos[] | Cronograma[] | Visitas[];
-  tipo: "arqueo" | "cronograma" | "visita";
+  data: Arqueos[] | Cronograma[] | Visitas[] | ArqueoManual[];
+  tipo: "arqueo" | "cronograma" | "visita" | "ArqueosInfo" | "ArqueoManual";
 }
 
 export const Exportcom = ({ data, tipo }: PropsExport) => {
@@ -53,7 +56,11 @@ export const Exportcom = ({ data, tipo }: PropsExport) => {
           ? `${base}/arqueo?zona=${empresa}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&pageSize=1000000`
           : tipo === "visita"
             ? `${base}/visita?zona=${empresa}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&pageSize=1000000`
-            : `${base}/getcronograma?zona=${empresa}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&pageSize=1000000`;
+            : tipo === "ArqueosInfo"
+              ? `${base}/arqueo?zona=${empresa}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&pageSize=1000000`
+              : tipo === "ArqueoManual"
+                ? `${base}/getarqueomanual?zona=${empresa}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&pageSize=1000000`
+                : `${base}/getcronograma?zona=${empresa}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&pageSize=1000000`;
 
       const response = await axios.get(url);
       const todos: any[] = response.data?.datos ?? response.data ?? [];
@@ -61,8 +68,10 @@ export const Exportcom = ({ data, tipo }: PropsExport) => {
       const registrosFiltrados = todos.filter((item: any) => {
         let itemFecha: string;
 
-        if (tipo === "arqueo" || tipo === "visita") {
+        if (tipo === "arqueo" || tipo === "visita" || tipo === "ArqueosInfo") {
           itemFecha = new Date(item.fechavisita).toISOString().split("T")[0];
+        } else if (tipo === "ArqueoManual") {
+          itemFecha = new Date(item.fecha).toISOString().split("T")[0];
         } else {
           itemFecha = new Date(item.dia).toISOString().split("T")[0];
         }
@@ -80,10 +89,22 @@ export const Exportcom = ({ data, tipo }: PropsExport) => {
           nombreArchivo: "Arqueos",
           empresa: empresa,
         });
+      } if (tipo === "ArqueosInfo") {
+        exportarAExcelGlob({
+          registros: registrosFiltrados as Arqueos[],
+          nombreArchivo: "ArqueosInfo",
+          empresa: empresa,
+        });
       } else if (tipo === "visita") {
-        exportarAExcel({
+        exportarVisitasAExcel({
           registros: registrosFiltrados as Visitas[],
           nombreArchivo: "Visitas",
+          empresa: empresa,
+        });
+      } else if (tipo === "ArqueoManual") {
+        exportarAExcel({
+          registros: registrosFiltrados as ArqueoManual[],
+          nombreArchivo: "ArqueoManual",
           empresa: empresa,
         });
       } else {
@@ -109,7 +130,7 @@ export const Exportcom = ({ data, tipo }: PropsExport) => {
     <section className="container px-4 mt-5 ">
       <div className="mb-6 p-4 bg-white border border-indigo-200 rounded-lg shadow-lg shadow-blue-300/50">
         <h3 className="text-lg font-medium text-gray-700 mb-4">
-          Exportar {tipo === "arqueo" ? "Arqueos" : tipo === "visita" ? "Visitas" : "Cronogramas "}
+          Exportar {tipo === "arqueo" ? "Arqueos" : tipo === "visita" ? "Visitas" : tipo === "ArqueosInfo" ? "Arqueo Informacion" : tipo === "ArqueoManual" ? "Arqueo Manual" : "Cronogramas "}
         </h3>
 
         <div className="flex flex-col md:flex-row gap-4">

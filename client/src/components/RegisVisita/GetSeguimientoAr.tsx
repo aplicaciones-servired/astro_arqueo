@@ -4,7 +4,7 @@ import getFormattedDate from "../ui/getFormattedDate";
 import type { Arqueos } from "@/types/arqueo";
 import { useFilterPro } from "@/hooks/SeguiminetoFilters";
 import { useEmpresa } from "../ui/useEmpresa";
-import { exportarAExcel } from "../ui/Export";
+import { exportarAExcel } from "../Exportar/Export";
 interface PropsFooter {
   datos: Arqueos[];
   fecha: string;

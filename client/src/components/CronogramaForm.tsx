@@ -88,8 +88,6 @@ export default function CronogramaForm() {
                     />
                 </div>
 
-
-
                 <Button>
                     Guardar Arqueo
                 </Button>

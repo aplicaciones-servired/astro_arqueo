@@ -1,0 +1,16 @@
+---
+// src/pages/getarqueo.astro
+export const prerender = false;
+
+import { SignedIn } from "@clerk/astro/react";
+
+
+import Layout from "../layouts/Layout.astro";
+import GetArqueosInfo from "@/components/GetArqueosInfo";
+---
+
+<Layout>
+  <SignedIn>
+    <GetArqueosInfo client:only="react" />
+  </SignedIn>
+</Layout>

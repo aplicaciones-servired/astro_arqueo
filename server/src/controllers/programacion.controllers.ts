@@ -50,7 +50,7 @@ export const Programacionget = async (
   let whereClause: any = {};
 
   if (fechaInicio && fechaFin) {
-    whereClause.fechavisita = {
+    whereClause.dia = {
       [Op.between]: [fechaInicio, fechaFin],
     };
   }

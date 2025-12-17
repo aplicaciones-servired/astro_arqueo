@@ -3,7 +3,7 @@ import { useState, type JSX } from "react";
 import TableVista from "./RegisVisita/GetVisita";
 import TableSeguimiento from "./RegisVisita/GetSeguimientoAr";
 import { useArqueo } from "@/Services/Arqueo";
-import { Exportcom } from "./Arqueo/Exportcom";
+import { Exportcom } from "./Exportcom";
 
 function GetRegistro(): JSX.Element {
   const [fecha_visita, setFecha_visita] = useState("");

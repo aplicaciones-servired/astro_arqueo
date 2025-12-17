@@ -1,0 +1,50 @@
+{
+  "main": [
+    {
+      "name": "Home",
+      "url": "/getarqueo"
+    },
+    {
+      "name": "Arqueo",
+      "url": "",
+      "hasChildren": true,
+      "children": [
+        {
+          "name": "Arqueo manual",
+          "url": "/getarqueomanual"
+        },
+        {
+          "name": "Informacio PDV",
+          "url": "/getarqueoInfo"
+        }
+      ]
+    },
+    {
+      "name": "Cronograma",
+      "url": "",
+      "hasChildren": true,
+      "children": [
+        {
+          "name": "Insertar Cronogramas",
+          "url": "/cronograma"
+        },
+        {
+          "name": "Ver Cronogramas",
+          "url": "/getcronograma"
+        },
+        {
+          "name": "editar Cronogramas",
+          "url": "/updatecronograma"
+        }
+      ]
+    },
+    {
+      "name": "Registro",
+      "url": "getregistro"
+    },
+    {
+      "name": "Informe",
+      "url": "informe"
+    }
+  ]
+}

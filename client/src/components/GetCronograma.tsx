@@ -1,8 +1,8 @@
 import { type JSX } from 'react'
-import { RenderFooterClients } from './Arqueo/paginationArq'
+import { RenderFooterClients } from './paginationArq'
 import { useCrono } from '@/Services/GetCrono';
 import { TableCronograma } from './GetCrono/TableCronograma';
-import { Exportcom } from './Arqueo/Exportcom';
+import { Exportcom } from './Exportcom';
 
 
 const GetCronograma = (): JSX.Element => {

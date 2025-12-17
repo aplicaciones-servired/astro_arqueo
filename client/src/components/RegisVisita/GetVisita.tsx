@@ -2,7 +2,7 @@ import { useEffect, type JSX } from "react";
 import getFormattedDate from "../ui/getFormattedDate";
 import type { Visitas } from "@/types/visita";
 import { useFilterPro } from "@/hooks/Visitas.Filters";
-import { exportarAExcel } from "../ui/Export";
+import { exportarAExcel } from "../Exportar/Export";
 import { useEmpresa } from "../ui/useEmpresa";
 import Button from "../ui/Button";
 

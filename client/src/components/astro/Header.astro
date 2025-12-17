@@ -3,6 +3,9 @@ import HeaderLink from "./HeaderLink.astro";
 import "../../styles/global.css";
 import EmpresaSelector from "../ui/EmpresaSelector";
 import { SignedIn, UserButton } from "@clerk/astro/components";
+import menuData from "../../config/menu.json";
+
+const menuItems = menuData.main;
 ---
 
 <header class="bg-blue-200 text-black rounded-2xl shadow-md">
@@ -19,21 +22,31 @@ import { SignedIn, UserButton } from "@clerk/astro/components";
       <!-- Links Desktop -->
       <SignedIn>
         <ul class="hidden md:flex items-center space-x-8 font-semibold">
-          <HeaderLink href="/getarqueo" class="hover:scale-105 transition"
-            >Home</HeaderLink
-          >
-          <!-- <HeaderLink href="/cronograma" class="hover:scale-105 transition"
-            >Insertar Cronograma</HeaderLink
-          >
-          <HeaderLink href="/getcronograma" class="hover:scale-105 transition"
-            >Ver Cronograma</HeaderLink
-          > -->
-          <HeaderLink href="/getregistro" class="hover:scale-105 transition"
-            >Registro</HeaderLink
-          >
-          <!-- <HeaderLink href="/informe" class="hover:scale-105 transition"
-            >Informe</HeaderLink
-          > -->
+          {menuItems.map((item) => (
+            item.hasChildren ? (
+              <li class="relative group">
+                <button class="hover:scale-105 transition cursor-pointer py-2">
+                  {item.name}
+                  <svg class="inline-block w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <ul class="absolute left-0 top-full hidden group-hover:block bg-white shadow-lg rounded-lg py-2 min-w-[200px] z-50 -mt-1">
+                  {item.children?.map((child) => (
+                    <li>
+                      <HeaderLink href={child.url} class="block px-4 py-2 hover:bg-blue-100 text-gray-700">
+                        {child.name}
+                      </HeaderLink>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ) : (
+              <HeaderLink href={item.url} class="hover:scale-105 transition">
+                {item.name}
+              </HeaderLink>
+            )
+          ))}
         </ul>
       </SignedIn>
 
@@ -79,21 +92,30 @@ import { SignedIn, UserButton } from "@clerk/astro/components";
     >
       <SignedIn>
         <ul class="flex flex-col space-y-3 font-semibold text-center">
-          <HeaderLink href="/getarqueo" class="block hover:text-blue-600"
-            >Home</HeaderLink
-          >
-          <!-- <HeaderLink href="/cronograma" class="block hover:text-blue-600"
-            >Insertar Cronograma</HeaderLink
-          >
-          <HeaderLink href="/getcronograma" class="block hover:text-blue-600"
-            >Ver Cronograma</HeaderLink
-          > -->
-          <HeaderLink href="/getregistro" class="block hover:text-blue-600"
-            >Registro</HeaderLink
-          >
-          <!-- <HeaderLink href="/informe" class="block hover:text-blue-600"
-            >Informe</HeaderLink
-          > -->
+          {menuItems.map((item) => (
+            item.hasChildren ? (
+              <li class="block">
+                <details class="group">
+                  <summary class="cursor-pointer hover:text-blue-600 list-none">
+                    {item.name} ▼
+                  </summary>
+                  <ul class="mt-2 pl-4 space-y-2">
+                    {item.children?.map((child) => (
+                      <li>
+                        <HeaderLink href={child.url} class="block hover:text-blue-600 text-sm">
+                          {child.name}
+                        </HeaderLink>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              </li>
+            ) : (
+              <HeaderLink href={item.url} class="block hover:text-blue-600">
+                {item.name}
+              </HeaderLink>
+            )
+          ))}
         </ul>
         <!-- UserButton Móvil -->
         <div class="flex justify-center pt-2">
@@ -114,28 +136,45 @@ import { SignedIn, UserButton } from "@clerk/astro/components";
 </header>
 
 <script>
-  function initMenu() {
-    const menuBtn = document.getElementById("menu-btn");
-    const mobileMenu = document.getElementById("mobile-menu");
+  document.addEventListener("DOMContentLoaded", () => {
+    const dropdownButtons = document.querySelectorAll("[data-dropdown]");
 
-    // Limpiar eventos anteriores para evitar duplicados si se ejecuta varias veces
-    const newMenuBtn = menuBtn?.cloneNode(true);
-    if (menuBtn && newMenuBtn) {
-      menuBtn.parentNode?.replaceChild(newMenuBtn, menuBtn);
-    }
+    dropdownButtons.forEach((button) => {
+      const parent = button.closest("li");
+      const menu = parent?.querySelector(".dropdown-menu");
 
-    if (newMenuBtn && mobileMenu) {
-      newMenuBtn.addEventListener("click", () => {
-        mobileMenu.classList.toggle("hidden");
-        mobileMenu.classList.toggle("flex");
+      // Toggle en mobile
+      button.addEventListener("click", (e) => {
+        if (window.innerWidth < 768) {
+          e.preventDefault();
+          menu?.classList.toggle("hidden");
+        }
       });
-    }
-  }
 
-  // Ejecutar al cargar la página
-  initMenu();
+      // Mantener abierto en desktop cuando el mouse está sobre el menú
+      if (parent && menu) {
+        let timeoutId: number;
 
-  // Soporte para View Transitions de Astro (si las usas en el futuro)
-  document.addEventListener("astro:page-load", initMenu);
-  document.addEventListener("astro:after-swap", initMenu);
+        const show = () => {
+          if (window.innerWidth >= 768) {
+            clearTimeout(timeoutId);
+            menu.classList.remove("hidden");
+          }
+        };
+
+        const hide = () => {
+          if (window.innerWidth >= 768) {
+            timeoutId = window.setTimeout(() => {
+              menu.classList.add("hidden");
+            }, 100);
+          }
+        };
+
+        parent.addEventListener("mouseenter", show);
+        parent.addEventListener("mouseleave", hide);
+        menu.addEventListener("mouseenter", show);
+        menu.addEventListener("mouseleave", hide);
+      }
+    });
+  });
 </script>

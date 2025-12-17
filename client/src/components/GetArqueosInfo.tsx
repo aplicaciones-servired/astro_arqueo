@@ -1,8 +1,8 @@
 import { useArqueo } from "@/Services/Arqueo";
 import { useState, type JSX } from "react";
 import { Exportcom } from "./Exportcom";
-import { TableArqueo } from "./Arqueo/tableArqueo";
 import { RenderFooterClients } from "./paginationArq";
+import { TableArqueoInfo } from "./Arqueo/infopdv/TableInformacion";
 
 const Arqueo = (): JSX.Element => {
   const [fecha, setFecha] = useState("");
@@ -12,9 +12,9 @@ const Arqueo = (): JSX.Element => {
 
   return (
     <div className="container px-4 mx-auto">
-      <Exportcom data={data} tipo="arqueo" />
+      <Exportcom data={data} tipo="ArqueosInfo" />
 
-      <TableArqueo
+      <TableArqueoInfo
         datos={data}
         fecha={fecha}
         PDV={PDV}
