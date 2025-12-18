@@ -2,9 +2,8 @@ import { useEffect, type JSX } from "react";
 import getFormattedDate from "../ui/getFormattedDate";
 import type { Visitas } from "@/types/visita";
 import { useFilterPro } from "@/hooks/Visitas.Filters";
-import { exportarAExcel } from "../Exportar/Export";
 import { useEmpresa } from "../ui/useEmpresa";
-import Button from "../ui/Button";
+import { exportarVisitasAExcel } from "../Exportar/ExportVisita";
 
 interface PropsFooter {
   datos: Visitas[];
@@ -39,7 +38,7 @@ const TableVista = ({
           <button
             className="cursor-pointer middle none center mt-1 w-52 mr-3 rounded-lg bg-linear-to-tr from-blue-600 to-pink-400 py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
             onClick={() =>
-              exportarAExcel({
+              exportarVisitasAExcel({
                 registros: filteredPDV as Visitas[],
                 nombreArchivo: "visitas",
                 empresa: empresa,

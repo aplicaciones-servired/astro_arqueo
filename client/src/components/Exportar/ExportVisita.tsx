@@ -18,7 +18,7 @@ export const exportarVisitasAExcel = async ({
   const ws = wb.addWorksheet("Visitas");
 
   // Headers específicos para visitas
-  const headers = ['fechavisita', 'nombres', 'documento', 'sucursal', 'horavisita', 'nombrePuntoDeVenta', 'tiempo', 'tiempo_desplazamiento'];
+  const headers = ['fechavisita', 'nombres', 'documento', 'sucursal', 'horavisita', 'nombrePuntoDeVenta', 'tiempo'];
 
   const headerRow = ws.addRow(headers);
 
