@@ -1,12 +1,23 @@
 import { useState } from "react";
 import { useSucursales } from "@/Services/Sucursales";
 import { useCalendarioCronogramas } from "@/Services/CalendarioCrono";
+import { updateCronograma } from "@/Services/UpdateCronograma";
+import { useEmpresa } from "./ui/useEmpresa";
+import type { Cronograma } from "@/types/cronograma";
 
 export const CalendarioCronograma = () => {
   const [mes, setMes] = useState(new Date().getMonth() + 1);
   const [año, setAño] = useState(new Date().getFullYear());
   const { data: sucursales } = useSucursales();
   const { data: cronogramas, loading } = useCalendarioCronogramas();
+  const { empresa } = useEmpresa();
+  
+  // Estado para el modal de edición
+  const [modalAbierto, setModalAbierto] = useState(false);
+  const [cronogramaSeleccionado, setCronogramaSeleccionado] = useState<Cronograma | null>(null);
+  const [nuevoEstado, setNuevoEstado] = useState<string>("");
+  const [nuevaFecha, setNuevaFecha] = useState<string>("");
+  const [guardando, setGuardando] = useState(false);
 
   const diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
   const diasEnMes = new Date(año, mes, 0).getDate();
@@ -31,8 +42,8 @@ export const CalendarioCronograma = () => {
     return mesRegistro === mes && añoRegistro === año;
   });
 
-  // Obtener estado de un día específico para un punto
-  const getEstadoDia = (nombrePunto: string, numeroDia: number) => {
+  // Obtener cronograma de un día específico para un punto
+  const getCronogramaDia = (nombrePunto: string, numeroDia: number): Cronograma | null => {
     const fechaBuscada = `${año}-${String(mes).padStart(2, '0')}-${String(numeroDia).padStart(2, '0')}`;
     
     const cronograma = cronogramasFiltrados.find(c => {
@@ -43,7 +54,40 @@ export const CalendarioCronograma = () => {
       return fechaCrono === fechaBuscada && nombreCrono === nombreSucursal;
     });
 
-    return cronograma?.estado || null;
+    return cronograma || null;
+  };
+
+  // Abrir modal de edición
+  const handleClickCelda = (cronograma: Cronograma | null) => {
+    if (cronograma) {
+      setCronogramaSeleccionado(cronograma);
+      setNuevoEstado(cronograma.estado || "En Espera");
+      // Formatear fecha para input type="date" (YYYY-MM-DD)
+      const fechaFormateada = cronograma.dia.split('T')[0];
+      setNuevaFecha(fechaFormateada);
+      setModalAbierto(true);
+    }
+  };
+
+  // Guardar cambios del cronograma
+  const handleGuardar = async () => {
+    if (!cronogramaSeleccionado || !empresa) return;
+
+    setGuardando(true);
+    const success = await updateCronograma({
+      id: String(cronogramaSeleccionado.id),
+      estado: nuevoEstado,
+      fecha: nuevaFecha,
+      nota: cronogramaSeleccionado.nota,
+      zona: empresa,
+    });
+
+    setGuardando(false);
+    if (success) {
+      setModalAbierto(false);
+      // Recargar página para actualizar datos
+      window.location.reload();
+    }
   };
 
   // Obtener color según estado (usando estilos inline para garantizar aplicación)
@@ -207,21 +251,23 @@ export const CalendarioCronograma = () => {
                         {totalArqueos}
                       </td>
                       {dias.map((dia) => {
-                        const estado = getEstadoDia(sucursal.NOMBRE ?? '', dia.numero);
-                        const colorStyle = getColorEstado(estado);
+                        const cronograma = getCronogramaDia(sucursal.NOMBRE ?? '', dia.numero);
+                        const colorStyle = getColorEstado(cronograma?.estado || null);
                         
                         return (
                           <td
                             key={`${sucursal.CODIGO}-${dia.numero}`}
-                            className="border border-gray-300 text-center p-0"
+                            className="border border-gray-300 text-center p-0 cursor-pointer hover:opacity-80 transition-opacity"
                             style={{ 
                               minWidth: '35px', 
                               maxWidth: '35px', 
                               height: '34px',
-                              ...(colorStyle || { backgroundColor: '#f3f4f6' }) // gray-100 por defecto
+                              ...(colorStyle || { backgroundColor: '#f3f4f6' })
                             }}
+                            onClick={() => handleClickCelda(cronograma)}
+                            title={cronograma ? `${cronograma.estado} - Click para editar` : 'Sin cronograma'}
                           >
-                            {estado && (
+                            {cronograma && (
                               <div className="flex items-center justify-center w-full h-full">
                                 <span style={{ fontSize: '14px', fontWeight: '900' }}>1</span>
                               </div>
@@ -235,6 +281,88 @@ export const CalendarioCronograma = () => {
               )}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Modal de edición */}
+      {modalAbierto && cronogramaSeleccionado && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setModalAbierto(false)}>
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold text-gray-800">Editar Cronograma</h2>
+              <button 
+                onClick={() => setModalAbierto(false)}
+                className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Punto de Venta:</label>
+                <p className="text-gray-900 bg-gray-100 px-3 py-2 rounded">{cronogramaSeleccionado.puntodeventa}</p>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Fecha:</label>
+                <input
+                  type="date"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  value={nuevaFecha}
+                  onChange={(e) => setNuevaFecha(e.target.value)}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Estado Actual:</label>
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="w-4 h-4 rounded"
+                    style={getColorEstado(cronogramaSeleccionado.estado) || { backgroundColor: '#f3f4f6' }}
+                  ></div>
+                  <p className="text-gray-900 font-medium">{cronogramaSeleccionado.estado}</p>
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Cambiar Estado:</label>
+                <select 
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  value={nuevoEstado}
+                  onChange={(e) => setNuevoEstado(e.target.value)}
+                >
+                  <option value="En Espera">En Espera</option>
+                  <option value="Realizado">Realizado</option>
+                  <option value="Cerrado">Cerrado</option>
+                </select>
+              </div>
+            </div>
+            
+            <div className="mt-6 flex gap-3">
+              <button 
+                onClick={() => setModalAbierto(false)}
+                disabled={guardando}
+                className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={handleGuardar}
+                disabled={guardando}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {guardando ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    Guardando...
+                  </>
+                ) : (
+                  'Guardar'
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

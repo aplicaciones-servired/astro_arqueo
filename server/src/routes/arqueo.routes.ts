@@ -5,6 +5,7 @@ import {
   PostProgramacion,
   GetProgramacion,
   ProgramacionInforme,
+  UpdateProgramacion,
 } from "../controllers/programacion.controllers";
 import { getVisita } from "../controllers/Visita.controllers";
 import { GetArqueoManual, PostArqueoManual } from "../controllers/ArqueoManual";
@@ -23,6 +24,8 @@ arqueoRoute.get("/cronogramainforme", ProgramacionInforme);
 arqueoRoute.get("/getcronograma", Programacionget);
 
 arqueoRoute.post("/cronogramaid/:zona/:id", GetProgramacion);
+
+arqueoRoute.put("/updatecronograma/:id", UpdateProgramacion);
 
 arqueoRoute.get("/visita", getVisita);
 

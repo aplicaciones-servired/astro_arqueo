@@ -79,6 +79,39 @@ export const Programacionget = async (
   }
 };
 
+export const UpdateProgramacion = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { id } = req.params;
+  const { estado, fecha, nota, zona } = req.body;
+
+  const empresa = zona === "Multired" ? "Multired" : "Servired";
+  initCronograma(empresa);
+
+  try {
+    const cronograma = await getProgramacion.findByPk(id);
+
+    if (!cronograma) {
+      res.status(404).json({ message: "Cronograma no encontrado" });
+      return;
+    }
+
+    await cronograma.update({
+      estado: estado || cronograma.estado,
+      dia: fecha || cronograma.dia,
+      nota: nota !== undefined ? nota : cronograma.nota,
+    });
+
+    res.status(200).json({ 
+      message: "Cronograma actualizado exitosamente", 
+      data: cronograma 
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error al actualizar el cronograma", error });
+  }
+};
+
 export const GetProgramacion = async (
   req: Request,
   res: Response

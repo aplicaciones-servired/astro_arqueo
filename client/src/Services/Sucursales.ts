@@ -15,7 +15,6 @@ export function useSucursales() {
       try {
         const response = await axios.get(`${API_URL}/getsucursales/${empresa}`);
         setData(response.data.datos);
-        console.log("data", data);
       } catch {
         toast.error("Error al cargar los datos", { duration: 1000 });
       }

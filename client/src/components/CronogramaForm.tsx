@@ -40,7 +40,7 @@ export default function CronogramaForm() {
         sucursal.NOMBRE?.toLowerCase().includes(searchPunto.toLowerCase())
     );
 
-    console.log('Search:', searchPunto, 'Filtrados:', puntosFiltrados.length);
+
 
     const obtenerDiasDelMes = (fecha: Date) => {
         const año = fecha.getFullYear();
