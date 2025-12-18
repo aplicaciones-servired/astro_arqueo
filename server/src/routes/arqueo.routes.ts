@@ -8,6 +8,7 @@ import {
 } from "../controllers/programacion.controllers";
 import { getVisita } from "../controllers/Visita.controllers";
 import { GetArqueoManual, PostArqueoManual } from "../controllers/ArqueoManual";
+import { GetSucursales } from "../controllers/sucursales.controllers";
 
 export const arqueoRoute = Router();
 
@@ -29,3 +30,4 @@ arqueoRoute.post("/arqueomanual/:zona", PostArqueoManual);
 
 arqueoRoute.get("/getarqueomanual", GetArqueoManual);
 
+arqueoRoute.get("/getsucursales/:zona", GetSucursales);

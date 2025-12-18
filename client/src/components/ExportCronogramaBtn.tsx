@@ -5,6 +5,7 @@ import Button from "./ui/Button";
 import { toast } from "sonner";
 import { API_URL } from "@/utils/constans";
 import { useEmpresa } from "./ui/useEmpresa";
+import { useSucursales } from "@/Services/Sucursales";
 
 interface Props {
     data: Cronograma[];
@@ -14,6 +15,7 @@ export const ExportCronogramaBtn = ({ data }: Props) => {
     const [mes, setMes] = useState(new Date().getMonth() + 1); // 1-12
     const [año, setAño] = useState(new Date().getFullYear());
     const { empresa } = useEmpresa();
+    const { data: sucursales } = useSucursales();
     
     const handleExport = async () => {
         try {
@@ -43,7 +45,8 @@ export const ExportCronogramaBtn = ({ data }: Props) => {
 
             await exportarCronogramaCalendario({
                 registros: todosLosDatos,
-                nombreArchivo: "Cronograma_Calendario",
+                sucursales,
+                nombreArchivo: `Cronograma Calendario ${empresaStorage}`,
                 mes,
                 año,
             });

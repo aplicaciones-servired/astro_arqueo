@@ -1,8 +1,10 @@
 import { Workbook } from "exceljs";
 import type { Cronograma } from "@/types/cronograma";
+import type { Sucursal } from "@/types/sucursales";
 
 interface PropsExportCalendario {
   registros: Cronograma[];
+  sucursales: Sucursal[];
   nombreArchivo?: string;
   mes: number; // 1-12
   año: number;
@@ -10,19 +12,19 @@ interface PropsExportCalendario {
 
 export const exportarCronogramaCalendario = async ({
   registros,
+  sucursales,
   nombreArchivo = "Cronograma_Calendario",
   mes,
   año,
 }: PropsExportCalendario): Promise<void> => {
   if (!registros || registros.length === 0) return;
-
   const wb = new Workbook();
   const ws = wb.addWorksheet("Cronograma");
 
   // Obtener todos los días del mes
   const diasEnMes = new Date(año, mes, 0).getDate();
   const diasSemana = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
-  
+
   // Crear array de días con día de la semana
   const dias = Array.from({ length: diasEnMes }, (_, i) => {
     const fecha = new Date(año, mes - 1, i + 1);
@@ -40,26 +42,12 @@ export const exportarCronogramaCalendario = async ({
     const [añoStr, mesStr] = fechaStr.split('-');
     const añoRegistro = parseInt(añoStr);
     const mesRegistro = parseInt(mesStr);
-    
+
     return mesRegistro === mes && añoRegistro === año;
   });
 
-  // Lista completa de puntos de venta
-  const todosPuntos = [
-    "PALACE", "PORTAL DE JD 1", "PORTAL DE JD 2", "PORTAL DEL JORDAN 1", "PORTAL DEL JORDAN 2",
-    "SOCORRO", "SUERTE", "VILLA PAULINA", "PARQUE 2 (POLO)", "SUPERINTER",
-    "GALERIA 1", "GALERIA NUEVO", "SONOCO", "CASTILLO", "COUNTRY MALL", "CASA VERDI",
-    "ESPAÑA", "FLORENCIA", "HACIENDA", "MONTEBELLO", "PARQUE DEL AMOR", "CIRCUNVALAR",
-    "PASO LA BOLSA", "BONANZA 1", "BONANZA 2", "BONANZA 3", "BONANZA PPAL", "POTRERITO",
-    "CARIBE FARALLONES", "CIUDADELA LAS FLORES 1", "CIUDADELA LAS FLORES 2", "MARBELLA 1",
-    "MARBELLA 2", "VILLEGAS", "PINOS", "ADRIANITA", "CAÑAVERAL", "CARBONERO", "CARIBE",
-    "CENTENARIO", "CONFANDI NUEVO", "PILOTO 1", "ESMERALDA", "14 ALFAGUARA", "CONDADOS",
-    "GRAN COLOMBIA", "GYM MODERNO", "HOSPITAL", "PANGOS", "PLAZA AIRONE", "SACHAMATE 1",
-    "SACHAMATE 2", "PARQUEADERO", "SIMON BOLIVAR", "ESTACIONES 2 TERRANOVA", "PAISAJE LAS FLORES",
-    "TERRANOVA 1", "TERRANOVA 2", "TERRANOVA 3", "TERRANOVA 5", "TERRANOVA 6",
-    "PRINCIPAL (MESON)", "CAJERAS OFIC PPAL", "CONTAB OFIC PPAL", "TESOSERIA OFIC PPAL", "MONSERRATE"
-  ];
-
+ 
+  
   // Crear encabezados
   const headerRow1 = ws.addRow(['PUNTO DE VENTA / CODIGO', 'ARQUEOS PROGRAMADOS', ...dias.map(d => d.diaSemana)]);
   const headerRow2 = ws.addRow(['', '', ...dias.map(d => d.numero)]);
@@ -72,7 +60,7 @@ export const exportarCronogramaCalendario = async ({
     fgColor: { argb: 'FF4472C4' }
   };
   headerRow1.alignment = { vertical: 'middle', horizontal: 'center' };
-  
+
   headerRow2.font = { bold: true, color: { argb: 'FFFFFFFF' } };
   headerRow2.fill = {
     type: 'pattern',
@@ -89,23 +77,23 @@ export const exportarCronogramaCalendario = async ({
   }
 
   // Agregar filas para cada punto de venta
-  todosPuntos.forEach(punto => {
-    const cronogramasPunto = registrosFiltrados.filter(r => 
-      r.puntodeventa?.toUpperCase().trim() === punto.toUpperCase().trim()
+  sucursales.forEach(punto => {
+    const cronogramasPunto = registrosFiltrados.filter(r =>
+      r.puntodeventa?.toUpperCase().trim() === punto.NOMBRE?.toUpperCase().trim()
     );
-    
+
     // Contar días programados
     const diasProgramados = cronogramasPunto.length;
-    
+
     // Crear array de valores para los días con información de estado
     const valoresDias = dias.map(dia => {
       const fechaBuscada = `${año}-${String(mes).padStart(2, '0')}-${String(dia.numero).padStart(2, '0')}`;
-      
+
       const cronogramaDelDia = cronogramasPunto.find(c => {
         const fechaCrono = c.dia.split('T')[0];
         return fechaCrono === fechaBuscada;
       });
-      
+
       if (cronogramaDelDia) {
         // Retornar objeto con valor y estado
         return {
@@ -113,12 +101,12 @@ export const exportarCronogramaCalendario = async ({
           estado: cronogramaDelDia.estado
         };
       }
-      
+
       return { valor: '', estado: null };
     });
 
-    const row = ws.addRow([punto, diasProgramados, ...valoresDias.map(v => v.valor)]);
-    
+    const row = ws.addRow([punto.NOMBRE, diasProgramados, ...valoresDias.map(v => v.valor)]);
+
     // Aplicar estilo a la fila
     row.alignment = { vertical: 'middle', horizontal: 'center' };
     row.border = {
@@ -132,12 +120,12 @@ export const exportarCronogramaCalendario = async ({
     valoresDias.forEach((diaData, index) => {
       if (diaData.valor === '1') {
         const cell = row.getCell(index + 3); // +3 porque las primeras dos columnas son punto y total
-        
+
         // Determinar color según el estado (convertir a minúsculas para comparar)
         const estadoLower = diaData.estado?.toLowerCase() || '';
         const esCerrado = estadoLower.includes('cerrado') || estadoLower.includes('cerrada');
         const esRealizado = estadoLower.includes('Realizado'.toLowerCase());
-        
+
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -171,7 +159,7 @@ export const exportarCronogramaCalendario = async ({
   ws.addRow([]); // Fila vacía
   const leyendaTitulo = ws.addRow(['LEYENDA DE ESTADOS:']);
   leyendaTitulo.font = { bold: true, size: 12 };
-  
+
   // Fila con azul claro - En Espera
   const rowEspera = ws.addRow(['En Espera / Pendiente', '']);
   rowEspera.getCell(1).fill = {
@@ -181,7 +169,7 @@ export const exportarCronogramaCalendario = async ({
   };
   rowEspera.getCell(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
   rowEspera.getCell(1).alignment = { vertical: 'middle', horizontal: 'center' };
-  
+
   // Fila con verde - Realizado
   const rowRealizado = ws.addRow(['Realizado', '']);
   rowRealizado.getCell(1).fill = {
@@ -191,7 +179,7 @@ export const exportarCronogramaCalendario = async ({
   };
   rowRealizado.getCell(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
   rowRealizado.getCell(1).alignment = { vertical: 'middle', horizontal: 'center' };
-  
+
   // Fila con rojo - Cerrado
   const rowCerrado = ws.addRow(['Cerrado', '']);
   rowCerrado.getCell(1).fill = {

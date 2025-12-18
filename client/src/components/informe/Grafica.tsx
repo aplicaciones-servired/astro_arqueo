@@ -47,12 +47,37 @@ export default function SimpleCharts({
     }
   });
 
+  function calcularPorcentaje(valor: number, total: number): number {
+    if (total === 0) return 0;
+    return Math.round((valor / total) * 100);
+  }
+
+  const porcentajeEspera = calcularPorcentaje(totalEnEspera, filteredPDV.length);
+  const porcentajeEjecutados = calcularPorcentaje(totalEjecutados, filteredPDV.length);
+  const porcentajeCerrados = calcularPorcentaje(Cerrados, filteredPDV.length);
+  const porcentajeRetiro = calcularPorcentaje(Retiro, filteredPDV.length);
+
+  const cantidades = [
+    filteredPDV.length, // Programados
+    totalEnEspera,
+    totalEjecutados,
+    Retiro,
+    Cerrados,
+  ];
+
+  const porcentajes = [
+    null,
+    porcentajeEspera,
+    porcentajeEjecutados,
+    porcentajeRetiro,
+    porcentajeCerrados,
+  ];
+  
   return (
     <section className="flex justify-start">
       <BarChart
         xAxis={[
           {
-            id: "categorias",
             data: [
               "Programados",
               "Sin Ejecutar",
@@ -60,18 +85,24 @@ export default function SimpleCharts({
               "Por Retiro",
               "Cerrados",
             ],
-            scaleType: "band", // 👈 asegura que use etiquetas de texto
+            scaleType: "band",
           },
         ]}
         series={[
           {
-            data: [
-              filteredPDV.length,
-              totalEnEspera,
-              totalEjecutados,
-              Retiro,
-              Cerrados,
-            ],
+            label: "Cantidad",
+            data: cantidades,
+          },
+          {
+            label: "Porcentaje",
+            data: porcentajes,
+            valueFormatter: (value) => `${value}%`,
+          },
+        ]}
+        yAxis={[
+          {
+            min: 0,
+            max: 100,
           },
         ]}
         height={400}
