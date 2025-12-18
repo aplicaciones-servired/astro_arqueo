@@ -4,6 +4,7 @@ import { useCalendarioCronogramas } from "@/Services/CalendarioCrono";
 import { updateCronograma } from "@/Services/UpdateCronograma";
 import { useEmpresa } from "./ui/useEmpresa";
 import type { Cronograma } from "@/types/cronograma";
+import { meses } from "@/utils/constans";
 
 export const CalendarioCronograma = () => {
   const [mes, setMes] = useState(new Date().getMonth() + 1);
@@ -110,20 +111,6 @@ export const CalendarioCronograma = () => {
     return { backgroundColor: '#3b82f6', color: '#ffffff' }; // blue-500
   };
 
-  const meses = [
-    { valor: 1, nombre: "Enero" },
-    { valor: 2, nombre: "Febrero" },
-    { valor: 3, nombre: "Marzo" },
-    { valor: 4, nombre: "Abril" },
-    { valor: 5, nombre: "Mayo" },
-    { valor: 6, nombre: "Junio" },
-    { valor: 7, nombre: "Julio" },
-    { valor: 8, nombre: "Agosto" },
-    { valor: 9, nombre: "Septiembre" },
-    { valor: 10, nombre: "Octubre" },
-    { valor: 11, nombre: "Noviembre" },
-    { valor: 12, nombre: "Diciembre" },
-  ];
 
   const años = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i);
 
@@ -292,7 +279,7 @@ export const CalendarioCronograma = () => {
               <h2 className="text-xl font-bold text-gray-800">Editar Cronograma</h2>
               <button 
                 onClick={() => setModalAbierto(false)}
-                className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
+                className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl font-bold"
               >
                 ×
               </button>
@@ -328,7 +315,7 @@ export const CalendarioCronograma = () => {
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Cambiar Estado:</label>
                 <select 
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="cursor-pointer w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   value={nuevoEstado}
                   onChange={(e) => setNuevoEstado(e.target.value)}
                 >
@@ -343,18 +330,18 @@ export const CalendarioCronograma = () => {
               <button 
                 onClick={() => setModalAbierto(false)}
                 disabled={guardando}
-                className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold disabled:opacity-50"
+                className="cursor-pointer flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold disabled:opacity-50"
               >
                 Cancelar
               </button>
               <button 
                 onClick={handleGuardar}
                 disabled={guardando}
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
+                className="cursor-pointer flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {guardando ? (
                   <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <div className="cursor-pointer animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                     Guardando...
                   </>
                 ) : (

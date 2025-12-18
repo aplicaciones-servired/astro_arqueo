@@ -1,22 +1,8 @@
 import { useState } from "react";
 import { empresas, tipos } from "@/utils/constans";
 import { CronogramaSer } from "@/Services/CronogramaSer";
-import Button from "./ui/Button";
 import { toast } from "sonner";
 import { useSucursales } from "@/Services/Sucursales";
-
-const puntosDeVenta = [
-    "PALACE", "GALERIA 1", "GALERIA NUEVO", "SONOCO", "CASTILLO", "COUNTRY MALL", "CASA VERDI",
-    "ESPAÑA", "FLORENCIA", "HACIENDA", "MONTEBELLO", "PARQUE DEL AMOR", "CIRCUNVALAR",
-    "PASO LA BOLSA", "BONANZA 1", "BONANZA 2", "BONANZA 3", "BONANZA PPAL", "POTRERITO",
-    "CARIBE FARALLONES", "CIUDADELA LAS FLORES 1", "CIUDADELA LAS FLORES 2", "MARBELLA 1",
-    "MARBELLA 2", "VILLEGAS", "PINOS", "ADRIANITA", "CAÑAVERAL", "CARBONERO", "CARIBE",
-    "CENTENARIO", "CONFANDI NUEVO", "PILOTO 1", "ESMERALDA", "14 ALFAGUARA", "CONDADOS",
-    "GRAN COLOMBIA", "GYM MODERNO", "HOSPITAL", "PANGOS", "PLAZA AIRONE", "SACHAMATE 1",
-    "SACHAMATE 2", "PARQUEADERO", "SIMON BOLIVAR", "ESTACIONES 2 TERRANOVA", "PAISAJE LAS FLORES",
-    "TERRANOVA 1", "TERRANOVA 2", "TERRANOVA 3", "TERRANOVA 5", "TERRANOVA 6",
-    "PRINCIPAL (MESON)", "CAJERAS OFIC PPAL", "CONTAB OFIC PPAL", "TESOSERIA OFIC PPAL", "MONSERRATE"
-];
 
 export default function CronogramaForm() {
     const [puntoSeleccionado, setPuntoSeleccionado] = useState<string>("");
@@ -83,40 +69,6 @@ export default function CronogramaForm() {
         });
     };
 
-    const handleSubmit = async () => {
-        if (!puntoSeleccionado || !empresa || !nota) {
-            toast.warning("Complete: Punto de venta, Empresa y Motivo");
-            return;
-        }
-
-        if (diasSeleccionados.length === 0) {
-            toast.warning("Seleccione al menos un día en el calendario");
-            return;
-        }
-
-        toast.info(`Creando ${diasSeleccionados.length} cronogramas para ${puntoSeleccionado}...`);
-
-        let exitosos = 0;
-        for (const fecha of diasSeleccionados) {
-            const ok = await CronogramaSer({
-                puntovdt: puntoSeleccionado,
-                empresa,
-                nota,
-                fecha,
-            });
-            if (ok) exitosos++;
-        }
-
-        if (exitosos > 0) {
-            toast.success(`✅ ${exitosos} cronogramas creados para ${puntoSeleccionado}`);
-            // Limpiamos solo los días del punto actual después de guardar
-            setDiasPorPunto(prev => {
-                const nuevo = { ...prev };
-                delete nuevo[puntoSeleccionado];
-                return nuevo;
-            });
-        }
-    };
 
     const handleSubmitTodos = async () => {
         if (!empresa || !nota) {
