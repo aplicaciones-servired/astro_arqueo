@@ -6,4 +6,5 @@ export interface Cronograma {
   nota: string
   estado: string
   imagen: string | null
+  observacion: string 
 }

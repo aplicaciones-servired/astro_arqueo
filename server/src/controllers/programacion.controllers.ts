@@ -132,6 +132,7 @@ export const GetProgramacion = async (
         "nota",
         "estado",
         "imagen",
+        "observacion"
       ],
       where: { id: id },
       order: [["dia", "DESC"]],

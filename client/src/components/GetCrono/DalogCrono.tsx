@@ -98,6 +98,16 @@ export default function CronoDialogs({
               />
             </label>
 
+             <label className="block text-center mt-5 uppercase">
+              Observacion
+              <input
+                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
+                type="text"
+                disabled
+                defaultValue={items.observacion}
+              />
+            </label>
+
             <div className="flex justify-center ...">
               <div>
                 {items.imagen && (
