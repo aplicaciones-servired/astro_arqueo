@@ -18,7 +18,7 @@ interface VisitaPagi {
 export function useVisita(fecha_visita?: string) {
   const [data, setData] = useState<Visitas[]>([]);
   const [page, setPage] = useState(1);
-  const [pageSize] = useState(10);
+  const [pageSize] = useState(20);
   const [state, setState] = useState<VisitaPagi>({
     totalClients: 0,
   });
