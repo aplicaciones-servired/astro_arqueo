@@ -12,18 +12,14 @@ export function useSucursales() {
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
-      try {
         const response = await axios.get(`${API_URL}/getsucursales/${empresa}`);
         setData(response.data.datos);
-      } catch {
-        toast.error("Error al cargar los datos", { duration: 1000 });
-      }
     };
 
     void fetchData();
     const intervalId = setInterval(fetchData, 300000);
     return () => clearInterval(intervalId);
-  }, [empresa]);
+  }, [empresa, setData]);
 
   return {
     data,

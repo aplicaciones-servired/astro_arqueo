@@ -38,6 +38,10 @@ const TableInforme = ({
     (pdv) => pdv.nota === "ARQUEO DE RETIRO"
   ).length;
 
+  const NoSErealizo = filteredPDV.filter(
+    (pdv) => pdv.estado === "No Se Pudo Realizar"
+  ).length;
+
   const Cerrados = filteredPDV.filter((pdv) => pdv.estado === "Cerrado").length;
 
   useEffect(() => {
@@ -106,6 +110,9 @@ const TableInforme = ({
                     <th className="px-4 py-3.5 text-sm font-semibold text-left text-gray-900">
                       Cerrados
                     </th>
+                    <th className="px-4 py-3.5 text-sm font-semibold text-left text-gray-900">
+                      No Se Pudo Realizar
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="cursor-pointer bg-white divide-y divide-gray-200 hover:border-gray-300 hover:shadow-sm w-52">
@@ -125,6 +132,9 @@ const TableInforme = ({
                       </td>
                       <td className="px-4 py-4 text-sm text-gray-700">
                         {Cerrados}
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-700">
+                        {NoSErealizo}
                       </td>
                     </tr>
                   }

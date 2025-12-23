@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useSucursales } from "@/Services/Sucursales";
 import { useCalendarioCronogramas } from "@/Services/CalendarioCrono";
 import { updateCronograma } from "@/Services/UpdateCronograma";
-import { useEmpresa } from "./ui/useEmpresa";
+import { useEmpresa } from "../ui/useEmpresa";
 import type { Cronograma } from "@/types/cronograma";
 import { meses } from "@/utils/constans";
+import { toast } from "sonner";
+
 
 export const CalendarioCronograma = () => {
   const [mes, setMes] = useState(new Date().getMonth() + 1);
@@ -12,7 +14,7 @@ export const CalendarioCronograma = () => {
   const { data: sucursales } = useSucursales();
   const { data: cronogramas, loading } = useCalendarioCronogramas();
   const { empresa } = useEmpresa();
-  
+
   // Estado para el modal de edición
   const [modalAbierto, setModalAbierto] = useState(false);
   const [cronogramaSeleccionado, setCronogramaSeleccionado] = useState<Cronograma | null>(null);
@@ -46,12 +48,12 @@ export const CalendarioCronograma = () => {
   // Obtener cronograma de un día específico para un punto
   const getCronogramaDia = (nombrePunto: string, numeroDia: number): Cronograma | null => {
     const fechaBuscada = `${año}-${String(mes).padStart(2, '0')}-${String(numeroDia).padStart(2, '0')}`;
-    
+
     const cronograma = cronogramasFiltrados.find(c => {
       const fechaCrono = c.dia.split('T')[0];
       const nombreCrono = c.puntodeventa?.toUpperCase().trim();
       const nombreSucursal = nombrePunto?.toUpperCase().trim();
-      
+
       return fechaCrono === fechaBuscada && nombreCrono === nombreSucursal;
     });
 
@@ -94,25 +96,34 @@ export const CalendarioCronograma = () => {
   // Obtener color según estado (usando estilos inline para garantizar aplicación)
   const getColorEstado = (estado: string | null) => {
     if (!estado) return null;
-    
+
     const estadoLower = estado.toLowerCase().trim();
-    
+
     // Rojo - Cerrado
     if (estadoLower === 'cerrado' || estadoLower === 'cerrada' || estadoLower.includes('cerrado')) {
       return { backgroundColor: '#dc2626', color: '#ffffff' }; // red-600
     }
-    
+
     // Verde - Realizado
     if (estadoLower === 'realizado' || estadoLower.includes('realizado')) {
       return { backgroundColor: '#16a34a', color: '#ffffff' }; // green-600
     }
-    
+
+    // Gris - No Se Pudo Realizar
+    if (estadoLower === 'no se pudo realizar' || estadoLower.includes('no se pudo realizar')) {
+      return { backgroundColor: '#6b7280', color: '#ffffff' }; // gray-600
+    }
+
     // Azul - En Espera (por defecto)
     return { backgroundColor: '#3b82f6', color: '#ffffff' }; // blue-500
   };
 
 
   const años = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i);
+
+  if (cronogramasFiltrados.length === 0) {
+    toast.warning("No hay cronogramas para el mes y año seleccionados.", { duration: 1000 });
+  }
 
   return (
     <div className="w-full mx-auto">
@@ -170,6 +181,10 @@ export const CalendarioCronograma = () => {
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 bg-red-600 rounded border border-gray-300"></div>
             <span>Cerrado</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 bg-gray-500 rounded border border-gray-300"></div>
+            <span>No Se Pudo Realizar</span>
           </div>
         </div>
       </div>
@@ -240,14 +255,14 @@ export const CalendarioCronograma = () => {
                       {dias.map((dia) => {
                         const cronograma = getCronogramaDia(sucursal.NOMBRE ?? '', dia.numero);
                         const colorStyle = getColorEstado(cronograma?.estado || null);
-                        
+
                         return (
                           <td
                             key={`${sucursal.CODIGO}-${dia.numero}`}
                             className="border border-gray-300 text-center p-0 cursor-pointer hover:opacity-80 transition-opacity"
-                            style={{ 
-                              minWidth: '35px', 
-                              maxWidth: '35px', 
+                            style={{
+                              minWidth: '35px',
+                              maxWidth: '35px',
                               height: '34px',
                               ...(colorStyle || { backgroundColor: '#f3f4f6' })
                             }}
@@ -277,20 +292,20 @@ export const CalendarioCronograma = () => {
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold text-gray-800">Editar Cronograma</h2>
-              <button 
+              <button
                 onClick={() => setModalAbierto(false)}
                 className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl font-bold"
               >
                 ×
               </button>
             </div>
-            
+
             <div className="space-y-3">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Punto de Venta:</label>
                 <p className="text-gray-900 bg-gray-100 px-3 py-2 rounded">{cronogramaSeleccionado.puntodeventa}</p>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Fecha:</label>
                 <input
@@ -300,18 +315,18 @@ export const CalendarioCronograma = () => {
                   onChange={(e) => setNuevaFecha(e.target.value)}
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Estado Actual:</label>
                 <div className="flex items-center gap-2">
-                  <div 
+                  <div
                     className="w-4 h-4 rounded"
                     style={getColorEstado(cronogramaSeleccionado.estado) || { backgroundColor: '#f3f4f6' }}
                   ></div>
                   <p className="text-gray-900 font-medium">{cronogramaSeleccionado.estado}</p>
                 </div>
               </div>
-              
+
               {/* <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Cambiar Estado:</label>
                 <select 
@@ -325,16 +340,16 @@ export const CalendarioCronograma = () => {
                 </select>
               </div> */}
             </div>
-            
+
             <div className="mt-6 flex gap-3">
-              <button 
+              <button
                 onClick={() => setModalAbierto(false)}
                 disabled={guardando}
                 className="cursor-pointer flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold disabled:opacity-50"
               >
                 Cancelar
               </button>
-              <button 
+              <button
                 onClick={handleGuardar}
                 disabled={guardando}
                 className="cursor-pointer flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold disabled:opacity-50 flex items-center justify-center gap-2"

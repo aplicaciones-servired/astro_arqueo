@@ -29,6 +29,10 @@ export default function SimpleCharts({
     (pdv) => pdv.estado === "Realizado"
   ).length;
 
+  const NoseRealizo = filteredPDV.filter(
+    (pdv) => pdv.estado === "No Se Pudo Realizar"
+  ).length;
+
   const Retiro = filteredPDV.filter(
     (pdv) => pdv.nota === "ARQUEO DE RETIRO"
   ).length;
@@ -56,6 +60,7 @@ export default function SimpleCharts({
   const porcentajeEjecutados = calcularPorcentaje(totalEjecutados, filteredPDV.length);
   const porcentajeCerrados = calcularPorcentaje(Cerrados, filteredPDV.length);
   const porcentajeRetiro = calcularPorcentaje(Retiro, filteredPDV.length);
+  const porcentajeNoseRealizo = calcularPorcentaje(NoseRealizo, filteredPDV.length);
 
   const cantidades = [
     filteredPDV.length, // Programados
@@ -63,6 +68,7 @@ export default function SimpleCharts({
     totalEjecutados,
     Retiro,
     Cerrados,
+    NoseRealizo
   ];
 
   const porcentajes = [
@@ -71,8 +77,9 @@ export default function SimpleCharts({
     porcentajeEjecutados,
     porcentajeRetiro,
     porcentajeCerrados,
+    porcentajeNoseRealizo
   ];
-  
+
   return (
     <section className="flex justify-start">
       <BarChart
@@ -84,6 +91,7 @@ export default function SimpleCharts({
               "Ejecutados",
               "Por Retiro",
               "Cerrados",
+              "No Se Pudo Realizar",
             ],
             scaleType: "band",
           },

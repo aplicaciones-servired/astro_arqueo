@@ -6,47 +6,71 @@ import { SignedIn, UserButton } from "@clerk/astro/components";
 import menuData from "../../config/menu.json";
 
 const menuItems = menuData.main;
+
+const currentUrl = Astro.url;
+console.log(currentUrl.pathname); // /ruta/actual
 ---
 
 <header class="bg-blue-200 text-black rounded-2xl shadow-md">
   <div class="container mx-auto px-5 py-4">
     <div class="flex items-center justify-between">
       <!-- Selector de Empresa -->
-      <div class="flex items-center space-x-4">
-        <div class="w-44">
-          selecionar empresa:
-          <EmpresaSelector client:load />
-        </div>
+      <div>
+        {
+          currentUrl.pathname !== "/cronograma" && (
+            <div class="flex items-center space-x-4" aria-disabled="true">
+              <div class="w-44">
+                selecionar empresa:
+                <EmpresaSelector client:load />
+              </div>
+            </div>
+          )
+        }
       </div>
 
       <!-- Links Desktop -->
       <SignedIn>
         <ul class="hidden md:flex items-center space-x-8 font-semibold">
-          {menuItems.map((item) => (
-            item.hasChildren ? (
-              <li class="relative group">
-                <button class="hover:scale-105 transition cursor-pointer py-2">
+          {
+            menuItems.map((item) =>
+              item.hasChildren ? (
+                <li class="relative group">
+                  <button class="hover:scale-105 transition cursor-pointer py-2">
+                    {item.name}
+                    <svg
+                      class="inline-block w-4 h-4 ml-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+                  <ul class="absolute left-0 top-full hidden group-hover:block bg-white shadow-lg rounded-lg py-2 min-w-[200px] z-50 -mt-1">
+                    {item.children?.map((child) => (
+                      <li>
+                        <HeaderLink
+                          href={child.url}
+                          class="block px-4 py-2 hover:bg-blue-100 text-gray-700"
+                        >
+                          {child.name}
+                        </HeaderLink>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ) : (
+                <HeaderLink href={item.url} class="hover:scale-105 transition">
                   {item.name}
-                  <svg class="inline-block w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                <ul class="absolute left-0 top-full hidden group-hover:block bg-white shadow-lg rounded-lg py-2 min-w-[200px] z-50 -mt-1">
-                  {item.children?.map((child) => (
-                    <li>
-                      <HeaderLink href={child.url} class="block px-4 py-2 hover:bg-blue-100 text-gray-700">
-                        {child.name}
-                      </HeaderLink>
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ) : (
-              <HeaderLink href={item.url} class="hover:scale-105 transition">
-                {item.name}
-              </HeaderLink>
+                </HeaderLink>
+              )
             )
-          ))}
+          }
         </ul>
       </SignedIn>
 
@@ -92,30 +116,35 @@ const menuItems = menuData.main;
     >
       <SignedIn>
         <ul class="flex flex-col space-y-3 font-semibold text-center">
-          {menuItems.map((item) => (
-            item.hasChildren ? (
-              <li class="block">
-                <details class="group">
-                  <summary class="cursor-pointer hover:text-blue-600 list-none">
-                    {item.name} ▼
-                  </summary>
-                  <ul class="mt-2 pl-4 space-y-2">
-                    {item.children?.map((child) => (
-                      <li>
-                        <HeaderLink href={child.url} class="block hover:text-blue-600 text-sm">
-                          {child.name}
-                        </HeaderLink>
-                      </li>
-                    ))}
-                  </ul>
-                </details>
-              </li>
-            ) : (
-              <HeaderLink href={item.url} class="block hover:text-blue-600">
-                {item.name}
-              </HeaderLink>
+          {
+            menuItems.map((item) =>
+              item.hasChildren ? (
+                <li class="block">
+                  <details class="group">
+                    <summary class="cursor-pointer hover:text-blue-600 list-none">
+                      {item.name} ▼
+                    </summary>
+                    <ul class="mt-2 pl-4 space-y-2">
+                      {item.children?.map((child) => (
+                        <li>
+                          <HeaderLink
+                            href={child.url}
+                            class="block hover:text-blue-600 text-sm"
+                          >
+                            {child.name}
+                          </HeaderLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                </li>
+              ) : (
+                <HeaderLink href={item.url} class="block hover:text-blue-600">
+                  {item.name}
+                </HeaderLink>
+              )
             )
-          ))}
+          }
         </ul>
         <!-- UserButton Móvil -->
         <div class="flex justify-center pt-2">

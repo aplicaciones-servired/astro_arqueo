@@ -33,9 +33,6 @@ export const GetSucursales = async (
 
     res.status(200).json({ message: "informacion obtenida", datos });
   } catch (error) {
-    console.error("Error al obtener arqueo manual:", error);
-    res
-      .status(500)
-      .json({ message: "Error al obtener el arqueo manual", error });
+    res.status(500).json({ message: "Error al obtener las sucursales", error });
   }
 };

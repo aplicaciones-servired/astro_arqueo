@@ -125,11 +125,12 @@ export const exportarCronogramaCalendario = async ({
         const estadoLower = diaData.estado?.toLowerCase() || '';
         const esCerrado = estadoLower.includes('cerrado') || estadoLower.includes('cerrada');
         const esRealizado = estadoLower.includes('Realizado'.toLowerCase());
+        const esNoSeRealizo = estadoLower.includes('no se pudo realizar');
 
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
-          fgColor: { argb: esCerrado ? 'FFFF0000' : esRealizado ? 'FF00FF00' : 'FF87CEEB' } // Rojo si está cerrado, verde si realizado, azul claro si está en espera
+          fgColor: { argb: esCerrado ? 'FFFF0000' : esRealizado ? 'FF00FF00' : esNoSeRealizo ? 'FF808080' : 'FF87CEEB' } // Rojo si está cerrado, verde si realizado, gris si no se pudo realizar, azul claro si está en espera
         };
         cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
       }
@@ -189,6 +190,16 @@ export const exportarCronogramaCalendario = async ({
   };
   rowCerrado.getCell(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
   rowCerrado.getCell(1).alignment = { vertical: 'middle', horizontal: 'center' };
+
+   // Fila con gris - No Se Pudo Realizar
+  const rowNoSeRealizo = ws.addRow(['No Se Pudo Realizar', '']);
+  rowNoSeRealizo.getCell(1).fill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: 'FF808080' }
+  };
+  rowNoSeRealizo.getCell(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+  rowNoSeRealizo.getCell(1).alignment = { vertical: 'middle', horizontal: 'center' };
 
   // Generar archivo
   const buffer = await wb.xlsx.writeBuffer();

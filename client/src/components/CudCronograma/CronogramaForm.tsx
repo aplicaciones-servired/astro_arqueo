@@ -3,10 +3,11 @@ import { empresas, tipos } from "@/utils/constans";
 import { CronogramaSer } from "@/Services/CronogramaSer";
 import { toast } from "sonner";
 import { useSucursales } from "@/Services/Sucursales";
+import { useEmpresa } from "../ui/useEmpresa";
 
 export default function CronogramaForm() {
     const [puntoSeleccionado, setPuntoSeleccionado] = useState<string>("");
-    const [empresa, setEmpresa] = useState<string>("");
+    const { empresa, setEmpresa } = useEmpresa();
     const [nota, setNota] = useState<string>("");
     const [mesActual, setMesActual] = useState(new Date());
     const [diasPorPunto, setDiasPorPunto] = useState<Record<string, string[]>>({});
@@ -122,13 +123,17 @@ export default function CronogramaForm() {
                 <div className="flex-1 min-w-[250px] max-w-[320px]">
                     <label className="block text-center mb-2 uppercase font-bold text-sm text-blue-900">🏢 Empresa:</label>
                     <select
+                        id="empresa"
+                        name="empresa"
                         value={empresa}
                         onChange={(e) => setEmpresa(e.target.value)}
                         className="w-full px-4 py-2.5 text-center rounded-lg border-2 border-blue-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white font-medium shadow-sm"
                     >
-                        <option value="">Seleccione una empresa</option>
-                        {empresas.map((e) => (
-                            <option key={e} value={e}>{e}</option>
+                        <option value="">Cambiar de empresa</option>
+                        {empresas.map((item) => (
+                            <option key={item} value={item}>
+                                {item}
+                            </option>
                         ))}
                     </select>
                 </div>
