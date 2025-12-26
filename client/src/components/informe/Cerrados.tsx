@@ -2,7 +2,6 @@ import { useEffect, type JSX } from "react";
 import type { Cronograma } from "@/types/cronograma";
 
 import { useFilterPro } from "@/hooks/InformeFilter";
-import { exportarInformeExcel } from "../Exportar/exportarInformeExcel";
 
 interface PropsFooter {
   datos: Cronograma[];
@@ -43,21 +42,6 @@ const Cerrados = ({
   }, {} as Record<string, { cantidad: number; fecha: string; estado: string }>);
 
   const listaUnica = Object.entries(resumenPuntos);
-
-  const resumenCerrados = filteredPDV.reduce((acc, pdv) => {
-    if (pdv.estado === "Cerrado") {
-      if (!acc[pdv.puntodeventa]) {
-        acc[pdv.puntodeventa] = {
-          cantidad: 0,
-          fecha: pdv.dia,
-          estado: pdv.estado,
-        };
-      }
-      acc[pdv.puntodeventa].cantidad++;
-    }
-    return acc;
-  }, {} as Record<string, any>);
-
 
   return (
     <>
@@ -125,13 +109,6 @@ const Cerrados = ({
             </div>
           </div>
         </div>
-        <button
-          onClick={() => exportarInformeExcel(filteredPDV)}
-          className="bg-green-600 text-white px-4 py-2 rounded cursor-pointer hover:bg-green-700 transition-colors mt-6"
-        >
-          Exportar Excel
-        </button>
-
       </div>
     </>
   );

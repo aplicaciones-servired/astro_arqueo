@@ -2,6 +2,7 @@ import { useEffect, type JSX } from "react";
 import type { Cronograma } from "@/types/cronograma";
 
 import { useFilterPro } from "@/hooks/InformeFilter";
+import { exportarInformeExcel } from "../Exportar/exportarInformeExcel";
 interface PropsFooter {
   datos: Cronograma[];
   fechaInicio: string;
@@ -82,6 +83,13 @@ const TableInforme = ({
                   />
                 </label>
               </div>
+
+              <button
+                onClick={() => exportarInformeExcel(filteredPDV)}
+                className="bg-green-600 text-white px-4 py-2 rounded cursor-pointer hover:bg-green-700 transition-colors mt-6"
+              >
+                Exportar Excel
+              </button>
             </div>
           </div>
         </section>
