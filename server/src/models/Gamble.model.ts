@@ -6,6 +6,7 @@ class Gamble extends Model<InferAttributes<Gamble>, InferCreationAttributes<Gamb
     declare CODIGO: number;
     declare NOMBRE: string | null;
     declare ESTADO: string | null;
+    declare TIPO: string | null;
 }
 
 Gamble.init({
@@ -13,6 +14,7 @@ Gamble.init({
     CODIGO: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true },
     NOMBRE: { type: DataTypes.STRING(40), allowNull: true },
     ESTADO: { type: DataTypes.STRING(15), allowNull: true },
+    TIPO: { type: DataTypes.STRING(15), allowNull: true },
 }, {
     sequelize: getPoolGamble,
     tableName: 'SUCURSALES',

@@ -7,6 +7,7 @@ export const GetSucursales = async (
   res: Response
 ): Promise<void> => {
   const zona = req.params.zona;
+  const tipo = req.params.tipo as string;
 
   if (zona === undefined) {
     res.status(400).json("Zona no válida");
@@ -23,6 +24,10 @@ export const GetSucursales = async (
     };
     whereClause.ESTADO = {
       [Op.like]: "A",
+    };
+  } else if (tipo) {
+    whereClause.TIPO = {
+      [Op.eq]: tipo,
     };
   }
 

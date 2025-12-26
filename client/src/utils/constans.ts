@@ -1,10 +1,9 @@
-// --- Empresas y tipos disponibles
-export const empresas = ['Multired', 'Servired'];
-export const tipos = ['PROGRAMACION DEL MES', 'ARQUEO DE RETIRO'];
-
 // --- Variables de entorno públicas (client + server)
 export const API_URL = import.meta.env.PUBLIC_URL_API;
 
+// --- Empresas y tipos disponibles
+export const empresas = ['Multired', 'Servired'];
+export const tipos = ['PROGRAMACION DEL MES', 'ARQUEO DE RETIRO'];
 
 export const meses = [
     { valor: 1, nombre: "Enero" },
@@ -21,3 +20,9 @@ export const meses = [
     { valor: 12, nombre: "Diciembre" },
   ];
 
+
+export const tipoSucursal = [
+  { valor: 'TAT', nombre: 'TAT' },
+  { valor: 'PF', nombre: 'PUNTO FIJO' },
+  { valor: 'MOVIL', nombre: 'MOVIL' }
+];

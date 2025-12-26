@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { empresas, tipos } from "@/utils/constans";
+import { empresas, tipos, tipoSucursal } from "@/utils/constans";
 import { CronogramaSer } from "@/Services/CronogramaSer";
 import { toast } from "sonner";
 import { useSucursales } from "@/Services/Sucursales";
@@ -12,7 +12,8 @@ export default function CronogramaForm() {
     const [mesActual, setMesActual] = useState(new Date());
     const [diasPorPunto, setDiasPorPunto] = useState<Record<string, string[]>>({});
     const [searchPunto, setSearchPunto] = useState("");
-    const { data: sucursales } = useSucursales();
+    const [tipo, setTipo] = useState<string>("");
+    const { data: sucursales } = useSucursales( tipo );
     const seleccionarPunto = (punto: string) => {
         setPuntoSeleccionado(punto);
     };
@@ -24,7 +25,7 @@ export default function CronogramaForm() {
     const todosLosDiasSeleccionados = Object.values(diasPorPunto).flat();
 
     const puntosFiltrados = sucursales.filter(sucursal =>
-        sucursal.NOMBRE?.toLowerCase().includes(searchPunto.toLowerCase())
+        sucursal.NOMBRE?.toLowerCase().includes(searchPunto.toLowerCase()) && (tipo ? sucursal.TIPO === tipo : true)
     );
 
 
@@ -174,6 +175,25 @@ export default function CronogramaForm() {
                             onChange={(e) => setSearchPunto(e.target.value)}
                             className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                         />
+                    </div>
+
+                    {/* Buscador */}
+                    <div className="p-4 bg-gray-50 border-b border-gray-200">
+                        <label className="block text-center mb-2 uppercase font-bold text-sm text-blue-900">tipo de punto de venta:</label>
+                        <select
+                            id="tipo"
+                            name="tipo"
+                            value={tipo}
+                            onChange={(e) => setTipo(e.target.value)}
+                            className="w-full px-4 py-2.5 text-center rounded-lg border-2 border-blue-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white font-medium shadow-sm"
+                        >
+                            <option value="">Selecione El Tipo</option>
+                            {tipoSucursal.map((item) => (
+                                <option key={item.valor} value={item.valor}>
+                                    {item.nombre}
+                                </option>
+                            ))}
+                        </select>
                     </div>
 
                     {/* Lista scrollable */}
