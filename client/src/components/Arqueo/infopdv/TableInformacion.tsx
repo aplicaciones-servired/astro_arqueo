@@ -126,7 +126,7 @@ const TableArqueoInfo = ({
                                                 {pdv.totalarqueo}
                                             </td>
                                             <td className="px-4 py-4 text-sm text-gray-900">
-                                                <div className={'font-bold border rounded-2xl shadow-md p-1 flex justify-center' + (pdv.totalingreso - pdv.totalarqueo !== 0 ? ' text-red-600' : ' text-green-600')}>
+                                                <div className={'font-bold border rounded-2xl shadow-md p-1 flex justify-center' + (pdv.totalingreso - pdv.totalarqueo > 0 ? ' text-red-600' : ' text-green-600')}>
                                                     {pdv.totalingreso - pdv.totalarqueo}
                                                 </div>
                                             </td>
