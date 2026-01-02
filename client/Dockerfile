@@ -8,7 +8,10 @@ COPY package.json ./
 COPY package-lock.json ./
 # Copiar .env si es necesario para el build
 COPY .env ./
-RUN npm install --legacy-peer-deps
+# Instalar dependencias de build necesarias para módulos nativos
+RUN apk add --no-cache python3 make g++ \
+	&& npm install --legacy-peer-deps \
+	&& apk del python3 make g++
 
 COPY . .
 
