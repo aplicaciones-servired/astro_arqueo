@@ -1,5 +1,5 @@
 # Etapa de build
-FROM node:slim
+FROM node:slim AS build
 WORKDIR /app
 
 # Copiar el archivo .env ANTES de instalar dependencias
