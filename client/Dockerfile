@@ -1,17 +1,10 @@
 # Etapa de build
-FROM node:20-alpine AS build
+FROM node:slim
 WORKDIR /app
 
-# 👇 dependencias necesarias para paquetes nativos
-RUN apk add --no-cache \
-  python3 \
-  make \
-  g++ \
-  libc6-compat
-
+# Copiar el archivo .env ANTES de instalar dependencias
 COPY package*.json ./
 COPY .env ./
-
 RUN npm install --legacy-peer-deps
 
 COPY . .
