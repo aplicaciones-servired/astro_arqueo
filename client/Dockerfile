@@ -2,8 +2,11 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 
-# Copiar el archivo .env ANTES de instalar dependencias
-COPY package*.json ./
+
+# Copiar package.json y package-lock.json antes de instalar dependencias
+COPY package.json ./
+COPY package-lock.json ./
+# Copiar .env si es necesario para el build
 COPY .env ./
 RUN npm install --legacy-peer-deps
 
