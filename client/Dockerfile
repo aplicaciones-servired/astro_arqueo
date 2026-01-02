@@ -2,16 +2,17 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 
+# 👇 dependencias necesarias para paquetes nativos
+RUN apk add --no-cache \
+  python3 \
+  make \
+  g++ \
+  libc6-compat
 
-# Copiar package.json y package-lock.json antes de instalar dependencias
-COPY package.json ./
-COPY package-lock.json ./
-# Copiar .env si es necesario para el build
+COPY package*.json ./
 COPY .env ./
-# Instalar dependencias de build necesarias para módulos nativos
-RUN apk add --no-cache python3 make g++ \
-	&& npm install --legacy-peer-deps \
-	&& apk del python3 make g++
+
+RUN npm install --legacy-peer-deps
 
 COPY . .
 
@@ -28,7 +29,7 @@ WORKDIR /app
 COPY --from=build /app /app
 ENV NODE_ENV=production
 
-# Asegurar que el .env estÃƒÂ© disponible
+# Asegurar que el .env estÃ© disponible
 COPY --from=build /app/.env ./
 
 EXPOSE 4321
