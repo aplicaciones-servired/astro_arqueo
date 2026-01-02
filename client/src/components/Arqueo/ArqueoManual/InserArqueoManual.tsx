@@ -5,6 +5,7 @@ import { useEmpresa } from "@/components/ui/useEmpresa";
 
 export const InserArqueoManual = () => {
     const { empresa } = useEmpresa();
+    
     const [form, setForm] = useState({
         puntodeventa: "",
         nombre: "",

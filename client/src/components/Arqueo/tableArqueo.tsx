@@ -3,6 +3,8 @@ import CustomizedDialogs from "./DalogArqueo";
 import type { Arqueos } from "@/types/arqueo";
 import { useFilter } from "@/hooks/useFilters";
 import getFormattedDate from "../ui/getFormattedDate";
+import { toast } from "sonner";
+import { duration } from "@mui/material/styles";
 
 interface PropsFooter {
   datos: Arqueos[];
@@ -27,7 +29,20 @@ export const TableArqueo = ({
   useEffect(() => {
     setFecha(searchfecha);
     setPDV(searchPDV);
+
+    if (filteredPDV.length === 0 && (searchfecha || searchPDV)) {
+      if (searchfecha && searchPDV) {
+        toast.warning("No se encontraron arqueos para la fecha y punto de venta seleccionados", { duration: 1000 });
+      } else if (searchfecha) {
+        toast.warning("No se encontraron arqueos para la fecha seleccionada", { duration: 1000 });
+      } else if (searchPDV) {
+        toast.warning("No se encontraron arqueos para el punto de venta seleccionado", { duration: 1000 });
+      }
+    }
+
   }, [searchfecha, searchPDV, setFecha, setPDV]);
+
+
 
   return (
     <div>

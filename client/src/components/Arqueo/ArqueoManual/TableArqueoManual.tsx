@@ -24,7 +24,7 @@ const TableArqueoManual = ({
     useEffect(() => {
         setFecha(searchfecha);
         setPDV(searchPDV);
-    }, [searchfecha, searchPDV, setFecha, setPDV]);
+    }, [searchfecha, searchPDV, setFecha, setPDV, filteredPDV]);
 
     return (
         <div>

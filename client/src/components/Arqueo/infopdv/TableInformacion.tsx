@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { Arqueos } from "@/types/arqueo";
 import { useFilter } from "@/hooks/useFilters";
 import getFormattedDate from "../../ui/getFormattedDate";
+import { toast } from "sonner";
 
 interface PropsFooter {
     datos: Arqueos[];
@@ -25,6 +26,16 @@ const TableArqueoInfo = ({
     useEffect(() => {
         setFecha(searchfecha);
         setPDV(searchPDV);
+
+        if (filteredPDV.length === 0 && (searchfecha || searchPDV)) {
+            if (searchfecha && searchPDV) {
+                toast.warning("No se encontraron arqueos para la fecha y punto de venta seleccionados", { duration: 2000 });
+            } else if (searchfecha) {
+                toast.warning("No se encontraron arqueos para la fecha seleccionada", { duration: 2000 });
+            } else if (searchPDV) {
+                toast.warning("No se encontraron arqueos para el punto de venta seleccionado", { duration: 2000 });
+            }
+        }
     }, [searchfecha, searchPDV, setFecha, setPDV]);
 
     return (

@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import getFormattedDate from "../ui/getFormattedDate";
 import type { Cronograma } from "@/types/cronograma";
 import CronoDialogs from "./DalogCrono";
 import { useFilterCron } from "@/hooks/filtersCron";
+import { toast } from "sonner";
 
 interface PropsFooter {
     datos: Cronograma[];
@@ -14,6 +15,20 @@ export const TableCronograma = ({ datos }: PropsFooter) => {
     const [selectedItem, setSelectedItem] = useState<Cronograma | null>(null);
 
     const { filteredPDV, searchPDV, setSearchPDV, searchfecha, setSearchFecha } = useFilterCron(datos)
+
+    useEffect(() => {
+
+        if (filteredPDV.length === 0 && (searchfecha || searchPDV)) {
+            if (searchfecha && searchPDV) {
+                toast.warning("No se encontraron arqueos para la fecha y punto de venta seleccionados", { duration: 2000 });
+            } else if (searchfecha) {
+                toast.warning("No se encontraron arqueos para la fecha seleccionada", { duration: 2000 });
+            } else if (searchPDV) {
+                toast.warning("No se encontraron arqueos para el punto de venta seleccionado", { duration: 2000 });
+            }
+        }
+    }, [searchfecha, searchPDV]);
+
     return (
         <div>
             <div className="mt-6 md:flex md:items-center md:justify-between">

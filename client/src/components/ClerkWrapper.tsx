@@ -12,8 +12,8 @@ export default function ClerkWrapper({ children }: { children: React.ReactNode }
       publishableKey={import.meta.env.PUBLIC_CLERK_PUBLISHABLE_KEY}
       signInUrl="/"
       signUpUrl="/" // Mismo que sign-in para evitar registro
-      afterSignInUrl="/getregistro"
-      afterSignUpUrl="/getregistro"
+      afterSignInUrl="/getarqueo"
+      afterSignUpUrl="/getarqueo"
       afterSignOutUrl="/" >
       <InactivityHandler>{children}</InactivityHandler>
     </ClerkProvider>

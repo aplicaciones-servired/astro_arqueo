@@ -43,6 +43,8 @@ const Cerrados = ({
 
   const listaUnica = Object.entries(resumenPuntos);
 
+  
+
   return (
     <>
       <div className="flex flex-wrap gap-2 ">
