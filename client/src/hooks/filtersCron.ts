@@ -15,7 +15,7 @@ function filterByFecha (pdv: Cronograma[], searchFecha: string): Cronograma[] {
     if (!dia) return false;
     // Extraer solo la fecha (YYYY-MM-DD) sin la hora
     const diaStr = dia.split('T')[0];
-    return diaStr.includes(searchFecha);
+    return diaStr === searchFecha;
   })
 }
 

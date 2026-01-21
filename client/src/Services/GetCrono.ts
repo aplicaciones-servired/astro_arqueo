@@ -23,13 +23,24 @@ export function useCrono() {
     totalClients: 0,
   });
   const [totalClients, setTotalClients] = useState();
+  const [searchFecha, setSearchFecha] = useState("");
+  const [searchPDV, setSearchPDV] = useState("");
   const { empresa } = useEmpresa();
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
-        //const response = await axios.get<CronoResponse>(`http://localhost:3000/getcronograma?zona=${empresa}&page=${page}&pageSize=${pageSize}`);
-        const response = await axios.get<CronoResponse>(`${API_URL}/getcronograma?zona=${empresa}&page=${page}&pageSize=${pageSize}`);
+        let url = `${API_URL}/getcronograma?zona=${empresa}&page=${page}&pageSize=${pageSize}`;
+        
+        // Agregar filtros a la URL si existen
+        if (searchFecha) {
+          url += `&fecha=${searchFecha}`;
+        }
+        if (searchPDV) {
+          url += `&pdv=${encodeURIComponent(searchPDV)}`;
+        }
+        
+        const response = await axios.get<CronoResponse>(url);
 
         if (response.status === 200) {
           setData(response.data.datos);
@@ -47,12 +58,22 @@ export function useCrono() {
     void fetchData();
     const intervalId = setInterval(fetchData, 300000);
     return () => clearInterval(intervalId);
-  }, [page, pageSize, empresa]);
+  }, [page, pageSize, empresa, searchFecha, searchPDV]);
 
   const total = Math.ceil(state.totalClients / pageSize);
 
   const handlePageChange = useCallback((newPage: number) => {
     setPage(newPage);
+  }, []);
+
+  const handleSearchFecha = useCallback((fecha: string) => {
+    setSearchFecha(fecha);
+    setPage(1); // Resetear a página 1 cuando se filtra
+  }, []);
+
+  const handleSearchPDV = useCallback((pdv: string) => {
+    setSearchPDV(pdv);
+    setPage(1); // Resetear a página 1 cuando se filtra
   }, []);
 
   return {
@@ -61,5 +82,9 @@ export function useCrono() {
     totalClients,
     handlePageChange,
     total,
+    searchFecha,
+    searchPDV,
+    handleSearchFecha,
+    handleSearchPDV,
   };
 }

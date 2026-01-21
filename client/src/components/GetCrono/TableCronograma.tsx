@@ -7,28 +7,30 @@ import { toast } from "sonner";
 
 interface PropsFooter {
     datos: Cronograma[];
+    searchFecha: string;
+    searchPDV: string;
+    onSearchFechaChange: (fecha: string) => void;
+    onSearchPDVChange: (pdv: string) => void;
 }
 
-export const TableCronograma = ({ datos }: PropsFooter) => {
+export const TableCronograma = ({ datos, searchFecha, searchPDV, onSearchFechaChange, onSearchPDVChange }: PropsFooter) => {
 
     const [open, setOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<Cronograma | null>(null);
 
-    const { filteredPDV, searchPDV, setSearchPDV, searchfecha, setSearchFecha } = useFilterCron(datos)
-
     useEffect(() => {
-
-        if (filteredPDV.length === 0 && (searchfecha || searchPDV)) {
-            if (searchfecha && searchPDV) {
+        if (datos.length === 0 && (searchFecha || searchPDV)) {
+            if (searchFecha && searchPDV) {
                 toast.warning("No se encontraron arqueos para la fecha y punto de venta seleccionados", { duration: 2000 });
-            } else if (searchfecha) {
+            } else if (searchFecha) {
                 toast.warning("No se encontraron arqueos para la fecha seleccionada", { duration: 2000 });
             } else if (searchPDV) {
                 toast.warning("No se encontraron arqueos para el punto de venta seleccionado", { duration: 2000 });
             }
         }
-    }, [searchfecha, searchPDV]);
+    }, [searchFecha, searchPDV, datos.length]);
 
+    
     return (
         <div>
             <div className="mt-6 md:flex md:items-center md:justify-between">
@@ -37,9 +39,18 @@ export const TableCronograma = ({ datos }: PropsFooter) => {
                         type="date"
                         placeholder="Buscar punto de venta"
                         className="block text-center w-full py-1.5 pr-5 border-indigo-200 shadow-lg shadow-blue-300/50  text-gray-700 bg-white border rounded-lg md:w-80 placeholder-gray-400 pl-11 focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                        onChange={(e) => setSearchFecha(e.target.value)}
-                        value={searchfecha}
+                        onChange={(e) => onSearchFechaChange(e.target.value)}
+                        value={searchFecha}
                     />
+                    {searchFecha && (
+                        <button
+                            onClick={() => onSearchFechaChange('')}
+                            className="px-3 py-2 text-sm text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Limpiar filtro de fecha"
+                        >
+                            ✕
+                        </button>
+                    )}
                 </div>
 
                 <div className="relative flex items-center mt-4 md:mt-0">
@@ -63,9 +74,19 @@ export const TableCronograma = ({ datos }: PropsFooter) => {
                         type="text"
                         placeholder="Buscar punto de venta"
                         className="block text-center w-full py-1.5 pr-5 border border-indigo-200 rounded-md shadow-lg shadow-blue-300/50  text-gray-700 bg-white borderounded-lg md:w-80 placeholder-gray-400 pl-11 focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                        onChange={(e) => setSearchPDV(e.target.value)}
+                        onChange={(e) => onSearchPDVChange(e.target.value)}
                         value={searchPDV}
-                    />                </div>
+                    />
+                    {searchPDV && (
+                        <button
+                            onClick={() => onSearchPDVChange('')}
+                            className="px-3 py-2 text-sm text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Limpiar filtro de punto de venta"
+                        >
+                            ✕
+                        </button>
+                    )}
+                </div>
             </div>
             {/* Tabla */}
             <div className="flex flex-col mt-6  border-indigo-200 shadow-lg shadow-blue-300/50">
@@ -83,7 +104,7 @@ export const TableCronograma = ({ datos }: PropsFooter) => {
                                     </tr>
                                 </thead>
                                 <tbody className="cursor-pointer bg-white divide-y divide-gray-200 hover:border-gray-300 hover:shadow-sm w-52">
-                                    {filteredPDV.map((pdv, index) => (
+                                    {datos.map((pdv, index) => (
                                         <tr key={index} className=" transition-colors hover:bg-blue-100" onClick={() => {
                                             setOpen(true);
                                             setSelectedItem(pdv)

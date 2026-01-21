@@ -43,6 +43,8 @@ export const Programacionget = async (
   const zona = req.query.zona as string;
   const fechaInicio = req.query.fechaInicio as string;
   const fechaFin = req.query.fechaFin as string;
+  const fecha = req.query.fecha as string; // Filtro de fecha específica
+  const pdv = req.query.pdv as string; // Filtro de punto de venta
 
   const empresa = zona === "Multired" ? "Multired" : "Servired";
   initCronograma(empresa);
@@ -52,6 +54,20 @@ export const Programacionget = async (
   if (fechaInicio && fechaFin) {
     whereClause.dia = {
       [Op.between]: [fechaInicio, fechaFin],
+    };
+  }
+
+  // Filtro por fecha específica
+  if (fecha) {
+    whereClause.dia = {
+      [Op.like]: `${fecha}%`, // Busca fechas que comiencen con la fecha dada
+    };
+  }
+
+  // Filtro por punto de venta
+  if (pdv) {
+    whereClause.puntodeventa = {
+      [Op.like]: `%${pdv}%`, // Busca puntos de venta que contengan el texto
     };
   }
 
