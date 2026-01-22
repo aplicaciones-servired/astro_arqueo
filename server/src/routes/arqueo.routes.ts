@@ -1,4 +1,5 @@
 import { Router } from "express";
+import multer from "multer";
 import { getArqueo, getArqueos } from "../controllers/arqueo.controllers";
 import {
   Programacionget,
@@ -11,6 +12,22 @@ import {
 import { getVisita } from "../controllers/Visita.controllers";
 import { GetArqueoManual, PostArqueoManual } from "../controllers/ArqueoManual";
 import { GetSucursales } from "../controllers/sucursales.controllers";
+
+// Configurar multer para manejar archivos en memoria
+const upload = multer({ 
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // Límite de 5MB
+  },
+  fileFilter: (req, file, cb) => {
+    // Aceptar solo imágenes
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Solo se permiten archivos de imagen'));
+    }
+  }
+});
 
 export const arqueoRoute = Router();
 
@@ -32,7 +49,7 @@ arqueoRoute.put("/updatecronograma/:id", UpdateProgramacion);
 
 arqueoRoute.get("/visita", getVisita);
 
-arqueoRoute.post("/arqueomanual/:zona", PostArqueoManual);
+arqueoRoute.post("/arqueomanual/:zona", upload.single('imagen'), PostArqueoManual);
 
 arqueoRoute.get("/getarqueomanual", GetArqueoManual);
 

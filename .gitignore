@@ -11,6 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
+GUIA_SUBIDA_IMAGENES.md
+GUIA_SUBIDA_IMAGENES.md
 
 # Editor directories and files
 .vscode/*
@@ -27,3 +29,5 @@ dist-ssr
 .env.local
 .env.development
 .env.production
+GUIA_SUBIDA_IMAGENES.md
+GUIA_SUBIDA_IMAGENES.md

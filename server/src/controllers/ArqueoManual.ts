@@ -4,18 +4,30 @@ import {
   initArqueoManualModel,
 } from "../models/arqueo.manual";
 import { Request, Response } from "express";
+import { uploadToMinIO } from "../utils/uploadMinIO";
 
 export const PostArqueoManual = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   const { zona } = req.params;
-  const { puntodeventa, nombre, documento, ventabruta, totalingreso, efectivocajafuerte, sobrantefaltante, valor, url_imagen } = req.body;
+  const { puntodeventa, nombre, documento, ventabruta, totalingreso, efectivocajafuerte, sobrantefaltante, valor } = req.body;
 
   const empresa = zona === "Multired" ? "Multired" : "Servired";
   initArqueoManualModel(empresa);
 
   try {
+    let url_imagen: string | undefined = undefined;
+
+    // Si hay un archivo adjunto, subirlo a MinIO
+    if (req.file) {
+      url_imagen = await uploadToMinIO(
+        req.file.buffer,
+        req.file.originalname,
+        req.file.mimetype
+      );
+    }
+
     const programacion = await ArqueoManualModel.create({
       puntodeventa: puntodeventa,
       nombre: nombre,

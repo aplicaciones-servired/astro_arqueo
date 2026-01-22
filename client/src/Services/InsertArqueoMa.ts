@@ -12,6 +12,7 @@ interface ArqueoManual {
   sobrantefaltante: string;
   valor: string;
   empresa: string;
+  imagen?: File | null;
 }
 
 export async function ArqueoManualForm({
@@ -24,6 +25,7 @@ export async function ArqueoManualForm({
   sobrantefaltante,
   valor,
   empresa,
+  imagen,
 }: ArqueoManual) {
   
   if (!puntodeventa || !nombre || !documento) {
@@ -32,11 +34,27 @@ export async function ArqueoManualForm({
   }
 
   try {
+    // Crear FormData para enviar datos y archivo
+    const formData = new FormData();
+    formData.append('puntodeventa', puntodeventa);
+    formData.append('nombre', nombre);
+    formData.append('documento', documento);
+    formData.append('ventabruta', ventabruta);
+    formData.append('totalingreso', totalingreso);
+    formData.append('efectivocajafuerte', efectivocajafuerte);
+    formData.append('sobrantefaltante', sobrantefaltante);
+    formData.append('valor', valor);
+    
+    // Agregar imagen si existe
+    if (imagen) {
+      formData.append('imagen', imagen);
+    }
+
     toast.promise(
-          axios.post(`${API_URL}/arqueomanual/${empresa}`, {
-              puntodeventa,
-              nombre,
-              documento,
+          axios.post(`${API_URL}/arqueomanual/${empresa}`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
           }),
 
           {

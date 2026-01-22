@@ -20,6 +20,8 @@ const TableArqueoManual = ({
 }: PropsFooter) => {
     const { filteredPDV, searchPDV, setSearchPDV, searchfecha, setSearchFecha } =
         useFiltersManual(datos);
+    
+    const [selectedArqueo, setSelectedArqueo] = useState<ArqueoManual | null>(null);
 
     useEffect(() => {
         setFecha(searchfecha);
@@ -28,6 +30,99 @@ const TableArqueoManual = ({
 
     return (
         <div>
+            {/* Modal de detalles */}
+            {selectedArqueo && (
+                <div 
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-conic-330 from-gray-100 via-white to-gray-100 bg-opacity-50 p-4"
+                    onClick={() => setSelectedArqueo(null)}
+                >
+                    <div 
+                        className="relative bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center rounded-t-lg">
+                            <h3 className="text-xl font-semibold text-gray-900">
+                                Detalles del Arqueo Manual
+                            </h3>
+                            <button
+                                onClick={() => setSelectedArqueo(null)}
+                                className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-colors"
+                            >
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <div className="p-6 bg-gray-50">
+                            <div className="grid grid-cols-2 gap-6 mb-6">
+                                <div className="bg-white p-4 rounded-lg shadow-sm">
+                                    <label className="block text-sm font-medium text-gray-600 mb-1">Punto de Venta</label>
+                                    <p className="text-base text-gray-900 font-semibold">{selectedArqueo.puntodeventa}</p>
+                                </div>
+                                <div className="bg-white p-4 rounded-lg shadow-sm">
+                                    <label className="block text-sm font-medium text-gray-600 mb-1">Nombre</label>
+                                    <p className="text-base text-gray-900 font-semibold">{selectedArqueo.nombre}</p>
+                                </div>
+                                <div className="bg-white p-4 rounded-lg shadow-sm">
+                                    <label className="block text-sm font-medium text-gray-600 mb-1">Documento</label>
+                                    <p className="text-base text-gray-900 font-semibold">{selectedArqueo.documento}</p>
+                                </div>
+                                <div className="bg-white p-4 rounded-lg shadow-sm">
+                                    <label className="block text-sm font-medium text-gray-600 mb-1">Fecha</label>
+                                    <p className="text-base text-gray-900 font-semibold">{getFormattedDate(selectedArqueo.fecha)}</p>
+                                </div>
+                                <div className="bg-white p-4 rounded-lg shadow-sm">
+                                    <label className="block text-sm font-medium text-gray-600 mb-1">Venta Bruta</label>
+                                    <p className="text-base text-green-600 font-semibold">${parseFloat(selectedArqueo.ventabruta).toLocaleString()}</p>
+                                </div>
+                                <div className="bg-white p-4 rounded-lg shadow-sm">
+                                    <label className="block text-sm font-medium text-gray-600 mb-1">Total Ingreso</label>
+                                    <p className="text-base text-green-600 font-semibold">${parseFloat(selectedArqueo.totalingreso).toLocaleString()}</p>
+                                </div>
+                                <div className="bg-white p-4 rounded-lg shadow-sm">
+                                    <label className="block text-sm font-medium text-gray-600 mb-1">Efectivo Caja Fuerte</label>
+                                    <p className="text-base text-blue-600 font-semibold">${parseFloat(selectedArqueo.efectivocajafuerte).toLocaleString()}</p>
+                                </div>
+                                <div className="bg-white p-4 rounded-lg shadow-sm">
+                                    <label className="block text-sm font-medium text-gray-600 mb-1">Sobrante/Faltante</label>
+                                    <p className="text-base text-orange-600 font-semibold">${parseFloat(selectedArqueo.sobrantefaltante).toLocaleString()}</p>
+                                </div>
+                                <div className="bg-white p-4 rounded-lg shadow-sm col-span-2">
+                                    <label className="block text-sm font-medium text-gray-600 mb-1">Valor</label>
+                                    <p className="text-base text-gray-900 font-semibold">${parseFloat(selectedArqueo.valor).toLocaleString()}</p>
+                                </div>
+                            </div>
+                            
+                            {selectedArqueo.url_imagen ? (
+                                <div className="bg-white p-6 rounded-lg shadow-sm">
+                                    <label className="block text-sm font-medium text-gray-600 mb-4">Imagen del Arqueo</label>
+                                    <div className="flex justify-center">
+                                        <img
+                                            src={selectedArqueo.url_imagen}
+                                            alt="Arqueo"
+                                            className="max-w-full h-auto rounded-lg border-2 border-gray-300 shadow-lg"
+                                            onError={(e) => {
+                                                console.error('Error cargando imagen:', selectedArqueo.url_imagen);
+                                                e.currentTarget.parentElement!.innerHTML = '<div class="text-red-500 text-center p-4 bg-red-50 rounded-lg">Error al cargar la imagen</div>';
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="bg-white p-6 rounded-lg shadow-sm">
+                                    <div className="text-gray-400 text-center p-8 border-2 border-dashed border-gray-300 rounded-lg">
+                                        <svg className="w-16 h-16 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        Sin imagen adjunta
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
             {/* Buscador */}
             <div className="mt-6 md:flex md:items-center md:justify-between">
                 <div className="relative flex items-center mt-4 md:mt-0">
@@ -79,10 +174,10 @@ const TableArqueoManual = ({
                                             Punto de Venta
                                         </th>
                                         <th className="py-3.5 px-4 text-sm font-semibold text-left text-gray-900">
-                                            Nombre Responsable
+                                            Nombre
                                         </th>
                                         <th className="px-4 py-3.5 text-sm font-semibold text-left text-gray-900">
-                                            Documento Resposable
+                                            Documento
                                         </th>
                                         <th className="px-4 py-3.5 text-sm font-semibold text-left text-gray-900">
                                             Fecha
@@ -93,7 +188,8 @@ const TableArqueoManual = ({
                                     {filteredPDV.map((pdv, index) => (
                                         <tr
                                             key={index}
-                                            className=" transition-colors hover:bg-blue-100"
+                                            className="transition-colors hover:bg-blue-100"
+                                            onClick={() => setSelectedArqueo(pdv)}
                                         >
                                             <td className="px-4 py-4 text-sm font-medium text-gray-900">
                                                 {pdv.puntodeventa}
