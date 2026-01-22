@@ -33,9 +33,9 @@ export const InserArqueoManual = () => {
                 return;
             }
 
-            // Validar tamaño (máximo 5MB)
-            if (file.size > 5 * 1024 * 1024) {
-                alert('El archivo es demasiado grande. Máximo 5MB');
+            // Validar tamaño (máximo 20MB)
+            if (file.size > 20 * 1024 * 1024) { // 20MB
+                alert('El archivo es demasiado grande. Máximo 20MB permitido.');
                 return;
             }
 

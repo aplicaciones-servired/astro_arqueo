@@ -48,83 +48,68 @@ export default function CronoDialogs({
           color: theme.palette.grey[500],
         })}
       ></IconButton>
-      {data.map((items, index) => (
-        <DialogContent dividers key={index}>
-          <Typography gutterBottom>
-            <label className="block text-center mt-1 uppercase">
-              Punto De Venta
-              <input
-                className="px-2 py-1 w-full text-center mt-2 bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                disabled
-                defaultValue={items.puntodeventa}
-              />
-            </label>
+      {data.map((items, index) => {
+        return (
+          <DialogContent dividers key={index}>
+            <Typography gutterBottom>
+              <div className="p-6 bg-gray-50">
+                <div className="grid grid-cols-2 gap-6 mb-6">
+                  <div className="bg-white p-4 rounded-lg shadow-sm">
+                    <label className="block text-sm font-medium text-gray-600 mb-1">Punto de Venta</label>
+                    <p className="text-base text-gray-900 font-semibold">{items.puntodeventa}</p>
+                  </div>
+                  <div className="bg-white p-4 rounded-lg shadow-sm">
+                    <label className="block text-sm font-medium text-gray-600 mb-1">Empresa</label>
+                    <p className="text-base text-gray-900 font-semibold">{items.empresa}</p>
+                  </div>
+                  <div className="bg-white p-4 rounded-lg shadow-sm">
+                    <label className="block text-sm font-medium text-gray-600 mb-1">Tipo</label>
+                    <p className="text-base text-gray-900 font-semibold">{items.nota}</p>
+                  </div>
+                  <div className="bg-white p-4 rounded-lg shadow-sm">
+                    <label className="block text-sm font-medium text-gray-600 mb-1">Estado</label>
+                    <p className="text-base text-gray-900 font-semibold">{items.estado}</p>
+                  </div>
+                  <div className="bg-white p-4 rounded-lg shadow-sm">
+                    <label className="block text-sm font-medium text-gray-600 mb-1">Fecha</label>
+                    <p className="text-base text-gray-900 font-semibold">{items.dia}</p>
+                  </div>
+                  <div className="bg-white p-4 rounded-lg shadow-sm">
+                    <label className="block text-sm font-medium text-gray-600 mb-1">Observacion</label>
+                    <p className="text-base text-gray-900 font-semibold">{items.observacion}</p>
+                  </div>
+                </div>
 
-            <label className="block text-center mt-5 uppercase">
-              Empresa
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                disabled
-                defaultValue={items.empresa}
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              Tipo
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                disabled
-                defaultValue={items.nota}
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              Estado
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                disabled
-                defaultValue={items.estado}
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              Fecha Visita
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                disabled
-                defaultValue={items.dia}
-              />
-            </label>
-
-             <label className="block text-center mt-5 uppercase">
-              Observacion
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                disabled
-                defaultValue={items.observacion}
-              />
-            </label>
-
-            <div className="flex justify-center ...">
-              <div>
-                {items.imagen && (
-                  <label className="block text-center mt-5 uppercase">
-                    Imagen del punto cerrado
-                    <img
-                      src={items.imagen}
-                      alt="Imagen"
-                      className="w-full rotate-0 mt-10"
-                    />
-                  </label>
+                {items.imagen ? (
+                  <div className="bg-white p-6 rounded-lg shadow-sm">
+                    <label className="block text-sm font-medium text-gray-600 mb-4">Imagen del Cronograma</label>
+                    <div className="flex justify-center">
+                      <img
+                        src={items.imagen}
+                        alt="Cronograma"
+                        className="max-w-full h-auto rounded-lg border-2 border-gray-300 shadow-lg"
+                        onError={(e) => {
+                          console.error('Error cargando imagen:', items.imagen);
+                          e.currentTarget.parentElement!.innerHTML = '<div class="text-red-500 text-center p-4 bg-red-50 rounded-lg">Error al cargar la imagen</div>';
+                        }} />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-white p-6 rounded-lg shadow-sm">
+                    <div className="text-gray-400 text-center p-8 border-2 border-dashed border-gray-300 rounded-lg">
+                      <svg className="w-16 h-16 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      Sin imagen adjunta
+                    </div>
+                  </div>
                 )}
               </div>
-            </div>
-          </Typography>
-        </DialogContent>
-      ))}
+
+            </Typography>
+          </DialogContent>
+        );
+      })}
       <DialogActions>
         <Button autoFocus onClick={handleClose}>
           cerrar

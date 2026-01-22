@@ -39,7 +39,7 @@ export function DeletCronograma({ id, puntodeventa, estado, dia }: DeletCronogra
                 className="flex text-white cursor-pointer rounded-2xl bg-red-600 box-border border border-transparent hover:bg-red-400 focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
                 type="button"
             >
-                <Trash size={20} strokeWidth={1.75}/>
+                <Trash size={20} strokeWidth={1.75} />
                 Eliminar
             </button>
         );
@@ -61,26 +61,42 @@ export function DeletCronograma({ id, puntodeventa, estado, dia }: DeletCronogra
                             </svg>
                             <span className="sr-only">Cerrar modal</span>
                         </button>
+                        <svg className="mx-auto mb-4 text-gray-400 w-12 h-12" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                        <h3 className="mb-2 text-lg font-bold text-gray-500">¿Estás seguro de que quieres eliminar este cronograma?</h3>
                         <div className="p-4 md:p-5 text-center">
-                            <svg className="mx-auto mb-4 text-gray-400 w-12 h-12" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                            </svg>
-                            <h3 className="mb-2 text-lg font-bold text-gray-500">¿Estás seguro de que quieres eliminar este cronograma?</h3>
-                            <h3 className="mb-2 text-lg font-bold text-gray-500">Punto de venta: {puntodeventa}</h3>
-                            <h3 className="mb-2 text-lg font-bold text-gray-500">Estado: {estado}</h3>
-                            <h3 className="mb-2 text-lg font-bold text-gray-500">Día: {dia}</h3>
+                            <div className="grid grid-cols-2 gap-6 mb-6">
+                                <div className="bg-white p-4 rounded-lg shadow-sm">
+                                    <label className="block text-sm font-medium text-gray-600 mb-1">Punto de Venta</label>
+                                    <p className="text-base text-gray-900 font-semibold">{puntodeventa}</p>
+                                </div>
+                                <div className="bg-white p-4 rounded-lg shadow-sm">
+                                    <label className="block text-sm font-medium text-gray-600 mb-1">Empresa</label>
+                                    <p className="text-base text-gray-900 font-semibold">{empresa}</p>
+                                </div>
+                                <div className="bg-white p-4 rounded-lg shadow-sm">
+                                    <label className="block text-sm font-medium text-gray-600 mb-1">Estado</label>
+                                    <p className="text-base text-gray-900 font-semibold">{estado}</p>
+                                </div>
+                                <div className="bg-white p-4 rounded-lg shadow-sm">
+                                    <label className="block text-sm font-medium text-gray-600 mb-1">Fecha</label>
+                                    <p className="text-base text-gray-900 font-semibold">{dia}</p>
+                                </div>
+                            </div>
+
                             <div className="flex items-center space-x-4 justify-center">
                                 <button
                                     onClick={handleDelete}
                                     type="button"
-                                    className="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none"
+                                    className="cursor-pointer text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none"
                                 >
                                     Sí, eliminar
                                 </button>
                                 <button
                                     onClick={() => setIsOpen(false)}
                                     type="button"
-                                    className="text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none"
+                                    className="cursor-pointer text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none"
                                 >
                                     No, cancelar
                                 </button>

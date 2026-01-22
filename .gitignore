@@ -12,7 +12,7 @@ dist
 dist-ssr
 *.local
 GUIA_SUBIDA_IMAGENES.md
-GUIA_SUBIDA_IMAGENES.md
+GUIA_SUBIDA_IMAGENES2.md
 
 # Editor directories and files
 .vscode/*
@@ -30,4 +30,4 @@ GUIA_SUBIDA_IMAGENES.md
 .env.development
 .env.production
 GUIA_SUBIDA_IMAGENES.md
-GUIA_SUBIDA_IMAGENES.md
+GUIA_SUBIDA_IMAGENES2.
