@@ -10,7 +10,7 @@ export const PostArqueoManual = async (
   res: Response
 ): Promise<void> => {
   const { zona } = req.params;
-  const { puntodeventa, nombre, documento, ventabruta, totalingreso, efectivocajafuerte, sobrantefaltante, valor } = req.body;
+  const { puntodeventa, nombre, documento, ventabruta, totalingreso, efectivocajafuerte, sobrantefaltante, valor, url_imagen } = req.body;
 
   const empresa = zona === "Multired" ? "Multired" : "Servired";
   initArqueoManualModel(empresa);
@@ -25,6 +25,7 @@ export const PostArqueoManual = async (
       efectivocajafuerte: efectivocajafuerte,
       sobrantefaltante: sobrantefaltante,
       valor: valor,
+      url_imagen: url_imagen,
       fecha: new Date(),
     });
     res.status(200).json({ message: "Arqueo manual creado", programacion });

@@ -55,7 +55,7 @@ export function useArqueoManual(fecha?: string, PDV?: string) {
     void fetchData();
     const intervalId = setInterval(fetchData, 300000);
     return () => clearInterval(intervalId);
-  }, [page, pageSize, empresa, fecha, PDV, data]);
+  }, [page, pageSize, empresa, fecha, PDV]);
 
   const total = Math.ceil(state.totalClients / pageSize);
 

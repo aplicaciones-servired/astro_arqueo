@@ -20,6 +20,7 @@ class ArqueoManualModel extends Model<
   declare efectivocajafuerte: string;
   declare sobrantefaltante: string;
   declare valor: string;
+  declare url_imagen?: string;
   declare fecha?: Date;
 }
 
@@ -65,6 +66,10 @@ export const initArqueoManualModel = (zona: string) => {
       valor: {
         type: DataTypes.STRING(60),
         allowNull: false,
+      },
+      url_imagen: {
+        type: DataTypes.STRING(200),
+        allowNull: true,
       },
       fecha: {
         type: DataTypes.DATE,
