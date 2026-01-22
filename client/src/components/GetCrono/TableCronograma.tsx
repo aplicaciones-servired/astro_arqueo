@@ -4,6 +4,8 @@ import type { Cronograma } from "@/types/cronograma";
 import CronoDialogs from "./DalogCrono";
 import { useFilterCron } from "@/hooks/filtersCron";
 import { toast } from "sonner";
+import { DeletCronograma } from "./DeletCronograma";
+import { Search } from "lucide-react";
 
 interface PropsFooter {
     datos: Cronograma[];
@@ -30,7 +32,7 @@ export const TableCronograma = ({ datos, searchFecha, searchPDV, onSearchFechaCh
         }
     }, [searchFecha, searchPDV, datos.length]);
 
-    
+
     return (
         <div>
             <div className="mt-6 md:flex md:items-center md:justify-between">
@@ -101,14 +103,13 @@ export const TableCronograma = ({ datos, searchFecha, searchPDV, onSearchFechaCh
                                         <th className="px-4 py-3.5 text-sm font-semibold text-left text-gray-900">Tipo</th>
                                         <th className="px-4 py-3.5 text-sm font-semibold text-left text-gray-900">Estado</th>
                                         <th className="px-4 py-3.5 text-sm font-semibold text-left text-gray-900">Fecha Visita</th>
+                                        <th className="px-4 py-3.5 text-sm font-semibold text-left text-gray-900">Ver</th>
+                                        <th className="px-4 py-3.5 text-sm font-semibold text-left text-gray-900">Eliminar</th>
                                     </tr>
                                 </thead>
-                                <tbody className="cursor-pointer bg-white divide-y divide-gray-200 hover:border-gray-300 hover:shadow-sm w-52">
+                                <tbody className="bg-white divide-y divide-gray-200 hover:border-gray-300 hover:shadow-sm w-52">
                                     {datos.map((pdv, index) => (
-                                        <tr key={index} className=" transition-colors hover:bg-blue-100" onClick={() => {
-                                            setOpen(true);
-                                            setSelectedItem(pdv)
-                                        }}>
+                                        <tr key={index}>
                                             <td className="px-4 py-4 text-sm font-medium text-gray-900">{pdv.puntodeventa}</td>
                                             <td className="px-4 py-4 text-sm text-gray-700">{pdv.empresa}</td>
                                             <td className="px-4 py-4 text-sm text-gray-700">{pdv.nota}</td>
@@ -125,6 +126,22 @@ export const TableCronograma = ({ datos, searchFecha, searchPDV, onSearchFechaCh
                                                 {pdv.estado}
                                             </td>
                                             <td className="px-4 py-4 text-sm text-gray-700">{getFormattedDate(pdv.dia)}</td>
+                                            <td>
+                                                <button
+                                                    onClick={() => {
+                                                        setOpen(true);
+                                                        setSelectedItem(pdv)
+                                                    }}
+                                                    className="flex text-white cursor-pointer rounded-2xl bg-blue-600 box-border border border-transparent hover:bg-blue-400 focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
+                                                    type="button"
+                                                >
+                                                    <Search size={20} strokeWidth={1.75} />
+                                                    Ver
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <DeletCronograma id={pdv.id} puntodeventa={pdv.puntodeventa} estado={pdv.estado} dia={pdv.dia} />
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -133,9 +150,11 @@ export const TableCronograma = ({ datos, searchFecha, searchPDV, onSearchFechaCh
                     </div>
                 </div>
             </div>
-            {open && (
-                <CronoDialogs open={open} handleClose={() => setOpen(false)} id={selectedItem?.id} />
-            )}
-        </div>
+            {
+                open && (
+                    <CronoDialogs open={open} handleClose={() => setOpen(false)} id={selectedItem?.id} />
+                )
+            }
+        </div >
     )
 }

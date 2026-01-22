@@ -216,3 +216,29 @@ export const ProgramacionInforme = async (
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+
+
+export const EliminarProgramacion = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const id = req.query.id as string;
+  const zona = req.query.zona as string;
+
+  console.log('first', id, zona);
+
+  const empresa = zona === "Multired" ? "Multired" : "Servired";
+  initCronograma(empresa);
+
+  try {
+     const eliminar = await getProgramacion.destroy({
+      where: { id: id },
+    });
+    console.log('first', eliminar)
+    res.status(200).json({ message: "Cronograma eliminado exitosamente" });
+  } catch (error) {
+    res.status(500).json({ message: "error al eliminar el cronograma" });
+  }
+};
+
