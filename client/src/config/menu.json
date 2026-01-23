@@ -44,7 +44,18 @@
     },
     {
       "name": "Informe",
-      "url": "informe"
+      "url": "",
+      "hasChildren": true,
+      "children": [
+        {
+          "name": "Infor Memensual",
+          "url": "informe"
+        },
+        {
+          "name": "Reporte Diario",
+          "url": "/reportediario"
+        }
+      ]
     }
   ]
 }

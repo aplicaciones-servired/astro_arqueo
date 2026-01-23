@@ -56,6 +56,7 @@ class getProgramacion extends Model<
   declare nota: string;
   declare estado?: string;
   declare imagen: string;
+  declare observacion?: string | null;
 }
 const initCronograma = (zona: string) => {
   const empresa = zona === "Multired" ? "cronograma_multired" : "cronograma";
@@ -72,6 +73,7 @@ const initCronograma = (zona: string) => {
       nota: { type: DataTypes.STRING },
       estado: { type: DataTypes.STRING },
       imagen: { type: DataTypes.STRING },
+      observacion: { type: DataTypes.STRING, allowNull: true },
     },
     {
       sequelize: getPoolArqueo,
