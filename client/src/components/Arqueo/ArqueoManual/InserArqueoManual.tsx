@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
 import { ArqueoManualForm } from "@/Services/InsertArqueoMa";
 import { useEmpresa } from "@/components/ui/useEmpresa";
-import { set } from "date-fns";
 
 export const InserArqueoManual = () => {
     const { empresa } = useEmpresa();
@@ -12,6 +11,7 @@ export const InserArqueoManual = () => {
         puntodeventa: "",
         nombre: "",
         documento: "",
+        base: "",
         ventabruta: "",
         totalingreso: "",
         efectivocajafuerte: "",
@@ -21,6 +21,26 @@ export const InserArqueoManual = () => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
+    // Función para limpiar y obtener solo números
+    const limpiarNumero = (valor: string): string => {
+        return valor.replace(/[^0-9]/g, '');
+    };
+
+    // Función para formatear con puntos de miles
+    const formatearMiles = (valor: string): string => {
+        if (!valor) return '';
+        const numero = limpiarNumero(valor);
+        if (!numero) return '';
+        return numero.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    };
+
+    // Manejador para campos numéricos
+    const handleNumericChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        const valorLimpio = limpiarNumero(value);
+        setForm({ ...form, [name]: valorLimpio });
+    };
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
@@ -29,7 +49,7 @@ export const InserArqueoManual = () => {
         // Validar que sea imagen o PDF
         const esImagen = file.type.startsWith('image/');
         const esPDF = file.type === 'application/pdf';
-        
+
         if (!esImagen && !esPDF) {
             alert('Por favor selecciona un archivo de imagen (PNG, JPG, GIF) o PDF válido');
             return;
@@ -71,7 +91,7 @@ export const InserArqueoManual = () => {
     const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
         e.preventDefault();
         e.stopPropagation();
-        
+
         const file = e.dataTransfer.files?.[0];
         if (file) {
             procesarArchivo(file);
@@ -102,12 +122,13 @@ export const InserArqueoManual = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const { puntodeventa, nombre, documento, ventabruta, totalingreso, efectivocajafuerte, valor } = form;
+        const { puntodeventa, nombre, documento, base, ventabruta, totalingreso, efectivocajafuerte, valor } = form;
 
         const ok = await ArqueoManualForm({
             puntodeventa,
             nombre,
             documento,
+            base,
             ventabruta,
             totalingreso,
             efectivocajafuerte,
@@ -121,6 +142,7 @@ export const InserArqueoManual = () => {
                 puntodeventa: "",
                 nombre: "",
                 documento: "",
+                base: "",
                 ventabruta: "",
                 totalingreso: "",
                 efectivocajafuerte: "",
@@ -180,13 +202,28 @@ export const InserArqueoManual = () => {
                     </label>
 
                     <label className="block text-sm font-medium text-gray-700">
+                        Base
+                        <input
+                            name="base"
+                            type="text"
+                            placeholder="ingresar base"
+                            value={formatearMiles(form.base)}
+                            onChange={handleNumericChange}
+                            inputMode="numeric"
+                            className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 placeholder-zinc-800"
+                        />
+                    </label>
+
+
+                    <label className="block text-sm font-medium text-gray-700">
                         Total Ingreso
                         <input
                             name="totalingreso"
                             type="text"
                             placeholder="ingresar total ingreso"
-                            value={form.totalingreso}
-                            onChange={handleChange}
+                            value={formatearMiles(form.totalingreso)}
+                            onChange={handleNumericChange}
+                            inputMode="numeric"
                             className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 placeholder-zinc-800"
                         />
                     </label>
@@ -197,8 +234,9 @@ export const InserArqueoManual = () => {
                             name="efectivocajafuerte"
                             type="text"
                             placeholder="ingresar efectivo "
-                            value={form.efectivocajafuerte}
-                            onChange={handleChange}
+                            value={formatearMiles(form.efectivocajafuerte)}
+                            onChange={handleNumericChange}
+                            inputMode="numeric"
                             className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 placeholder-zinc-800"
                         />
                     </label>
@@ -209,19 +247,20 @@ export const InserArqueoManual = () => {
                             name="ventabruta"
                             type="text"
                             placeholder="ingresar venta bruta"
-                            value={form.ventabruta}
-                            onChange={handleChange}
+                            value={formatearMiles(form.ventabruta)}
+                            onChange={handleNumericChange}
+                            inputMode="numeric"
                             className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 placeholder-zinc-800"
                         />
                     </label>
 
                     <input
                         name="sobrantefaltante"
-                        type="text"  // Cambiado de text a text
-                        placeholder="ingresar sobrante/faltante"
-                        value={calculo ? calculo > 0 ? `Sobrante: ${calculo}` : `Faltante: ${calculo}` : "0"}
-                        readOnly  // Agregar readOnly ya que es calculado
-                        className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 placeholder-zinc-800"
+                        type="text"
+                        placeholder="sobrante/faltante"
+                        value={calculo ? (calculo > 0 ? `Sobrante: ${formatearMiles(calculo.toString())}` : `Faltante: ${formatearMiles(Math.abs(calculo).toString())}`) : "0"}
+                        readOnly
+                        className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 placeholder-zinc-800 bg-gray-50"
                     />
 
                     <label className="block text-sm font-medium text-gray-700">
@@ -230,8 +269,9 @@ export const InserArqueoManual = () => {
                             name="valor"
                             type="text"
                             placeholder="ingresar valor"
-                            value={form.valor}
-                            onChange={handleChange}
+                            value={formatearMiles(form.valor)}
+                            onChange={handleNumericChange}
+                            inputMode="numeric"
                             className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 placeholder-zinc-800"
                         />
                     </label>
@@ -244,7 +284,7 @@ export const InserArqueoManual = () => {
                             {previewUrl === 'PDF' ? (
                                 <div className="flex flex-col items-center justify-center w-full h-64 bg-gray-100 rounded-base border border-default-strong">
                                     <svg className="w-20 h-20 text-red-600 mb-4" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M4 18h12V6h-4V2H4v16zm-2 1V0h12l4 4v16H2v-1z"/>
+                                        <path d="M4 18h12V6h-4V2H4v16zm-2 1V0h12l4 4v16H2v-1z" />
                                         <text x="6" y="14" fontSize="8" fill="white" fontWeight="bold">PDF</text>
                                     </svg>
                                     <p className="text-sm font-semibold text-gray-700">{selectedFile?.name}</p>
@@ -271,8 +311,8 @@ export const InserArqueoManual = () => {
                             </button>
                         </div>
                     ) : (
-                        <label 
-                            htmlFor="dropzone-file" 
+                        <label
+                            htmlFor="dropzone-file"
                             className="flex flex-col items-center justify-center w-full h-64 bg-neutral-secondary-medium border-2 border-dashed border-blue-400 rounded-base cursor-pointer hover:bg-blue-50 hover:border-blue-600 transition-all"
                             onDragOver={handleDragOver}
                             onDrop={handleDrop}

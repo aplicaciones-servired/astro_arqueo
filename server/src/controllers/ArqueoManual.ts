@@ -11,7 +11,7 @@ export const PostArqueoManual = async (
   res: Response
 ): Promise<void> => {
   const { zona } = req.params;
-  const { puntodeventa, nombre, documento, ventabruta, totalingreso, efectivocajafuerte, sobrantefaltante, valor } = req.body;
+  const { puntodeventa, nombre, documento, base, ventabruta, totalingreso, efectivocajafuerte, sobrantefaltante, valor } = req.body;
 
   const empresa = zona === "Multired" ? "Multired" : "Servired";
   initArqueoManualModel(empresa);
@@ -32,6 +32,7 @@ export const PostArqueoManual = async (
       puntodeventa: puntodeventa,
       nombre: nombre,
       documento: documento,
+      base: base,
       ventabruta: ventabruta,
       totalingreso: totalingreso,
       efectivocajafuerte: efectivocajafuerte,

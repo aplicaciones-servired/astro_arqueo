@@ -6,6 +6,7 @@ interface ArqueoManual {
   puntodeventa: string;
   nombre: string;
   documento: string;
+  base: string;
   ventabruta: string;
   totalingreso: string;
   efectivocajafuerte: string;
@@ -19,6 +20,7 @@ export async function ArqueoManualForm({
   puntodeventa,
   nombre,
   documento,
+  base,
   ventabruta,
   totalingreso,
   efectivocajafuerte,
@@ -39,6 +41,7 @@ export async function ArqueoManualForm({
     formData.append('puntodeventa', puntodeventa);
     formData.append('nombre', nombre);
     formData.append('documento', documento);
+    formData.append('base', base);
     formData.append('ventabruta', ventabruta);
     formData.append('totalingreso', totalingreso);
     formData.append('efectivocajafuerte', efectivocajafuerte);

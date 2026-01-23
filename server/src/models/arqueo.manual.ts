@@ -15,6 +15,7 @@ class ArqueoManualModel extends Model<
   declare puntodeventa: string;
   declare nombre: string;
   declare documento: string;
+  declare base: string;
   declare ventabruta: string;
   declare totalingreso: string;
   declare efectivocajafuerte: string;
@@ -44,6 +45,10 @@ export const initArqueoManualModel = (zona: string) => {
       },
       documento: {
         type: DataTypes.STRING(50),
+        allowNull: false,
+      },
+      base: {
+        type: DataTypes.STRING(60),
         allowNull: false,
       },
       ventabruta: {
