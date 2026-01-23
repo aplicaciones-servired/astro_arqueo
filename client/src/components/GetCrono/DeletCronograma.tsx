@@ -64,7 +64,7 @@ export function DeletCronograma({ id, puntodeventa, estado, dia }: DeletCronogra
                         <svg className="mx-auto mb-4 text-gray-400 w-12 h-12" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
-                        <h3 className="mb-2 text-lg font-bold text-gray-500">¿Estás seguro de que quieres eliminar este cronograma?</h3>
+                        <h3 className="mb-2 text-center text-lg font-bold text-gray-500">¿Estás seguro de que quieres eliminar este cronograma?</h3>
                         <div className="p-4 md:p-5 text-center">
                             <div className="grid grid-cols-2 gap-6 mb-6">
                                 <div className="bg-white p-4 rounded-lg shadow-sm">

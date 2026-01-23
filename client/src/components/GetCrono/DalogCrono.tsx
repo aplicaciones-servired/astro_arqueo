@@ -33,7 +33,7 @@ export default function CronoDialogs({
         <X
           aria-label="close"
           onClick={handleClose}
-          className="cursor-pointer flex"
+          className="cursor-pointer flex-8 justify-end absolute right-4 top-4 text-gray-400 hover:text-gray-900"
         />
         Detalle Cronograma
       </DialogTitle>
@@ -74,10 +74,18 @@ export default function CronoDialogs({
                     <label className="block text-sm font-medium text-gray-600 mb-1">Fecha</label>
                     <p className="text-base text-gray-900 font-semibold">{items.dia}</p>
                   </div>
-                  <div className="bg-white p-4 rounded-lg shadow-sm">
-                    <label className="block text-sm font-medium text-gray-600 mb-1">Observacion</label>
-                    <p className="text-base text-gray-900 font-semibold">{items.observacion}</p>
-                  </div>
+                  {items.observacion ? (
+                    <div className="bg-white p-4 rounded-lg shadow-sm">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">Observacion</label>
+                      <p className="text-base text-gray-900 font-semibold">{items.observacion}</p>
+                    </div>
+                  ) : (
+                    <div className="bg-white p-6 rounded-lg shadow-sm">
+                      <div className="text-gray-400 text-center p-8 border-2 border-dashed border-gray-300 rounded-lg">
+                        sin observacion adjunta
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {items.imagen ? (

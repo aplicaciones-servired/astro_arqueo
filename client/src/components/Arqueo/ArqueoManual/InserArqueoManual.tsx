@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
 import { ArqueoManualForm } from "@/Services/InsertArqueoMa";
 import { useEmpresa } from "@/components/ui/useEmpresa";
+import { set } from "date-fns";
 
 export const InserArqueoManual = () => {
     const { empresa } = useEmpresa();
+    const [calculo, setCalculo] = useState<number>(0);
 
     const [form, setForm] = useState({
         puntodeventa: "",
@@ -13,7 +15,6 @@ export const InserArqueoManual = () => {
         ventabruta: "",
         totalingreso: "",
         efectivocajafuerte: "",
-        sobrantefaltante: "",
         valor: ""
     });
 
@@ -23,6 +24,8 @@ export const InserArqueoManual = () => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
+
+
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -40,7 +43,7 @@ export const InserArqueoManual = () => {
             }
 
             setSelectedFile(file);
-            
+
             // Crear preview de la imagen
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -50,9 +53,32 @@ export const InserArqueoManual = () => {
         }
     };
 
+
+    useEffect(() => {
+        const { ventabruta, totalingreso, efectivocajafuerte } = form;
+
+        // Convertir strings a números (parseFloat maneja decimales)
+        const ventabrutavalue = parseFloat(ventabruta) || 0;
+        const totalingresovalue = parseFloat(totalingreso) || 0;
+        const efectivocajafuertevalue = parseFloat(efectivocajafuerte) || 0;
+
+        const Faltante_sobrante = (totalingresovalue + efectivocajafuertevalue) - ventabrutavalue;;
+        if (Faltante_sobrante > 0) {
+            setCalculo(Faltante_sobrante);
+        } else {
+            setCalculo(Faltante_sobrante);
+        }
+
+        console.log('Cálculo:', Faltante_sobrante);
+
+    }, [form, form.ventabruta, form.totalingreso, form.efectivocajafuerte]);
+
+
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const { puntodeventa, nombre, documento, ventabruta, totalingreso, efectivocajafuerte, sobrantefaltante, valor } = form;
+        const { puntodeventa, nombre, documento, ventabruta, totalingreso, efectivocajafuerte, valor } = form;
+
         const ok = await ArqueoManualForm({
             puntodeventa,
             nombre,
@@ -60,7 +86,7 @@ export const InserArqueoManual = () => {
             ventabruta,
             totalingreso,
             efectivocajafuerte,
-            sobrantefaltante,
+            sobrantefaltante: calculo.toString(),
             valor,
             empresa,
             imagen: selectedFile
@@ -73,11 +99,11 @@ export const InserArqueoManual = () => {
                 ventabruta: "",
                 totalingreso: "",
                 efectivocajafuerte: "",
-                sobrantefaltante: "",
-                valor: ""
+                valor: "",
             });
             setSelectedFile(null);
             setPreviewUrl(null);
+            window.location.reload();
         };
     }
 
@@ -129,22 +155,10 @@ export const InserArqueoManual = () => {
                     </label>
 
                     <label className="block text-sm font-medium text-gray-700">
-                        Venta Bruta
-                        <input
-                            name="ventabruta"
-                            type="number"
-                            placeholder="ingresar venta bruta"
-                            value={form.ventabruta}
-                            onChange={handleChange}
-                            className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 placeholder-zinc-800"
-                        />
-                    </label>
-
-                    <label className="block text-sm font-medium text-gray-700">
                         Total Ingreso
                         <input
                             name="totalingreso"
-                            type="number"
+                            type="text"
                             placeholder="ingresar total ingreso"
                             value={form.totalingreso}
                             onChange={handleChange}
@@ -153,11 +167,11 @@ export const InserArqueoManual = () => {
                     </label>
 
                     <label className="block text-sm font-medium text-gray-700">
-                        Efectivo Caja Fuerte
+                        Efectivo
                         <input
                             name="efectivocajafuerte"
-                            type="number"
-                            placeholder="ingresar efectivo caja fuerte"
+                            type="text"
+                            placeholder="ingresar efectivo "
                             value={form.efectivocajafuerte}
                             onChange={handleChange}
                             className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 placeholder-zinc-800"
@@ -165,22 +179,31 @@ export const InserArqueoManual = () => {
                     </label>
 
                     <label className="block text-sm font-medium text-gray-700">
-                        Sobrante/Faltante
+                        Venta Bruta
                         <input
-                            name="sobrantefaltante"
-                            type="number"
-                            placeholder="ingresar sobrante/faltante"
-                            value={form.sobrantefaltante}
+                            name="ventabruta"
+                            type="text"
+                            placeholder="ingresar venta bruta"
+                            value={form.ventabruta}
                             onChange={handleChange}
                             className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 placeholder-zinc-800"
                         />
                     </label>
 
+                    <input
+                        name="sobrantefaltante"
+                        type="text"  // Cambiado de text a text
+                        placeholder="ingresar sobrante/faltante"
+                        value={calculo ? calculo > 0 ? `Sobrante: ${calculo}` : `Faltante: ${calculo}` : "0"}
+                        readOnly  // Agregar readOnly ya que es calculado
+                        className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 placeholder-zinc-800"
+                    />
+
                     <label className="block text-sm font-medium text-gray-700">
                         Valor
                         <input
                             name="valor"
-                            type="number"
+                            type="text"
                             placeholder="ingresar valor"
                             value={form.valor}
                             onChange={handleChange}
@@ -193,9 +216,9 @@ export const InserArqueoManual = () => {
                 <div className="flex items-center justify-center w-full">
                     {previewUrl ? (
                         <div className="relative w-full">
-                            <img 
-                                src={previewUrl} 
-                                alt="Vista previa" 
+                            <img
+                                src={previewUrl}
+                                alt="Vista previa"
                                 className="w-full h-64 object-contain rounded-base border border-default-strong"
                             />
                             <button
@@ -217,13 +240,13 @@ export const InserArqueoManual = () => {
                                 <svg className="w-8 h-8 mb-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h3a3 3 0 0 0 0-6h-.025a5.56 5.56 0 0 0 .025-.5A5.5 5.5 0 0 0 7.207 9.021C7.137 9.017 7.071 9 7 9a4 4 0 1 0 0 8h2.167M12 19v-9m0 0-2 2m2-2 2 2" />
                                 </svg>
-                                <p className="mb-2 text-sm"><span className="font-semibold">Click para subir</span> o arrastra y suelta</p>
+                                <p className="mb-2 text-sm"><span className="font-semibold">Click para subir</span></p>
                                 <p className="text-xs">PNG, JPG, GIF (MÁX. 5MB)</p>
                             </div>
-                            <input 
-                                id="dropzone-file" 
-                                type="file" 
-                                className="hidden" 
+                            <input
+                                id="dropzone-file"
+                                type="file"
+                                className="hidden"
                                 accept="image/*"
                                 onChange={handleFileChange}
                             />
