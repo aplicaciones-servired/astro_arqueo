@@ -6,11 +6,11 @@ export const confirmupload = multer({
     fileSize: 20 * 1024 * 1024, // Límite de 20MB 
   },
   fileFilter: (req, file, cb) => {
-    // Aceptar solo imágenes
-    if (file.mimetype.startsWith('image/')) {
+    // Aceptar imágenes y PDFs
+    if (file.mimetype.startsWith('image/') || file.mimetype === 'application/pdf') {
       cb(null, true);
     } else {
-      cb(new Error('Solo se permiten archivos de imagen'));
+      cb(new Error('Solo se permiten archivos de imagen (PNG, JPG, GIF) o PDF'));
     }
   }
 });

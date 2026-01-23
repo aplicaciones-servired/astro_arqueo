@@ -11,8 +11,15 @@ node_modules
 dist
 dist-ssr
 *.local
+
+# Guías y documentación temporal
 GUIA_SUBIDA_IMAGENES.md
 GUIA_SUBIDA_IMAGENES2.md
+REPORTE_DIARIO.md
+
+# Archivos Excel generados por la aplicación
+*.xlsx
+*.xls
 
 # Editor directories and files
 .vscode/*
