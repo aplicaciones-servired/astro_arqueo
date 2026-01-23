@@ -156,11 +156,11 @@ export const InserArqueoManual = () => {
                     </label>
 
                     <label className="block text-sm font-medium text-gray-700">
-                        Nombre del Responsable
+                        Nombre de la Asesora
                         <input
                             name="nombre"
                             type="text"
-                            placeholder="ingresar nombre del responsable"
+                            placeholder="ingresar nombre de la asesora"
                             value={form.nombre}
                             onChange={handleChange}
                             className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 placeholder-zinc-800"
@@ -168,11 +168,11 @@ export const InserArqueoManual = () => {
                     </label>
 
                     <label className="block text-sm font-medium text-gray-700">
-                        Documento del Responsable
+                        Documento de la Asesora
                         <input
                             name="documento"
                             type="text"
-                            placeholder="ingresar documento del responsable"
+                            placeholder="ingresar documento de la asesora"
                             value={form.documento}
                             onChange={handleChange}
                             className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 placeholder-zinc-800"
