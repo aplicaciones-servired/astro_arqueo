@@ -3,6 +3,7 @@ export interface ArqueoManual {
   puntodeventa: string;
   nombre: string;
   documento: string;
+  base: string;
   ventabruta: string;
   totalingreso: string;
   efectivocajafuerte: string;

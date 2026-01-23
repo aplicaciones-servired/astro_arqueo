@@ -25,7 +25,7 @@ export const exportarAExcel = async ({
   if (registros.length > 0) {
     const firstRecord = registros[0] as any;
     const allKeys = Object.keys(firstRecord);
-    headers = allKeys.filter(key => key !== "id" && key !== "_id" && key !== "ip");
+    headers = allKeys.filter(key => key !== "id" && key !== "_id" && key !== "ip" && key !== "url_imagen");
   }
 
   const headerRow = ws.addRow(headers);

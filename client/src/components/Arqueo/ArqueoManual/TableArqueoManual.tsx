@@ -69,6 +69,11 @@ const TableArqueoManual = ({
                                     <p className="text-base text-gray-900 font-semibold">{selectedArqueo.documento}</p>
                                 </div>
                                 <div className="bg-white p-4 rounded-lg shadow-sm">
+                                    <label className="block text-sm font-medium text-gray-600 mb-1">Base</label>
+                                    <p className="text-base text-gray-900 font-semibold">{selectedArqueo.base}</p>
+                                </div>
+                                
+                                <div className="bg-white p-4 rounded-lg shadow-sm">
                                     <label className="block text-sm font-medium text-gray-600 mb-1">Fecha</label>
                                     <p className="text-base text-gray-900 font-semibold">{getFormattedDate(selectedArqueo.fecha)}</p>
                                 </div>
@@ -81,7 +86,7 @@ const TableArqueoManual = ({
                                     <p className="text-base text-green-600 font-semibold">${parseFloat(selectedArqueo.totalingreso).toLocaleString()}</p>
                                 </div>
                                 <div className="bg-white p-4 rounded-lg shadow-sm">
-                                    <label className="block text-sm font-medium text-gray-600 mb-1">Efectivo Caja Fuerte</label>
+                                    <label className="block text-sm font-medium text-gray-600 mb-1">Efectivo</label>
                                     <p className="text-base text-blue-600 font-semibold">${parseFloat(selectedArqueo.efectivocajafuerte).toLocaleString()}</p>
                                 </div>
                                 <div className="bg-white p-4 rounded-lg shadow-sm">
