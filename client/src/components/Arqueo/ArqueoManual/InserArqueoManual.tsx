@@ -187,6 +187,7 @@ export const InserArqueoManual = () => {
                     <label className="block text-sm font-medium text-gray-700 ">
                         Punto de Venta
                         <input
+                            maxLength={60}
                             name="puntodeventa"
                             type="text"
                             placeholder="ingresar punto de venta"
@@ -199,6 +200,7 @@ export const InserArqueoManual = () => {
                     <label className="block text-sm font-medium text-gray-700">
                         Nombre de la Asesora
                         <input
+                            maxLength={60}
                             name="nombre"
                             type="text"
                             placeholder="ingresar nombre de la asesora"
@@ -211,6 +213,7 @@ export const InserArqueoManual = () => {
                     <label className="block text-sm font-medium text-gray-700">
                         Documento de la Asesora
                         <input
+                            maxLength={20}
                             name="documento"
                             type="text"
                             placeholder="ingresar documento de la asesora"
@@ -223,6 +226,7 @@ export const InserArqueoManual = () => {
                     <label className="block text-sm font-medium text-gray-700">
                         Venta Bruta
                         <input
+                            maxLength={60}
                             name="ventabruta"
                             type="text"
                             placeholder="ingresar venta bruta"
@@ -236,6 +240,7 @@ export const InserArqueoManual = () => {
                     <label className="block text-sm font-medium text-gray-700">
                         Base
                         <input
+                            maxLength={60}
                             name="base"
                             type="text"
                             placeholder="ingresar base"
@@ -250,6 +255,7 @@ export const InserArqueoManual = () => {
                     <label className="block text-sm font-medium text-gray-700">
                         Total Ingreso
                         <input
+                            maxLength={60}
                             name="totalingreso"
                             type="text"
                             placeholder="ingresar total ingreso"
@@ -263,6 +269,7 @@ export const InserArqueoManual = () => {
                     <label className="block text-sm font-medium text-gray-700">
                         Efectivo
                         <input
+                            maxLength={60}
                             name="efectivocajafuerte"
                             type="text"
                             placeholder="ingresar efectivo "
@@ -276,6 +283,7 @@ export const InserArqueoManual = () => {
                     <label className="block text-sm font-medium text-gray-700">
                         Sobrante/Faltante
                         <input
+                            maxLength={60}
                             name="sobrantefaltante"
                             type="text"
                             placeholder="sobrante/faltante"
@@ -288,6 +296,7 @@ export const InserArqueoManual = () => {
                     <label className="block text-sm font-medium text-gray-700">
                         Valor
                         <input
+                            maxLength={60}
                             name="valor"
                             type="text"
                             placeholder="ingresar valor"
