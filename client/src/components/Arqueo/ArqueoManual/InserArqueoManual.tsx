@@ -2,10 +2,15 @@ import { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
 import { ArqueoManualForm } from "@/Services/InsertArqueoMa";
 import { useEmpresa } from "@/components/ui/useEmpresa";
+import { empresas } from "@/utils/constans";
 
 export const InserArqueoManual = () => {
-    const { empresa } = useEmpresa();
+
     const [calculo, setCalculo] = useState<number>(0);
+    const [brutabase, setBrutabase] = useState<number>(0);
+    const { empresa, setEmpresa } = useEmpresa();
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
     const [form, setForm] = useState({
         puntodeventa: "",
@@ -17,9 +22,6 @@ export const InserArqueoManual = () => {
         efectivocajafuerte: "",
         valor: ""
     });
-
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
     // Función para limpiar y obtener solo números
     const limpiarNumero = (valor: string): string => {
@@ -100,29 +102,28 @@ export const InserArqueoManual = () => {
 
 
     useEffect(() => {
-        const { ventabruta, totalingreso, efectivocajafuerte } = form;
+        const { ventabruta, efectivocajafuerte, base } = form;
 
         // Convertir strings a números (parseFloat maneja decimales)
         const ventabrutavalue = parseFloat(ventabruta) || 0;
-        const totalingresovalue = parseFloat(totalingreso) || 0;
+        const basevalue = parseFloat(base) || 0;
         const efectivocajafuertevalue = parseFloat(efectivocajafuerte) || 0;
 
-        const Faltante_sobrante = (totalingresovalue + efectivocajafuertevalue) - ventabrutavalue;;
-        if (Faltante_sobrante > 0) {
-            setCalculo(Faltante_sobrante);
-        } else {
-            setCalculo(Faltante_sobrante);
-        }
+        const totalingresoConBase = ventabrutavalue + basevalue;
+        setBrutabase(totalingresoConBase);
+
+        const Faltante_sobrante = totalingresoConBase - efectivocajafuertevalue;
+        setCalculo(Faltante_sobrante);
 
         console.log('Cálculo:', Faltante_sobrante);
 
-    }, [form, form.ventabruta, form.totalingreso, form.efectivocajafuerte]);
+    }, [form, form.ventabruta, form.base, form.efectivocajafuerte]);
 
 
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const { puntodeventa, nombre, documento, base, ventabruta, totalingreso, efectivocajafuerte, valor } = form;
+        const { puntodeventa, nombre, documento, base, ventabruta, efectivocajafuerte, valor } = form;
 
         const ok = await ArqueoManualForm({
             puntodeventa,
@@ -130,7 +131,7 @@ export const InserArqueoManual = () => {
             documento,
             base,
             ventabruta,
-            totalingreso,
+            totalingreso: brutabase.toString(),
             efectivocajafuerte,
             sobrantefaltante: calculo.toString(),
             valor,
@@ -165,6 +166,24 @@ export const InserArqueoManual = () => {
                 </h3>
 
                 <div className="col-span-4 grid grid-cols-2 gap-4">
+                    <label className="block text-sm font-medium text-gray-700 ">
+                        <label className="block text-center mb-2 uppercase font-bold text-sm text-blue-900">🏢 Empresa:</label>
+                        <select
+                            id="empresa"
+                            name="empresa"
+                            value={empresa}
+                            onChange={(e) => setEmpresa(e.target.value)}
+                            className="w-full px-4 py-2 text-center rounded-lg border-2 border-blue-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white font-medium shadow-sm"
+                        >
+                            <option value="">Cambiar de empresa</option>
+                            {empresas.map((item) => (
+                                <option key={item} value={item}>
+                                    {item}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
+
                     <label className="block text-sm font-medium text-gray-700 ">
                         Punto de Venta
                         <input
@@ -202,6 +221,19 @@ export const InserArqueoManual = () => {
                     </label>
 
                     <label className="block text-sm font-medium text-gray-700">
+                        Venta Bruta
+                        <input
+                            name="ventabruta"
+                            type="text"
+                            placeholder="ingresar venta bruta"
+                            value={formatearMiles(form.ventabruta)}
+                            onChange={handleNumericChange}
+                            inputMode="numeric"
+                            className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 placeholder-zinc-800"
+                        />
+                    </label>
+
+                    <label className="block text-sm font-medium text-gray-700">
                         Base
                         <input
                             name="base"
@@ -221,7 +253,7 @@ export const InserArqueoManual = () => {
                             name="totalingreso"
                             type="text"
                             placeholder="ingresar total ingreso"
-                            value={formatearMiles(form.totalingreso)}
+                            value={formatearMiles(brutabase.toString())}
                             onChange={handleNumericChange}
                             inputMode="numeric"
                             className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 placeholder-zinc-800"
@@ -242,26 +274,16 @@ export const InserArqueoManual = () => {
                     </label>
 
                     <label className="block text-sm font-medium text-gray-700">
-                        Venta Bruta
+                        Sobrante/Faltante
                         <input
-                            name="ventabruta"
+                            name="sobrantefaltante"
                             type="text"
-                            placeholder="ingresar venta bruta"
-                            value={formatearMiles(form.ventabruta)}
-                            onChange={handleNumericChange}
-                            inputMode="numeric"
+                            placeholder="sobrante/faltante"
+                            value={calculo ? (calculo > 0 ? `Sobrante: ${formatearMiles(calculo.toString())}` : `Faltante: -${formatearMiles(Math.abs(calculo).toString())}`) : "0"}
+                            readOnly
                             className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 placeholder-zinc-800"
                         />
                     </label>
-
-                    <input
-                        name="sobrantefaltante"
-                        type="text"
-                        placeholder="sobrante/faltante"
-                        value={calculo ? (calculo > 0 ? `Sobrante: ${formatearMiles(calculo.toString())}` : `Faltante: -${formatearMiles(Math.abs(calculo).toString())}`) : "0"}
-                        readOnly
-                        className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 placeholder-zinc-800 bg-gray-50"
-                    />
 
                     <label className="block text-sm font-medium text-gray-700">
                         Valor

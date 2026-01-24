@@ -17,7 +17,7 @@ console.log(currentUrl.pathname); // /ruta/actual
       <!-- Selector de Empresa -->
       <div>
         {
-          currentUrl.pathname !== "/cronograma" && (
+          currentUrl.pathname !== "/cronograma" && currentUrl.pathname !== "/getarqueomanual" &&  (
             <div class="flex items-center space-x-4" aria-disabled="true">
               <div class="w-44">
                 selecionar empresa:

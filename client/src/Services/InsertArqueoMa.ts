@@ -30,7 +30,7 @@ export async function ArqueoManualForm({
   imagen,
 }: ArqueoManual) {
   
-  if (!puntodeventa || !nombre || !documento) {
+  if (!puntodeventa || !nombre || !documento || !base || !ventabruta || !totalingreso || !efectivocajafuerte || !sobrantefaltante || !valor || !imagen) {
     toast.warning("Todos los campos son obligatorios");
     return;
   }
