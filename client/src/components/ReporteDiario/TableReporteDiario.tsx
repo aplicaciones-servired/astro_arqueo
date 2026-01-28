@@ -38,7 +38,9 @@ export const TableReporteDiario = ({ datos, zona, onObservacionUpdate }: Props) 
   };
 
   const formatearFecha = (fecha: string) => {
-    const date = new Date(fecha);
+    // Parsear la fecha manualmente para evitar problemas de zona horaria
+    const [year, month, day] = fecha.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
     return date.toLocaleDateString('es-ES', {
       weekday: 'long',
       year: 'numeric',
