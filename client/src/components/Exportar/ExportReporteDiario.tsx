@@ -24,6 +24,7 @@ export const exportarReporteDiarioExcel = async ({
     "Fecha",
     "Total Cronogramas",
     "Realizados",
+    "Cerrados",
     "Pendientes",
     "% Completado",
     "Observación"
@@ -48,7 +49,9 @@ export const exportarReporteDiarioExcel = async ({
       ? ((registro.realizados / registro.totalCronogramas) * 100).toFixed(1)
       : "0.0";
 
-    const fecha = new Date(registro.dia);
+    // Parsear la fecha manualmente para evitar problemas de zona horaria
+    const [year, month, day] = registro.dia.split('-').map(Number);
+    const fecha = new Date(year, month - 1, day);
     const fechaFormateada = fecha.toLocaleDateString("es-ES", {
       weekday: "long",
       year: "numeric",
@@ -60,6 +63,7 @@ export const exportarReporteDiarioExcel = async ({
       fechaFormateada,
       registro.totalCronogramas,
       registro.realizados,
+      registro.cerrados,
       registro.pendientes,
       `${porcentaje}%`,
       registro.observacion || "Sin observaciones"
@@ -71,13 +75,13 @@ export const exportarReporteDiarioExcel = async ({
       porcentajeNum >= 50 ? "FFFFF2CC" : // Amarillo claro
         "FFFFC7CE"; // Rojo claro
 
-    row.getCell(5).fill = {
+    row.getCell(6).fill = {
       type: "pattern",
       pattern: "solid",
       fgColor: { argb: colorCelda }
     };
 
-    row.getCell(5).font = {
+    row.getCell(6).font = {
       bold: true,
       color: {
         argb: porcentajeNum >= 80 ? "FF006100" : // Verde oscuro
@@ -94,6 +98,7 @@ export const exportarReporteDiarioExcel = async ({
   // Agregar fila de totales
   const totalCronogramas = registros.reduce((sum, r) => sum + r.totalCronogramas, 0);
   const totalRealizados = registros.reduce((sum, r) => sum + r.realizados, 0);
+  const totalCerrados = registros.reduce((sum, r) => sum + r.cerrados, 0);
   const totalPendientes = registros.reduce((sum, r) => sum + r.pendientes, 0);
   const porcentajeTotal = totalCronogramas > 0
     ? ((totalRealizados / totalCronogramas) * 100).toFixed(1)
@@ -104,6 +109,7 @@ export const exportarReporteDiarioExcel = async ({
     "TOTALES",
     totalCronogramas,
     totalRealizados,
+    totalCerrados,
     totalPendientes,
     `${porcentajeTotal}%`,
     ""
@@ -122,9 +128,10 @@ export const exportarReporteDiarioExcel = async ({
   ws.getColumn(1).width = 35; // Fecha
   ws.getColumn(2).width = 18; // Total Cronogramas
   ws.getColumn(3).width = 15; // Realizados
-  ws.getColumn(4).width = 15; // Pendientes
-  ws.getColumn(5).width = 15; // % Completado
-  ws.getColumn(6).width = 50; // Observación
+  ws.getColumn(4).width = 15; // Cerrados
+  ws.getColumn(5).width = 15; // Pendientes
+  ws.getColumn(6).width = 15; // % Completado
+  ws.getColumn(7).width = 50; // Observación
 
   // Aplicar bordes a todas las celdas
   ws.eachRow((row, rowNumber) => {

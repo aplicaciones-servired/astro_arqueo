@@ -68,6 +68,7 @@ export const GetReporteDiario = async (
           dia: dia,
           totalCronogramas: 0,
           realizados: 0,
+          cerrados: 0,
           pendientes: 0,
           observacion: item.observacion || ""
         };
@@ -77,7 +78,9 @@ export const GetReporteDiario = async (
       
       if (item.estado === "Realizado") {
         acc[dia].realizados++;
-      } else {
+      } else if (item.estado === "Cerrado") {
+        acc[dia].cerrados++;
+      } else if (item.estado === "En Espera") {
         acc[dia].pendientes++;
       }
 

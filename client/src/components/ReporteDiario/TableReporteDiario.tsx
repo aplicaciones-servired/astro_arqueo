@@ -84,6 +84,12 @@ export const TableReporteDiario = ({ datos, zona, onObservacionUpdate }: Props) 
                     scope="col"
                     className="px-4 py-3.5 text-sm font-bold text-center text-white"
                   >
+                    Cerrados
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-4 py-3.5 text-sm font-bold text-center text-white"
+                  >
                     Pendientes
                   </th>
                   <th
@@ -109,7 +115,7 @@ export const TableReporteDiario = ({ datos, zona, onObservacionUpdate }: Props) 
               <tbody className="bg-white divide-y divide-gray-200">
                 {datos.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
+                    <td colSpan={8} className="px-4 py-8 text-center text-gray-500">
                       No hay datos para mostrar
                     </td>
                   </tr>
@@ -135,9 +141,14 @@ export const TableReporteDiario = ({ datos, zona, onObservacionUpdate }: Props) 
                           </span>
                         </td>
                         <td className="px-4 py-4 text-sm text-center">
+                          <span className="px-3 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded-full">
+                            {item.cerrados}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4 text-sm text-center">
                           <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
                             item.pendientes > 0 
-                              ? "text-red-800 bg-red-100" 
+                              ? "text-yellow-800 bg-yellow-100" 
                               : "text-gray-600 bg-gray-100"
                           }`}>
                             {item.pendientes}
@@ -202,7 +213,7 @@ export const TableReporteDiario = ({ datos, zona, onObservacionUpdate }: Props) 
       {datos.length > 0 && (
         <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <h3 className="text-sm font-semibold text-blue-900 mb-2">Resumen del período:</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
             <div>
               <span className="text-gray-600">Total de días:</span>
               <span className="ml-2 font-semibold text-gray-900">{datos.length}</span>
@@ -220,8 +231,14 @@ export const TableReporteDiario = ({ datos, zona, onObservacionUpdate }: Props) 
               </span>
             </div>
             <div>
+              <span className="text-gray-600">Total cerrados:</span>
+              <span className="ml-2 font-semibold text-blue-600">
+                {datos.reduce((sum, item) => sum + item.cerrados, 0)}
+              </span>
+            </div>
+            <div>
               <span className="text-gray-600">Total pendientes:</span>
-              <span className="ml-2 font-semibold text-red-600">
+              <span className="ml-2 font-semibold text-yellow-600">
                 {datos.reduce((sum, item) => sum + item.pendientes, 0)}
               </span>
             </div>
