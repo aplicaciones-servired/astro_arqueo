@@ -1,14 +1,83 @@
 import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
-import IconButton from "@mui/material/IconButton";
-import { X } from "lucide-react";
-import Typography from "@mui/material/Typography";
-import PictureAsPdfSharpIcon from "@mui/icons-material/PictureAsPdfSharp";
+import { X, FileText } from "lucide-react";
 import { useArqueoId } from "@/Services/Arqueoid";
 import Button from "../ui/Button";
 import generatePDF from "./PdfArqueo";
+
+// ─── Helpers de UI ────────────────────────────────────────────────────────────
+
+const Field = ({ label, value }: { label: string; value: any }) => (
+  <div className="flex flex-col gap-1">
+    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+      {label}
+    </span>
+    <div className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 font-medium min-h-9 flex items-center">
+      {value !== null && value !== undefined && value !== 0 && value !== ""
+        ? String(value)
+        : <span className="text-slate-300 italic text-xs">—</span>}
+    </div>
+  </div>
+);
+
+const SectionCard = ({
+  title,
+  accent,
+  children,
+}: {
+  title: string;
+  accent: string;
+  children: React.ReactNode;
+}) => (
+  <div className={`rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-6`}>
+    <div className={`px-4 py-2.5 ${accent} flex items-center gap-2`}>
+      <span className="text-xs font-black uppercase tracking-widest text-white">
+        {title}
+      </span>
+    </div>
+    <div className="p-4 bg-white">{children}</div>
+  </div>
+);
+
+const ReqRow = ({
+  question,
+  answer,
+  observation,
+}: {
+  question: string;
+  answer: string;
+  observation?: string;
+}) => {
+  const isSi =
+    answer?.toLowerCase() === "si" || answer?.toLowerCase() === "s\u00ed";
+  const isNo = answer?.toLowerCase() === "no";
+  return (
+    <div className="py-2.5 border-b border-slate-100 last:border-0">
+      <div className="flex items-start justify-between gap-3">
+        <p className="text-xs text-slate-600 flex-1 leading-relaxed">{question}</p>
+        <span
+          className={`shrink-0 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider ${
+            isSi
+              ? "bg-emerald-100 text-emerald-700"
+              : isNo
+              ? "bg-red-100 text-red-600"
+              : "bg-slate-100 text-slate-600"
+          }`}
+        >
+          {answer}
+        </span>
+      </div>
+      {observation && (
+        <p className="mt-1 text-[11px] text-amber-700 bg-amber-50 rounded px-2 py-1 border-l-2 border-amber-300">
+          Obs: {observation}
+        </p>
+      )}
+    </div>
+  );
+};
+
+// ─── Componente principal ─────────────────────────────────────────────────────
 
 export default function CustomizedDialogs({
   open,
@@ -30,2173 +99,282 @@ export default function CustomizedDialogs({
       open={open}
       fullWidth
       maxWidth="xl"
+      PaperProps={{ sx: { borderRadius: "16px", overflow: "hidden" } }}
     >
-      <DialogTitle
-        sx={{
-          m: 0,
-          p: 2,
-          display: "flex",
-        }}
-        id="customized-dialog-title"
-      >
-        <X
-          aria-label="close"
-          onClick={handleClose}
-          className="cursor-pointer flex"
-        />
-        <span style={{ flex: 1, textAlign: "center" }}>Detalle Arqueo</span>
+      {/* ── Header ── */}
+      <div className="bg-linear-to-r from-slate-800 to-slate-700 px-5 py-4 flex items-center justify-between">
         <button
-          className="flex items-center gap-2 px-4 py-2 text-white rounded flex items-center 
-        cursor-pointer middle none center mr-3 rounded-lg bg-linear-to-tr from-red-600 to-blue-400 
-        py-4 px-8 font-sans text-xs font-bold uppercase text-white shadow-md shadow-pink-500/20 
-        transition-all hover:shadow-lg hover:shadow-pink-500/40 active:opacity-[0.85] disabled:pointer-events-none
-         disabled:opacity-50 disabled:shadow-none"
-          onClick={() => generatePDF(data)}
+          onClick={handleClose}
+          className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
         >
-          <PictureAsPdfSharpIcon />
+          <X size={18} />
+        </button>
+        <h2 className="text-white font-black uppercase tracking-widest text-sm">
+          Detalle Arqueo
+        </h2>
+        <button
+          onClick={() => generatePDF(data)}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 active:bg-red-700 text-white text-xs font-bold uppercase tracking-wider shadow-lg shadow-red-900/30 transition-all"
+        >
+          <FileText size={15} />
           Generar PDF
         </button>
-      </DialogTitle>
+      </div>
 
-      <IconButton
-        aria-label="close"
-        onClick={handleClose}
-        sx={(theme) => ({
-          position: "absolute",
-          right: 8,
-          top: 8,
-          color: theme.palette.grey[500],
-        })}
-      ></IconButton>
       {data.slice(0, 1).map((items, index) => (
-        <DialogContent dividers key={index}>
-          <Typography gutterBottom>
-            <label className="block text-center mt-1 uppercase">
-              Realizado por
-              <input
-                className="px-2 py-1 w-full text-center mt-2 bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                name="supervisor"
-                disabled
-                defaultValue={items.nombreSupervisor}
-              />
-            </label>
-
-            <label className="block text-center mt-1 uppercase">
-              cedula
-              <input
-                className="px-2 py-1 w-full text-center mt-2 bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                name="supervisor"
-                disabled
-                defaultValue={items.supervisor}
-              />
-            </label>
-
-            <label className="block text-center mt-5 uppercase">
-              documento
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                name="documento"
-                disabled
-                defaultValue={items.documento}
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              nombres
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                name="nombres"
-                disabled
-                defaultValue={items.nombres}
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              sucursal
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                name="sucursal "
-                disabled
-                defaultValue={items.sucursal}
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              punto de venta
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                name="puntodeventa"
-                disabled
-                defaultValue={items.puntodeventa}
-              />
-            </label>
-
-            <label className="block text-center mt-5 uppercase">
-              venta bruta
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                name="ventabruta"
-                disabled
-                defaultValue={items.ventabruta}
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              basee fectivo
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                name="baseefectivo"
-                disabled
-                defaultValue={items.baseefectivo}
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              total ingreso
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                name="totalingreso"
-                disabled
-                defaultValue={items.totalingreso}
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              chances abonados
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                name="chancesabonados"
-                disabled
-                defaultValue={items.chancesabonados}
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              chances preimpresos
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                name="chancespreimpresos "
-                disabled
-                defaultValue={items.chancespreimpresos}
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              premios pagados
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                name="premiospagados"
-                disabled
-                defaultValue={items.premiospagados}
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              efectivo caja fuerte
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                name="efectivocajafuerte"
-                disabled
-                defaultValue={items.efectivocajafuerte}
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              tirill arecaudo
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                name="tirillarecaudo"
-                disabled
-                defaultValue={items.tirillarecaudo}
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              total egresos
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                name="totalegresos"
-                disabled
-                defaultValue={items.totalegresos}
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              total billetes
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                name="totalbilletes"
-                disabled
-                defaultValue={items.totalbilletes}
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              total monedas
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                name="totalmonedas"
-                disabled
-                defaultValue={items.totalmonedas}
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              total items
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                name="totalarqueo"
-                disabled
-                defaultValue={items.totalarqueo}
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              sobran tefaltante
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                name="sobrantefaltante"
-                disabled
-                defaultValue={items.sobrantefaltante}
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              total billetes caja
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                name="totalbilletescaja"
-                disabled
-                defaultValue={items.totalbilletescaja}
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              total monedas caja
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                name="totalmonedascaja"
-                disabled
-                defaultValue={items.totalmonedascaja}
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              total premios caja
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                name="totalpremioscaja"
-                disabled
-                defaultValue={items.totalpremioscaja}
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              total
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                disabled
-                defaultValue={items.total}
-                name="total"
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              rollos bnet
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                disabled
-                defaultValue={items.rollos_bnet}
-                name="rollos_bnet"
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              rollos fisicos
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                disabled
-                defaultValue={items.rollos_fisicos}
-                name="rollos_fisicos"
-              />
-            </label>
-
-            <label className="block text-center mt-5 uppercase">
-              diferencia
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                disabled
-                defaultValue={items.diferencia}
-                name="diferencia"
-              />
-            </label>
-            {items.nombre_juego !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  nombre del juego1{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.nombre_juego}
-                    name="nombre_juego"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_bnet !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  cantidad en bnet1{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_bnet}
-                    name="cantidad_bnet"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_fisicos !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  cantidad en fisicos1{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_fisicos}
-                    name="cantidad_fisicos"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_faltante !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  cantidad faltante a descargar1{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_faltante}
-                    name="cantidad_faltante"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_tiquete !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  {" "}
-                  valor del tiquete1{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_tiquete}
-                    name="cantidad_tiquete"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.descargado != null && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  valor descargado por juego1{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.descargado}
-                    name="descargado"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.nombre_juego2 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  nombre del juego2{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.nombre_juego2}
-                    name="nombre_juego2"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_bnet2 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  cantidad en bnet2{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_bnet2}
-                    name="cantidad_bnet"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_fisicos2 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  cantidad en fisicos2{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_fisicos2}
-                    name="cantidad_fisicos"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_faltante2 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  cantidad faltante a descargar2{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_faltante2}
-                    name="cantidad_faltante"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_tiquete2 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  {" "}
-                  valor del tiquete2{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_tiquete2}
-                    name="cantidad_tiquete"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.descargado2 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  valor descargado por juego2{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.descargado2}
-                    name="descargado"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.nombre_juego3 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  nombre del juego3{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.nombre_juego3}
-                    name="nombre_juego2"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_bnet3 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  cantidad en bnet3{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_bnet3}
-                    name="cantidad_bnet"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_fisicos3 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  cantidad en fisicos3{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_fisicos3}
-                    name="cantidad_fisicos"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_faltante3 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  cantidad faltante a descargar3{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_faltante3}
-                    name="cantidad_faltante"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_tiquete3 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  {" "}
-                  valor del tiquete3{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_tiquete3}
-                    name="cantidad_tiquete"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.descargado3 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  valor descargado por juego3{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.descargado3}
-                    name="descargado"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.nombre_juego4 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  nombre del juego4{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.nombre_juego4}
-                    name="nombre_juego2"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_bnet4 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  cantidad en bnet4{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_bnet4}
-                    name="cantidad_bnet"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_fisicos4 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  cantidad en fisicos4{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_fisicos4}
-                    name="cantidad_fisicos"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_faltante4 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  cantidad faltante a descargar4{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_faltante4}
-                    name="cantidad_faltante"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_tiquete4 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  {" "}
-                  valor del tiquete4{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_tiquete4}
-                    name="cantidad_tiquete"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.descargado4 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  valor descargado por juego4{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.descargado4}
-                    name="descargado"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.nombre_juego5 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  nombre del juego5{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.nombre_juego5}
-                    name="nombre_juego2"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_bnet5 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  cantidad en bnet5{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_bnet5}
-                    name="cantidad_bnet"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_fisicos5 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  cantidad en fisicos5{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_fisicos5}
-                    name="cantidad_fisicos"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_faltante5 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  cantidad faltante a descargar5{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_faltante5}
-                    name="cantidad_faltante"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_tiquete5 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  {" "}
-                  valor del tiquete5{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_tiquete5}
-                    name="cantidad_tiquete"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.descargado5 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  valor descargado por juego5{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.descargado5}
-                    name="descargado"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.nombre_juego6 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  nombre del juego6{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.nombre_juego6}
-                    name="nombre_juego2"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_bnet6 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  cantidad en bnet6{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_bnet6}
-                    name="cantidad_bnet"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_fisicos6 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  cantidad en fisicos6{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_fisicos6}
-                    name="cantidad_fisicos"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_faltante6 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  cantidad faltante a descargar6{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_faltante6}
-                    name="cantidad_faltante"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_tiquete6 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  {" "}
-                  valor del tiquete6{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_tiquete6}
-                    name="cantidad_tiquete"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.descargado6 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  valor descargado por juego6{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.descargado6}
-                    name="descargado"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.nombre_juego7 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  nombre del juego7{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.nombre_juego7}
-                    name="nombre_juego2"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_bnet7 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  cantidad en bnet7{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_bnet7}
-                    name="cantidad_bnet"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_fisicos7 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  cantidad en fisicos7{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_fisicos7}
-                    name="cantidad_fisicos"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_faltante7 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  cantidad faltante a descargar7{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_faltante7}
-                    name="cantidad_faltante"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.cantidad_tiquete7 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  {" "}
-                  valor del tiquete4{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.cantidad_tiquete7}
-                    name="cantidad_tiquete"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.descargado7 !== 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  valor descargado por juego7{" "}
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.descargado7}
-                    name="descargado"
-                  />
-                </label>
-              </>
-            )}
-
-            <label className="block text-center mt-5 uppercase">
-              {" "}
-              total cantidad descargados{" "}
-            </label>
-            <input
-              className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-              type="text"
-              disabled
-              defaultValue={items.totaldescargados}
-              name="totaldescargados"
-            />
-
-            <label className="block text-center mt-5 uppercase">
-              valor total descargado{" "}
-            </label>
-            <input
-              className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-              type="text"
-              disabled
-              defaultValue={items.totalvalor}
-              name="totalvalor"
-            />
-
-            <label className="block text-center mt-8 uppercase font-black">
-              Verificacion del PDV{" "}
-            </label>
-
-            {items.requisito1?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Tiene la puerta asegurada?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito1}
-                    name="requisito1"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion1?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion1}
-                    name="observacion1"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito2?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Elementos de aseo, sillas, computador, iluminación en buen
-                  estado?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito2}
-                    name="requisito2"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion2?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion2}
-                    name="observacion2"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito3?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Aviso de videovigilancia y cámaras?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito3}
-                    name="requisito3"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion3?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion3}
-                    name="observacion3"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito4?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Utiliza Superflex?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito4}
-                    name="requisito4"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion4?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion4}
-                    name="observacion4"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito5?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Tiene caja fuerte?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito5}
-                    name="requisito5"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion5?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion5}
-                    name="observacion5"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito6?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Tiene caja digital auxiliar? ¿Conoce las bases de efectivo
-                  asignadas para caja digital y principal?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito6}
-                    name="requisito6"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion6?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion6}
-                    name="observacion6"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito7?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Las recargas se hacen a través la Red propia de la Cia?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito7}
-                    name="requisito7"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion7?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion7}
-                    name="observacion7"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito8?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Cumple con los topes de efectivo establecidos en caja digital
-                  y principal?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito8}
-                    name="requisito8"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion8?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion8}
-                    name="observacion8"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito9?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Tiene los premios descargados? ¿Conoce los requisitos y
-                  montos máximos para pago de premios?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito9}
-                    name="requisito9"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion9?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion9}
-                    name="observacion9"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito10?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿La lotería física tiene impreso el nombre de la Cia o de
-                  Servicios Transaccionales?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito10}
-                    name="requisito10"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion10?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion10}
-                    name="observacion10"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito11?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Publicidad exhibida actualizada?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito11}
-                    name="requisito11"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion11?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion11}
-                    name="observacion11"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito12?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Aviso externo de "Vigilado y Controlado Mintic" y
-                  "Colaborador Autorizado"?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito12}
-                    name="requisito12"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion12?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion12}
-                    name="observacion12"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito13?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Afiche MINTIC SUPERGIROS (contiene aviso de canales de
-                  comunicación, o tarifario condiciones del servicio, sticker
-                  tirilla electrónica CRC)?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito13}
-                    name="requisito13"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion13?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion13}
-                    name="observacion13"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito14?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Calendario resultados Superastro diligenciado (tiene que
-                  tener los resultados)?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito14}
-                    name="requisito14"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion14?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion14}
-                    name="observacion14"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito15?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Presta servicio de Western Union (es obligatorio para cajeros
-                  digitales)?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito15}
-                    name="requisito15"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion15?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion15}
-                    name="observacion15"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito16?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Calendarios de acumulados (Baloto - Miloto - Colorloto)?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito16}
-                    name="requisito16"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion16?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion16}
-                    name="observacion16"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito17?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Tablero de resultados y acumulados actualizados?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito17}
-                    name="requisito17"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion17?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion17}
-                    name="observacion17"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito18?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Licencia de funcionamiento de Beneficencia del Valle con año
-                  actualizado?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito18}
-                    name="requisito18"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion18?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion18}
-                    name="observacion18"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito19?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Tiene equipos de Betplay y/o máquinas de ruta? Si los tiene
-                  debe tener el aviso "Autoriza Coljuegos"
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito19}
-                    name="requisito19"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion19?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion19}
-                    name="observacion19"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito20?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Tiene aviso código QR para PQR?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito20}
-                    name="requisito20"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion20?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion20}
-                    name="observacion20"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito21?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Verificar el cableado?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito21}
-                    name="requisito21"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion21?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion21}
-                    name="observacion21"
-                  />
-                </label>
-              </>
-            )}
-
-            <label className="block text-center mt-8 uppercase font-black">
-              Cajero y/o Colocador I:{" "}
-            </label>
-
-            {items.requisito22?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Tiene prendas emblemáticas y presentación adecuada?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito22}
-                    name="requisito22"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion22?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion22}
-                    name="observacion22"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito23?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿El usuario corresponde a la cédula del mismo?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito23}
-                    name="requisito23"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion23?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion23}
-                    name="observacion23"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito24?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Tiene usuario de giros? ¿Presta el servicio?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito24}
-                    name="requisito24"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion24?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion24}
-                    name="observacion24"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito25?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Tiene usuario de la ONJ (para Baloto, Miloto, Colorloto)?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito25}
-                    name="requisito25"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion25?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion25}
-                    name="observacion25"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito26?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Tiene usuario de SUPERFLEX?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito26}
-                    name="requisito26"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion26?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion26}
-                    name="observacion26"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito27?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Tiene usuario de CORREDOR EMPRESARIAL (astro, chance
-                  millonario, Betplay)?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito27}
-                    name="requisito27"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion27?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion27}
-                    name="observacion27"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito28?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Está realizando recaudo en tesorería BNET a la compañera?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito28}
-                    name="requisito28"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion28?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion28}
-                    name="observacion28"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito29?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Está comercializando el portafolio completo?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito29}
-                    name="requisito29"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion29?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion29}
-                    name="observacion29"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito30?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Solicita el documento de identificación al cliente?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito30}
-                    name="requisito30"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion30?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion30}
-                    name="observacion30"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito31?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Conoce Supervoucher, funciona?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito31}
-                    name="requisito31"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion31?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion31}
-                    name="observacion31"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito32?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Conoce el procedimiento para remitentes y destinatarios
-                  menores de edad?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito32}
-                    name="requisito32"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion32?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion32}
-                    name="observacion32"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito33?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Conoce los reportes de operaciones en efectivo (R.O.E)
-                  firmas, huellas? (Transacciones {">"}= $10.000.000)
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito33}
-                    name="requisito33"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion33?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion33}
-                    name="observacion33"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito34?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿El Supervisor Cial realiza las visitas?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito34}
-                    name="requisito34"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion34?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion34}
-                    name="observacion34"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.requisito35?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  ¿Conoce los términos SARL, SARLAFT, SARO, operación inusual y
-                  operación sospechosa?
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.requisito35}
-                    name="requisito35"
-                  />
-                </label>
-              </>
-            )}
-
-            {items.observacion35?.length > 0 && (
-              <>
-                <label className="block text-center mt-5 uppercase">
-                  observacion
-                  <input
-                    className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                    type="text"
-                    disabled
-                    defaultValue={items.observacion35}
-                    name="observacion35"
-                  />
-                </label>
-              </>
-            )}
-
-            <label className="block text-center mt-5 uppercase">
-              longitud
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                disabled
-                defaultValue={items.longitud}
-                name="longitud"
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              fecha visita
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                disabled
-                defaultValue={items.fechavisita}
-                name="fechavisita"
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              hora visita
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                disabled
-                defaultValue={items.horavisita}
-                name="horavisita"
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              latitud
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                disabled
-                defaultValue={items.latitud}
-                name="latitud"
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              longitud
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                disabled
-                defaultValue={items.longitud}
-                name="longitud"
-              />
-            </label>
-            <label className="block text-center mt-5 uppercase">
-              nombre observacion
-              <input
-                className="px-2 py-1 w-full text-center mt- bg-slate-300 rounded-full border cursor-not-allowed"
-                type="text"
-                disabled
-                defaultValue={items.nombre_observacion}
-                name="nombre observacion"
-              />
-            </label>
-
-            {/* ─── Sección de Imágenes ─── */}
-            <div className="mt-10 mb-4">
-              <h3 className="text-center text-sm font-black uppercase tracking-widest text-slate-600 mb-6 border-t border-b border-slate-300 py-2">
-                Imágenes y Firmas
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Imagen Observación */}
-                {items.imagen_observacion && (
-                  <div className="flex flex-col items-center bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
-                    <div className="w-full bg-slate-700 py-2 px-4">
-                      <p className="text-xs font-bold uppercase tracking-wider text-white text-center">
-                        Imagen Observación
-                      </p>
-                    </div>
-                    <div className="p-3 w-full flex justify-center items-center bg-slate-50" style={{ minHeight: "220px" }}>
-                      <img
-                        src={items.imagen_observacion}
-                        alt="Imagen de observación"
-                        className="max-h-64 w-full object-contain rounded-lg"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* Firma Auditoría */}
-                {items.firma_auditoria && (
-                  <div className="flex flex-col items-center bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
-                    <div className="w-full bg-blue-700 py-2 px-4">
-                      <p className="text-xs font-bold uppercase tracking-wider text-white text-center">
-                        Firma Auditoría
-                      </p>
-                    </div>
-                    <div className="p-3 w-full flex justify-center items-center bg-slate-50" style={{ minHeight: "220px" }}>
-                      <img
-                        src={items.firma_auditoria}
-                        alt="Firma de auditoría"
-                        className="max-h-64 w-full object-contain rounded-lg"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* Firma Colocadora */}
-                {items.firma_colocadora && (
-                  <div className="flex flex-col items-center bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
-                    <div className="w-full bg-emerald-700 py-2 px-4">
-                      <p className="text-xs font-bold uppercase tracking-wider text-white text-center">
-                        Firma Colocadora
-                      </p>
-                    </div>
-                    <div className="p-3 w-full flex justify-center items-center bg-slate-50" style={{ minHeight: "220px" }}>
-                      <img
-                        src={items.firma_colocadora}
-                        alt="Firma colocadora"
-                        className="max-h-64 w-full object-contain rounded-lg"
-                      />
-                    </div>
-                  </div>
-                )}
+        <DialogContent key={index} sx={{ p: 3, bgcolor: "#f8fafc" }}>
+          <div className="max-w-5xl mx-auto">
+
+            {/* ── 1. Supervisor ── */}
+            <SectionCard title="Realizado por" accent="bg-indigo-600">
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Nombre Supervisor" value={items.nombreSupervisor} />
+                <Field label="Cédula" value={items.supervisor} />
               </div>
-            </div>
-          </Typography>
+            </SectionCard>
+
+            {/* ── 2. Datos del PDV ── */}
+            <SectionCard title="Datos del Punto de Venta" accent="bg-slate-700">
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Documento" value={items.documento} />
+                <Field label="Nombres" value={items.nombres} />
+                <Field label="Sucursal" value={items.sucursal} />
+                <Field label="Punto de Venta" value={items.puntodeventa} />
+              </div>
+            </SectionCard>
+
+            {/* ── 3. Información Financiera ── */}
+            <SectionCard title="Información Financiera" accent="bg-rose-600">
+              <div className="grid grid-cols-3 gap-4">
+                <Field label="Venta Bruta" value={items.ventabruta} />
+                <Field label="Base Efectivo" value={items.baseefectivo} />
+                <Field label="Total Ingreso" value={items.totalingreso} />
+                <Field label="Chances Abonados" value={items.chancesabonados} />
+                <Field label="Chances Preimpresos" value={items.chancespreimpresos} />
+                <Field label="Premios Pagados" value={items.premiospagados} />
+                <Field label="Efectivo Caja Fuerte" value={items.efectivocajafuerte} />
+                <Field label="Tirilla Recaudo" value={items.tirillarecaudo} />
+                <Field label="Total Egresos" value={items.totalegresos} />
+              </div>
+            </SectionCard>
+
+            {/* ── 4. Totales ── */}
+            <SectionCard title="Totales" accent="bg-violet-600">
+              <div className="grid grid-cols-3 gap-4">
+                <Field label="Total Billetes" value={items.totalbilletes} />
+                <Field label="Total Monedas" value={items.totalmonedas} />
+                <Field label="Total Items" value={items.totalarqueo} />
+                <Field label="Sobrante / Faltante" value={items.sobrantefaltante} />
+                <Field label="Total Billetes Caja" value={items.totalbilletescaja} />
+                <Field label="Total Monedas Caja" value={items.totalmonedascaja} />
+                <Field label="Total Premios Caja" value={items.totalpremioscaja} />
+                <Field label="Total" value={items.total} />
+              </div>
+            </SectionCard>
+
+            {/* ── 5. Rollos ── */}
+            <SectionCard title="Rollos" accent="bg-teal-600">
+              <div className="grid grid-cols-3 gap-4">
+                <Field label="Rollos BNET" value={items.rollos_bnet} />
+                <Field label="Rollos Físicos" value={items.rollos_fisicos} />
+                <Field label="Diferencia" value={items.diferencia} />
+              </div>
+            </SectionCard>
+
+            {/* ── 6. Juegos ── */}
+            {[1, 2, 3, 4, 5, 6, 7].some((n) => {
+              const key = n === 1 ? "nombre_juego" : `nombre_juego${n}`;
+              return (items as any)[key] && (items as any)[key] !== 0;
+            }) && (
+              <SectionCard title="Información de Juegos" accent="bg-amber-600">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {[1, 2, 3, 4, 5, 6, 7].map((n) => {
+                    const nombreKey = n === 1 ? "nombre_juego" : `nombre_juego${n}`;
+                    const bnetKey   = n === 1 ? "cantidad_bnet" : `cantidad_bnet${n}`;
+                    const fisicosKey   = n === 1 ? "cantidad_fisicos" : `cantidad_fisicos${n}`;
+                    const faltanteKey  = n === 1 ? "cantidad_faltante" : `cantidad_faltante${n}`;
+                    const tiqueteKey   = n === 1 ? "cantidad_tiquete" : `cantidad_tiquete${n}`;
+                    const descargadoKey = n === 1 ? "descargado" : `descargado${n}`;
+                    const nombre = (items as any)[nombreKey];
+                    if (!nombre || nombre === 0) return null;
+                    return (
+                      <div key={n} className="rounded-lg border border-amber-200 bg-amber-50 overflow-hidden">
+                        <div className="bg-amber-200 px-3 py-1.5">
+                          <span className="text-xs font-black uppercase tracking-wider text-amber-900">
+                            Juego {n}: {nombre}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3 p-3">
+                          <Field label="Cant. BNET"      value={(items as any)[bnetKey]} />
+                          <Field label="Cant. Físicos"   value={(items as any)[fisicosKey]} />
+                          <Field label="Cant. Faltante"  value={(items as any)[faltanteKey]} />
+                          <Field label="Valor Tiquete"   value={(items as any)[tiqueteKey]} />
+                          <div className="col-span-2">
+                            <Field label="Valor Descargado" value={(items as any)[descargadoKey]} />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-amber-200">
+                  <Field label="Total Cantidad Descargados" value={items.totaldescargados} />
+                  <Field label="Valor Total Descargado"     value={items.totalvalor} />
+                </div>
+              </SectionCard>
+            )}
+
+            {/* Totales descargados cuando no hay juegos */}
+            {![1, 2, 3, 4, 5, 6, 7].some((n) => {
+              const key = n === 1 ? "nombre_juego" : `nombre_juego${n}`;
+              return (items as any)[key] && (items as any)[key] !== 0;
+            }) && (items.totaldescargados || items.totalvalor) && (
+              <SectionCard title="Totales Descargados" accent="bg-amber-600">
+                <div className="grid grid-cols-2 gap-4">
+                  <Field label="Total Cantidad Descargados" value={items.totaldescargados} />
+                  <Field label="Valor Total Descargado"     value={items.totalvalor} />
+                </div>
+              </SectionCard>
+            )}
+
+            {/* ── 7. Verificación del PDV (requisitos 1–21) ── */}
+            {([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] as const).some(
+              (n) => (items as any)[`requisito${n}`]?.length > 0
+            ) && (
+              <SectionCard title="Verificación del PDV" accent="bg-blue-700">
+                <div className="divide-y divide-slate-100">
+                  {(
+                    [
+                      { n: 1,  q: "¿Tiene la puerta asegurada?" },
+                      { n: 2,  q: "¿Elementos de aseo, sillas, computador, iluminación en buen estado?" },
+                      { n: 3,  q: "¿Aviso de videovigilancia y cámaras?" },
+                      { n: 4,  q: "¿Utiliza Superflex?" },
+                      { n: 5,  q: "¿Tiene caja fuerte?" },
+                      { n: 6,  q: "¿Tiene caja digital auxiliar? ¿Conoce las bases de efectivo asignadas para caja digital y principal?" },
+                      { n: 7,  q: "¿Las recargas se hacen a través la Red propia de la Cia?" },
+                      { n: 8,  q: "¿Cumple con los topes de efectivo establecidos en caja digital y principal?" },
+                      { n: 9,  q: "¿Tiene los premios descargados? ¿Conoce los requisitos y montos máximos para pago de premios?" },
+                      { n: 10, q: "¿La lotería física tiene impreso el nombre de la Cia o de Servicios Transaccionales?" },
+                      { n: 11, q: "¿Publicidad exhibida actualizada?" },
+                      { n: 12, q: "¿Aviso externo de \"Vigilado y Controlado Mintic\" y \"Colaborador Autorizado\"?" },
+                      { n: 13, q: "¿Afiche MINTIC SUPERGIROS (contiene aviso de canales de comunicación, o tarifario condiciones del servicio, sticker tirilla electrónica CRC)?" },
+                      { n: 14, q: "¿Calendario resultados Superastro diligenciado (tiene que tener los resultados)?" },
+                      { n: 15, q: "¿Presta servicio de Western Union (es obligatorio para cajeros digitales)?" },
+                      { n: 16, q: "¿Calendarios de acumulados (Baloto - Miloto - Colorloto)?" },
+                      { n: 17, q: "¿Tablero de resultados y acumulados actualizados?" },
+                      { n: 18, q: "¿Licencia de funcionamiento de Beneficencia del Valle con año actualizado?" },
+                      { n: 19, q: "¿Tiene equipos de Betplay y/o máquinas de ruta? Si los tiene debe tener el aviso \"Autoriza Coljuegos\"" },
+                      { n: 20, q: "¿Tiene aviso código QR para PQR?" },
+                      { n: 21, q: "¿Verificar el cableado?" },
+                    ] as { n: number; q: string }[]
+                  ).map(({ n, q }) => {
+                    const resp = (items as any)[`requisito${n}`];
+                    const obs  = (items as any)[`observacion${n}`];
+                    if (!resp?.length) return null;
+                    return <ReqRow key={n} question={q} answer={resp} observation={obs} />;
+                  })}
+                </div>
+              </SectionCard>
+            )}
+
+            {/* ── 8. Cajero / Colocador (requisitos 22–35) ── */}
+            {([22,23,24,25,26,27,28,29,30,31,32,33,34,35] as const).some(
+              (n) => (items as any)[`requisito${n}`]?.length > 0
+            ) && (
+              <SectionCard title="Cajero y/o Colocador" accent="bg-emerald-700">
+                <div className="divide-y divide-slate-100">
+                  {(
+                    [
+                      { n: 22, q: "¿Tiene prendas emblemáticas y presentación adecuada?" },
+                      { n: 23, q: "¿El usuario corresponde a la cédula del mismo?" },
+                      { n: 24, q: "¿Tiene usuario de giros? ¿Presta el servicio?" },
+                      { n: 25, q: "¿Tiene usuario de la ONJ (para Baloto, Miloto, Colorloto)?" },
+                      { n: 26, q: "¿Tiene usuario de SUPERFLEX?" },
+                      { n: 27, q: "¿Tiene usuario de CORREDOR EMPRESARIAL (astro, chance millonario, Betplay)?" },
+                      { n: 28, q: "¿Está realizando recaudo en tesorería BNET a la compañera?" },
+                      { n: 29, q: "¿Está comercializando el portafolio completo?" },
+                      { n: 30, q: "¿Solicita el documento de identificación al cliente?" },
+                      { n: 31, q: "¿Conoce Supervoucher, funciona?" },
+                      { n: 32, q: "¿Conoce el procedimiento para remitentes y destinatarios menores de edad?" },
+                      { n: 33, q: "¿Conoce los reportes de operaciones en efectivo (R.O.E) firmas, huellas? (Transacciones >= $10.000.000)" },
+                      { n: 34, q: "¿El Supervisor Cial realiza las visitas?" },
+                      { n: 35, q: "¿Conoce los términos SARL, SARLAFT, SARO, operación inusual y operación sospechosa?" },
+                    ] as { n: number; q: string }[]
+                  ).map(({ n, q }) => {
+                    const resp = (items as any)[`requisito${n}`];
+                    const obs  = (items as any)[`observacion${n}`];
+                    if (!resp?.length) return null;
+                    return <ReqRow key={n} question={q} answer={resp} observation={obs} />;
+                  })}
+                </div>
+              </SectionCard>
+            )}
+
+            {/* ── 9. Información Adicional ── */}
+            <SectionCard title="Información Adicional" accent="bg-slate-600">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Field label="Fecha Visita" value={items.fechavisita} />
+                <Field label="Hora Visita"  value={items.horavisita} />
+                <Field label="Latitud"      value={items.latitud} />
+                <Field label="Longitud"     value={items.longitud} />
+              </div>
+              {items.nombre_observacion && (
+                <div className="mt-4">
+                  <Field label="Nombre Observación" value={items.nombre_observacion} />
+                </div>
+              )}
+            </SectionCard>
+
+            {/* ── 10. Imágenes y Firmas ── */}
+            {(items.imagen_observacion || items.firma_auditoria || items.firma_colocadora) && (
+              <SectionCard title="Imágenes y Firmas" accent="bg-slate-700">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {items.imagen_observacion && (
+                    <div className="flex flex-col rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                      <div className="bg-slate-700 py-2 px-4">
+                        <p className="text-xs font-bold uppercase tracking-wider text-white text-center">
+                          Imagen Observación
+                        </p>
+                      </div>
+                      <div className="p-3 w-full flex justify-center items-center bg-slate-50" style={{ minHeight: "220px" }}>
+                        <img src={items.imagen_observacion} alt="Imagen de observación" className="max-h-64 w-full object-contain rounded-lg" />
+                      </div>
+                    </div>
+                  )}
+                  {items.firma_auditoria && (
+                    <div className="flex flex-col rounded-xl border border-blue-200 overflow-hidden shadow-sm">
+                      <div className="bg-blue-700 py-2 px-4">
+                        <p className="text-xs font-bold uppercase tracking-wider text-white text-center">
+                          Firma Auditoría
+                        </p>
+                      </div>
+                      <div className="p-3 w-full flex justify-center items-center bg-blue-50" style={{ minHeight: "220px" }}>
+                        <img src={items.firma_auditoria} alt="Firma de auditoría" className="max-h-64 w-full object-contain rounded-lg" />
+                      </div>
+                    </div>
+                  )}
+                  {items.firma_colocadora && (
+                    <div className="flex flex-col rounded-xl border border-emerald-200 overflow-hidden shadow-sm">
+                      <div className="bg-emerald-700 py-2 px-4">
+                        <p className="text-xs font-bold uppercase tracking-wider text-white text-center">
+                          Firma Colocadora
+                        </p>
+                      </div>
+                      <div className="p-3 w-full flex justify-center items-center bg-emerald-50" style={{ minHeight: "220px" }}>
+                        <img src={items.firma_colocadora} alt="Firma colocadora" className="max-h-64 w-full object-contain rounded-lg" />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </SectionCard>
+            )}
+
+          </div>
         </DialogContent>
       ))}
-      <DialogActions>
-        <Button onClick={handleClose}>cerrar</Button>
+
+      <DialogActions sx={{ px: 3, py: 2, bgcolor: "#f8fafc", borderTop: "1px solid #e2e8f0" }}>
+        <Button onClick={handleClose}>Cerrar</Button>
       </DialogActions>
     </Dialog>
   );
