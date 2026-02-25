@@ -5,6 +5,7 @@ import { X, FileText } from "lucide-react";
 import { useArqueoId } from "@/Services/Arqueoid";
 import Button from "../ui/Button";
 import generatePDF from "./PdfArqueo";
+import MapaUbicacion from "./MapaUbicacion";
 
 // ─── Helpers de UI ────────────────────────────────────────────────────────────
 
@@ -321,6 +322,20 @@ export default function CustomizedDialogs({
               {items.nombre_observacion && (
                 <div className="mt-4">
                   <Field label="Nombre Observación" value={items.nombre_observacion} />
+                </div>
+              )}
+              {items.latitud && items.longitud && (
+                <div className="mt-4 rounded-xl overflow-hidden border border-slate-200 shadow-sm">
+                  <div className="bg-slate-500 py-2 px-4">
+                    <p className="text-xs font-bold uppercase tracking-wider text-white">
+                      Ubicación en el mapa
+                    </p>
+                  </div>
+                  <MapaUbicacion
+                    lat={Number(items.latitud)}
+                    lng={Number(items.longitud)}
+                    nombre={items.puntodeventa}
+                  />
                 </div>
               )}
             </SectionCard>

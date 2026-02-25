@@ -376,8 +376,196 @@ export default async function generatePDF(data: any) {
     yPosition = (doc as any).lastAutoTable.finalY + 10;
   }
 
+  /**
+   * Construye un mapa a partir de tiles individuales de OSM sobre un <canvas>,
+   * dibuja un marcador rojo y lo incrusta en el PDF.
+   *
+   * Por qué tiles y no staticmap:
+   *  - staticmap.openstreetmap.de bloquea fetch() desde el navegador (CORS).
+   *  - Los tiles de tile.openstreetmap.org sí incluyen Access-Control-Allow-Origin: *,
+   *    por lo que se pueden cargar con <img crossOrigin="anonymous"> y dibujar en canvas.
+   *
+   * El proceso:
+   *  1. Calcula las coordenadas del tile central (xtile, ytile) para zoom 16.
+   *  2. Carga una cuadrícula de 3×3 tiles (768×768 px) centrada en la coordenada.
+   *  3. Dibuja cada tile en el canvas a medida que carga.
+   *  4. Cuando todos cargan, dibuja el marcador rojo encima.
+   *  5. canvas.toDataURL("image/png") da el base64 que inserta jsPDF.
+   */
+  const addMapToPDF = (lat: number, lng: number, nombre: string): Promise<void> =>
+    new Promise((resolve) => {
+      try {
+        const zoom  = 18;
+        const TILE  = 256;   // px por tile
+        const GRIDX = 8;     // 8 tiles horizontales → canvas 2048px (mismo área que 4@zoom17, 4× más nítido)
+        const GRIDY = 4;     // 4 tiles verticales   → canvas 1024px, ratio 2:1
+
+        // ── Conversión lat/lng → tile x,y (fórmula estándar OSM) ──────────
+        const lat_rad = (lat * Math.PI) / 180;
+        const n = Math.pow(2, zoom);
+        const xtileF = ((lng + 180) / 360) * n;
+        const ytileF = ((1 - Math.log(Math.tan(lat_rad) + 1 / Math.cos(lat_rad)) / Math.PI) / 2) * n;
+        const xtile  = Math.floor(xtileF);
+        const ytile  = Math.floor(ytileF);
+
+        // Offset del tile origen (esquina superior izquierda del canvas)
+        const originX = xtile - Math.floor(GRIDX / 2);  // tile más a la izquierda
+        const originY = ytile - Math.floor(GRIDY / 2);  // tile más arriba
+
+        // Posición del marcador en píxeles dentro del canvas (GRIDX*256 × GRIDY*256)
+        const markerX = Math.round((xtileF - originX) * TILE);
+        const markerY = Math.round((ytileF - originY) * TILE);
+
+        // ── Canvas offscreen ───────────────────────────────────────────────
+        const canvas = document.createElement("canvas");
+        canvas.width  = TILE * GRIDX;  // 2048
+        canvas.height = TILE * GRIDY;  // 1024
+        const ctx = canvas.getContext("2d")!;
+
+        const totalTiles = GRIDX * GRIDY; // 32
+        let loaded = 0;
+
+        const onAllLoaded = () => {
+          // ── Marcador rojo (escalado al doble para canvas 2048×1024) ──
+          // Sombra
+          ctx.beginPath();
+          ctx.arc(markerX + 4, markerY - 20, 18, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(0,0,0,0.25)";
+          ctx.fill();
+          // Círculo rojo
+          ctx.beginPath();
+          ctx.arc(markerX, markerY - 24, 18, 0, Math.PI * 2);
+          ctx.fillStyle = "#dc2626";
+          ctx.fill();
+          ctx.strokeStyle = "#ffffff";
+          ctx.lineWidth = 5;
+          ctx.stroke();
+          // Punto blanco central
+          ctx.beginPath();
+          ctx.arc(markerX, markerY - 24, 6, 0, Math.PI * 2);
+          ctx.fillStyle = "#ffffff";
+          ctx.fill();
+
+          // ── Popup / etiqueta sobre el marcador (al estilo Leaflet) ──────
+          const labelName  = nombre;
+          const labelCoord = `${lat}, ${lng}`;
+          const boxW  = 340;
+          const boxH  = 80;
+          const boxX  = markerX - boxW / 2;
+          const boxY  = markerY - 24 - 18 - boxH - 16; // encima del marcador
+          const radius = 8;
+
+          // Fondo blanco con borde gris y sombra
+          ctx.shadowColor = "rgba(0,0,0,0.20)";
+          ctx.shadowBlur  = 12;
+          ctx.shadowOffsetX = 2;
+          ctx.shadowOffsetY = 3;
+          ctx.fillStyle = "#ffffff";
+          ctx.strokeStyle = "#c0c0c0";
+          ctx.lineWidth = 2;
+          // Rectángulo redondeado
+          ctx.beginPath();
+          ctx.moveTo(boxX + radius, boxY);
+          ctx.lineTo(boxX + boxW - radius, boxY);
+          ctx.quadraticCurveTo(boxX + boxW, boxY, boxX + boxW, boxY + radius);
+          ctx.lineTo(boxX + boxW, boxY + boxH - radius);
+          ctx.quadraticCurveTo(boxX + boxW, boxY + boxH, boxX + boxW - radius, boxY + boxH);
+          // Cola triangular apuntando al marcador
+          ctx.lineTo(markerX + 14, boxY + boxH);
+          ctx.lineTo(markerX,     boxY + boxH + 16);
+          ctx.lineTo(markerX - 14, boxY + boxH);
+          ctx.lineTo(boxX + radius, boxY + boxH);
+          ctx.quadraticCurveTo(boxX, boxY + boxH, boxX, boxY + boxH - radius);
+          ctx.lineTo(boxX, boxY + radius);
+          ctx.quadraticCurveTo(boxX, boxY, boxX + radius, boxY);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+          ctx.shadowColor = "transparent";
+
+          // Texto: nombre (negrita)
+          ctx.fillStyle = "#111827";
+          ctx.font = "bold 28px sans-serif";
+          ctx.fillText(String(labelName), boxX + 18, boxY + 36);
+          // Texto: coordenadas (gris, más pequeño)
+          ctx.fillStyle = "#6b7280";
+          ctx.font = "22px sans-serif";
+          ctx.fillText(labelCoord, boxX + 18, boxY + 64);
+
+          // ── Exportar a base64 e incrustar en PDF ───────────────────────
+          try {
+            const base64 = canvas.toDataURL("image/png");
+            const imgW = 170;
+            const imgH = 85; // proporción 2:1 — igual que el canvas 1024×512
+
+            if (yPosition + imgH + 22 > doc.internal.pageSize.height - 10) {
+              doc.addPage();
+              yPosition = 20;
+            }
+
+            // Título
+            doc.setFillColor(240, 240, 240);
+            doc.roundedRect(20, yPosition - 1, 170, 8, 2, 2, "F");
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(50, 50, 50);
+            doc.text("Ubicación en el Mapa", 105, yPosition + 5, { align: "center" });
+            yPosition += 10;
+
+            // Borde
+            doc.setDrawColor(100, 116, 139);
+            doc.setLineWidth(0.3);
+            doc.roundedRect(19, yPosition - 1, imgW + 2, imgH + 2, 2, 2);
+
+            // Imagen (sin distorsión: canvas y PDF tienen el mismo ratio 2:1)
+            doc.addImage(base64, "PNG", 20, yPosition, imgW, imgH, undefined, "FAST");
+            yPosition += imgH + 4;
+
+            // Créditos y coordenadas
+            doc.setFontSize(7);
+            doc.setFont("helvetica", "normal");
+            doc.setTextColor(100, 116, 139);
+            doc.text(
+              `${nombre}  |  Lat: ${lat}  Lng: ${lng}  |  © OpenStreetMap contributors`,
+              105, yPosition + 3, { align: "center" }
+            );
+            doc.setTextColor(0, 0, 0);
+            yPosition += 10;
+          } catch (_) {/* silencio */}
+          resolve();
+        };
+
+        // ── Cargar los tiles ───────────────────────────────────────────────
+        for (let dy = 0; dy < GRIDY; dy++) {
+          for (let dx = 0; dx < GRIDX; dx++) {
+            const tx = originX + dx;
+            const ty = originY + dy;
+            const drawX = dx * TILE;
+            const drawY = dy * TILE;
+
+            const img = new Image();
+            img.crossOrigin = "anonymous"; // OSM tiles tienen CORS abierto
+            img.onload = () => {
+              ctx.drawImage(img, drawX, drawY, TILE, TILE);
+              loaded++;
+              if (loaded === totalTiles) onAllLoaded();
+            };
+            img.onerror = () => {
+              ctx.fillStyle = "#e5e7eb";
+              ctx.fillRect(drawX, drawY, TILE, TILE);
+              loaded++;
+              if (loaded === totalTiles) onAllLoaded();
+            };
+            img.src = `https://tile.openstreetmap.org/${zoom}/${tx}/${ty}.png`;
+          }
+        }
+      } catch (_) {
+        resolve(); // Error inesperado → omitir el mapa sin romper el PDF
+      }
+    });
+
   // Información adicional
-  if (items.nombre_observacion || items.fechavisita || items.horavisita) {
+  if (items.nombre_observacion || items.fechavisita || items.horavisita || items.latitud || items.longitud) {
     if (yPosition > 250) {
       doc.addPage();
       yPosition = 20;
@@ -417,6 +605,15 @@ export default async function generatePDF(data: any) {
       });
 
       yPosition = (doc as any).lastAutoTable.finalY + 10;
+    }
+
+    // Mapa estático justo debajo de las coordenadas
+    if (items.latitud && items.longitud) {
+      await addMapToPDF(
+        Number(items.latitud),
+        Number(items.longitud),
+        String(items.puntodeventa ?? "Punto de Venta")
+      );
     }
   }
 
