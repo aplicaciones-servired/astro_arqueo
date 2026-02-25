@@ -13,6 +13,12 @@ export const minioClient = new Client({
 
 export const BUCKET_NAME = process.env.MINIO_BUCKET || 'inventario-imagenes';
 
+// Origen público accesible desde el navegador (puede diferir del endPoint interno Docker)
+// Usar MINIO_PUBLIC_ENDPOINT + MINIO_PUBLIC_PORT si se define; si no, usar MINIO_ENDPOINT + MINIO_PORT
+const publicHost = process.env.MINIO_PUBLIC_ENDPOINT || process.env.MINIO_ENDPOINT || 'localhost';
+const publicPort = process.env.MINIO_PUBLIC_PORT || process.env.MINIO_PORT || '9000';
+export const MINIO_PUBLIC_ORIGIN = `http://${publicHost}:${publicPort}`;
+
 // Verificar conexión y crear bucket si no existe
 (async () => {
   try {

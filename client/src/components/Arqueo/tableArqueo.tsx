@@ -148,6 +148,7 @@ export const TableArqueo = ({
           open={open}
           handleClose={() => setOpen(false)}
           id={selectedItem?.id}
+          source={selectedItem?._source}
         />
       )}
     </div>

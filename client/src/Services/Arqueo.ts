@@ -64,6 +64,8 @@ export function useArqueo(fecha?: string, PDV?: string) {
     setPage(newPage);
   }, []);
 
+  console.log('data', data)
+
   return {
     data,
     page,

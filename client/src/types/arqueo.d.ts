@@ -1,5 +1,6 @@
 export interface Arqueos {
   id: number;
+  _source?: string;
   nombreSupervisor: string;
   supervisor: string;
   nombres: string;

@@ -1,7 +1,7 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-export default function generatePDF(data: any) {
+export default async function generatePDF(data: any) {
   if (!data || data.length === 0) {
     alert("No hay datos para generar el PDF");
     return;
@@ -420,55 +420,185 @@ export default function generatePDF(data: any) {
     }
   }
 
-  // Agregar imágenes si existen
-  const addImageToPDF = (imageData: string | null, title: string) => {
-    if (!imageData) return;
-
-    try {
-      // Verificar si necesitamos una nueva página
-      if (yPosition > 220) {
-        doc.addPage();
-        yPosition = 20;
-      }
-
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "bold");
-      doc.text(title, 20, yPosition);
-      yPosition += 5;
-
-      // Agregar la imagen con mejor calidad
-      const imgWidth = 120;
-      const imgHeight = 90;
-
-      doc.addImage(imageData, "JPEG", 20, yPosition, imgWidth, imgHeight);
-      yPosition += imgHeight + 8;
-    } catch (error) {}
+  // ─── Utilidades de imagen ────────────────────────────────────────────────
+  /** Detecta el formato de imagen a partir del encabezado base64 */
+  const getImageFormat = (imageData: string): string => {
+    if (imageData.startsWith("data:image/png")) return "PNG";
+    if (imageData.startsWith("data:image/webp")) return "WEBP";
+    return "JPEG";
   };
 
-  // Agregar las imágenes disponibles
-  if (
-    items.firma_auditoria ||
-    items.firma_colocadora ||
-    items.imagen_observacion
-  ) {
+  /**
+   * Calcula las dimensiones manteniendo la relación de aspecto
+   * a partir de un elemento Image cargado en memoria.
+   */
+  const fitDimensions = (
+    naturalW: number,
+    naturalH: number,
+    maxW: number,
+    maxH: number
+  ): [number, number] => {
+    const ratio = Math.min(maxW / naturalW, maxH / naturalH);
+    return [naturalW * ratio, naturalH * ratio];
+  };
+
+  /**
+   * Agrega una imagen centrada en la página con título y borde decorativo.
+   * Devuelve una Promise para aguardar la carga de la imagen antes de dibujar.
+   */
+  const addImageToPDF = (
+    imageData: string | null,
+    title: string,
+    maxW = 170,
+    maxH = 130
+  ): Promise<void> => {
+    return new Promise((resolve) => {
+      if (!imageData) return resolve();
+
+      try {
+        const img = new Image();
+        img.onload = () => {
+          try {
+            if (yPosition > 220) {
+              doc.addPage();
+              yPosition = 20;
+            }
+
+            // Título con fondo gris claro
+            doc.setFillColor(240, 240, 240);
+            doc.roundedRect(20, yPosition - 1, 170, 8, 2, 2, "F");
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(50, 50, 50);
+            doc.text(title, 105, yPosition + 5, { align: "center" });
+            yPosition += 10;
+
+            // Dimensiones respetando proporción
+            const [imgW, imgH] = fitDimensions(
+              img.naturalWidth,
+              img.naturalHeight,
+              maxW,
+              maxH
+            );
+            const xOffset = 20 + (170 - imgW) / 2; // centrar horizontalmente
+
+            // Borde exterior
+            doc.setDrawColor(180, 180, 180);
+            doc.setLineWidth(0.4);
+            doc.roundedRect(xOffset - 2, yPosition - 2, imgW + 4, imgH + 4, 3, 3);
+
+            // Imagen
+            const format = getImageFormat(imageData);
+            doc.addImage(imageData, format, xOffset, yPosition, imgW, imgH, undefined, "FAST");
+
+            yPosition += imgH + 12;
+            doc.setTextColor(0, 0, 0);
+          } catch (_) {/* silenciar error de imagen individual */}
+          resolve();
+        };
+        img.onerror = () => resolve();
+        img.src = imageData;
+      } catch (_) {
+        resolve();
+      }
+    });
+  };
+
+  /**
+   * Agrega dos imágenes (firmas) en columnas paralelas para optimizar espacio.
+   */
+  const addTwoImagesRow = (
+    img1: string | null,
+    title1: string,
+    img2: string | null,
+    title2: string
+  ): Promise<void> => {
+    return new Promise((resolve) => {
+      const colW = 80;
+      const colH = 80;
+      const toLoad = [img1, img2].filter(Boolean) as string[];
+      if (toLoad.length === 0) return resolve();
+
+      let loaded = 0;
+      const images: HTMLImageElement[] = [new Image(), new Image()];
+
+      const tryDraw = () => {
+        loaded++;
+        if (loaded < toLoad.length) return;
+
+        try {
+          if (yPosition > 220) {
+            doc.addPage();
+            yPosition = 20;
+          }
+
+          const drawCol = (imgData: string | null, imgEl: HTMLImageElement, title: string, x: number) => {
+            if (!imgData) return;
+
+            // Título de columna
+            doc.setFillColor(240, 240, 240);
+            doc.roundedRect(x, yPosition - 1, colW, 8, 2, 2, "F");
+            doc.setFontSize(9);
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(50, 50, 50);
+            doc.text(title, x + colW / 2, yPosition + 5, { align: "center" });
+
+            const [iW, iH] = fitDimensions(imgEl.naturalWidth, imgEl.naturalHeight, colW - 4, colH);
+            const xImg = x + (colW - iW) / 2;
+
+            doc.setDrawColor(180, 180, 180);
+            doc.setLineWidth(0.4);
+            doc.roundedRect(xImg - 2, yPosition + 9, iW + 4, iH + 4, 3, 3);
+
+            const fmt = getImageFormat(imgData);
+            doc.addImage(imgData, fmt, xImg, yPosition + 10, iW, iH, undefined, "FAST");
+          };
+
+          if (img1) drawCol(img1, images[0], title1, 20);
+          if (img2) drawCol(img2, images[img1 ? 1 : 0], title2, img1 ? 110 : 20);
+
+          const maxH = colH + 16;
+          yPosition += maxH;
+          doc.setTextColor(0, 0, 0);
+        } catch (_) {/* silencio */}
+        resolve();
+      };
+
+      if (img1) { images[0].onload = tryDraw; images[0].onerror = tryDraw; images[0].src = img1; }
+      if (img2) { images[1].onload = tryDraw; images[1].onerror = tryDraw; images[1].src = img2; }
+    });
+  };
+
+  // ─── Agregar las imágenes disponibles ────────────────────────────────────
+  if (items.firma_auditoria || items.firma_colocadora || items.imagen_observacion) {
     doc.addPage();
     yPosition = 20;
 
     doc.setFontSize(16);
     doc.setFont("helvetica", "bold");
     doc.text("Imágenes y Firmas", 105, yPosition, { align: "center" });
-    yPosition += 10;
 
-    if (items.imagen_observacion) {
-      addImageToPDF(items.imagen_observacion, "Imagen de Observación");
-    }
+    // Línea decorativa bajo el título
+    doc.setDrawColor(220, 53, 69);
+    doc.setLineWidth(0.8);
+    doc.line(40, yPosition + 4, 170, yPosition + 4);
+    yPosition += 14;
 
-    if (items.firma_auditoria) {
-      addImageToPDF(items.firma_auditoria, "Firma Auditoría");
-    }
+    // Imagen de observación a ancho completo
+    await addImageToPDF(items.imagen_observacion, "Imagen de Observación", 170, 140);
 
-    if (items.firma_colocadora) {
-      addImageToPDF(items.firma_colocadora, "Firma Colocadora");
+    // Firmas en dos columnas paralelas
+    if (items.firma_auditoria || items.firma_colocadora) {
+      if (yPosition > 200) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      await addTwoImagesRow(
+        items.firma_auditoria || null,
+        "Firma Auditoría",
+        items.firma_colocadora || null,
+        "Firma Colocadora"
+      );
     }
   }
 

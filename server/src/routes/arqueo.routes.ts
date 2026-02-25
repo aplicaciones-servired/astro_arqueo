@@ -19,7 +19,7 @@ export const arqueoRoute = Router();
 
 arqueoRoute.get("/arqueo", getArqueo); // Cambiado de /login/:username a /:username
 
-arqueoRoute.post("/arqueos/:zona/:id", getArqueos);
+arqueoRoute.post("/arqueos/:zona/:source/:id", getArqueos);
 
 arqueoRoute.post("/cronograma", PostProgramacion);
 

@@ -14,12 +14,14 @@ export default function CustomizedDialogs({
   open,
   handleClose,
   id,
+  source,
 }: {
   open: boolean;
   handleClose: () => void;
   id: number | undefined;
+  source?: string;
 }) {
-  const { data } = useArqueoId(id);
+  const { data } = useArqueoId(id, source);
 
   return (
     <Dialog
@@ -66,7 +68,7 @@ export default function CustomizedDialogs({
           color: theme.palette.grey[500],
         })}
       ></IconButton>
-      {data.map((items, index) => (
+      {data.slice(0, 1).map((items, index) => (
         <DialogContent dividers key={index}>
           <Typography gutterBottom>
             <label className="block text-center mt-1 uppercase">
@@ -997,7 +999,7 @@ export default function CustomizedDialogs({
               Verificacion del PDV{" "}
             </label>
 
-            {items.requisito1.length > 0 && (
+            {items.requisito1?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Tiene la puerta asegurada?
@@ -1012,7 +1014,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion1.length > 0 && (
+            {items.observacion1?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1027,7 +1029,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito2.length > 0 && (
+            {items.requisito2?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Elementos de aseo, sillas, computador, iluminación en buen
@@ -1043,7 +1045,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion2.length > 0 && (
+            {items.observacion2?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1058,7 +1060,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito3.length > 0 && (
+            {items.requisito3?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Aviso de videovigilancia y cámaras?
@@ -1073,7 +1075,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion3.length > 0 && (
+            {items.observacion3?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1088,7 +1090,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito4.length > 0 && (
+            {items.requisito4?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Utiliza Superflex?
@@ -1103,7 +1105,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion4.length > 0 && (
+            {items.observacion4?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1118,7 +1120,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito5.length > 0 && (
+            {items.requisito5?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Tiene caja fuerte?
@@ -1133,7 +1135,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion5.length > 0 && (
+            {items.observacion5?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1148,7 +1150,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito6.length > 0 && (
+            {items.requisito6?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Tiene caja digital auxiliar? ¿Conoce las bases de efectivo
@@ -1164,7 +1166,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion6.length > 0 && (
+            {items.observacion6?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1179,7 +1181,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito7.length > 0 && (
+            {items.requisito7?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Las recargas se hacen a través la Red propia de la Cia?
@@ -1194,7 +1196,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion7.length > 0 && (
+            {items.observacion7?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1209,7 +1211,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito8.length > 0 && (
+            {items.requisito8?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Cumple con los topes de efectivo establecidos en caja digital
@@ -1225,7 +1227,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion8.length > 0 && (
+            {items.observacion8?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1240,7 +1242,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito9.length > 0 && (
+            {items.requisito9?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Tiene los premios descargados? ¿Conoce los requisitos y
@@ -1256,7 +1258,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion9.length > 0 && (
+            {items.observacion9?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1271,7 +1273,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito10.length > 0 && (
+            {items.requisito10?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿La lotería física tiene impreso el nombre de la Cia o de
@@ -1287,7 +1289,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion10.length > 0 && (
+            {items.observacion10?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1302,7 +1304,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito11.length > 0 && (
+            {items.requisito11?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Publicidad exhibida actualizada?
@@ -1317,7 +1319,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion11.length > 0 && (
+            {items.observacion11?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1332,7 +1334,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito12.length > 0 && (
+            {items.requisito12?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Aviso externo de "Vigilado y Controlado Mintic" y
@@ -1348,7 +1350,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion12.length > 0 && (
+            {items.observacion12?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1363,7 +1365,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito13.length > 0 && (
+            {items.requisito13?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Afiche MINTIC SUPERGIROS (contiene aviso de canales de
@@ -1380,7 +1382,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion13.length > 0 && (
+            {items.observacion13?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1395,7 +1397,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito14.length > 0 && (
+            {items.requisito14?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Calendario resultados Superastro diligenciado (tiene que
@@ -1411,7 +1413,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion14.length > 0 && (
+            {items.observacion14?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1426,7 +1428,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito15.length > 0 && (
+            {items.requisito15?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Presta servicio de Western Union (es obligatorio para cajeros
@@ -1442,7 +1444,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion15.length > 0 && (
+            {items.observacion15?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1457,7 +1459,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito16.length > 0 && (
+            {items.requisito16?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Calendarios de acumulados (Baloto - Miloto - Colorloto)?
@@ -1472,7 +1474,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion16.length > 0 && (
+            {items.observacion16?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1487,7 +1489,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito17.length > 0 && (
+            {items.requisito17?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Tablero de resultados y acumulados actualizados?
@@ -1502,7 +1504,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion17.length > 0 && (
+            {items.observacion17?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1517,7 +1519,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito18.length > 0 && (
+            {items.requisito18?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Licencia de funcionamiento de Beneficencia del Valle con año
@@ -1533,7 +1535,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion18.length > 0 && (
+            {items.observacion18?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1548,7 +1550,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito19.length > 0 && (
+            {items.requisito19?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Tiene equipos de Betplay y/o máquinas de ruta? Si los tiene
@@ -1564,7 +1566,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion19.length > 0 && (
+            {items.observacion19?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1579,7 +1581,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito20.length > 0 && (
+            {items.requisito20?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Tiene aviso código QR para PQR?
@@ -1594,7 +1596,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion20.length > 0 && (
+            {items.observacion20?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1609,7 +1611,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito21.length > 0 && (
+            {items.requisito21?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Verificar el cableado?
@@ -1624,7 +1626,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion21.length > 0 && (
+            {items.observacion21?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1643,7 +1645,7 @@ export default function CustomizedDialogs({
               Cajero y/o Colocador I:{" "}
             </label>
 
-            {items.requisito22.length > 0 && (
+            {items.requisito22?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Tiene prendas emblemáticas y presentación adecuada?
@@ -1658,7 +1660,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion22.length > 0 && (
+            {items.observacion22?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1673,7 +1675,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito23.length > 0 && (
+            {items.requisito23?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿El usuario corresponde a la cédula del mismo?
@@ -1688,7 +1690,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion23.length > 0 && (
+            {items.observacion23?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1703,7 +1705,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito24.length > 0 && (
+            {items.requisito24?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Tiene usuario de giros? ¿Presta el servicio?
@@ -1718,7 +1720,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion24.length > 0 && (
+            {items.observacion24?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1733,7 +1735,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito25.length > 0 && (
+            {items.requisito25?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Tiene usuario de la ONJ (para Baloto, Miloto, Colorloto)?
@@ -1748,7 +1750,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion25.length > 0 && (
+            {items.observacion25?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1763,7 +1765,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito26.length > 0 && (
+            {items.requisito26?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Tiene usuario de SUPERFLEX?
@@ -1778,7 +1780,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion26.length > 0 && (
+            {items.observacion26?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1793,7 +1795,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito27.length > 0 && (
+            {items.requisito27?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Tiene usuario de CORREDOR EMPRESARIAL (astro, chance
@@ -1809,7 +1811,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion27.length > 0 && (
+            {items.observacion27?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1824,7 +1826,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito28.length > 0 && (
+            {items.requisito28?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Está realizando recaudo en tesorería BNET a la compañera?
@@ -1839,7 +1841,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion28.length > 0 && (
+            {items.observacion28?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1854,7 +1856,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito29.length > 0 && (
+            {items.requisito29?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Está comercializando el portafolio completo?
@@ -1869,7 +1871,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion29.length > 0 && (
+            {items.observacion29?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1884,7 +1886,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito30.length > 0 && (
+            {items.requisito30?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Solicita el documento de identificación al cliente?
@@ -1899,7 +1901,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion30.length > 0 && (
+            {items.observacion30?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1914,7 +1916,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito31.length > 0 && (
+            {items.requisito31?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Conoce Supervoucher, funciona?
@@ -1929,7 +1931,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion31.length > 0 && (
+            {items.observacion31?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1944,7 +1946,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito32.length > 0 && (
+            {items.requisito32?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Conoce el procedimiento para remitentes y destinatarios
@@ -1960,7 +1962,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion32.length > 0 && (
+            {items.observacion32?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -1975,7 +1977,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito33.length > 0 && (
+            {items.requisito33?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Conoce los reportes de operaciones en efectivo (R.O.E)
@@ -1991,7 +1993,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion33.length > 0 && (
+            {items.observacion33?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -2006,7 +2008,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito34.length > 0 && (
+            {items.requisito34?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿El Supervisor Cial realiza las visitas?
@@ -2021,7 +2023,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion34.length > 0 && (
+            {items.observacion34?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -2036,7 +2038,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.requisito35.length > 0 && (
+            {items.requisito35?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   ¿Conoce los términos SARL, SARLAFT, SARO, operación inusual y
@@ -2052,7 +2054,7 @@ export default function CustomizedDialogs({
               </>
             )}
 
-            {items.observacion35.length > 0 && (
+            {items.observacion35?.length > 0 && (
               <>
                 <label className="block text-center mt-5 uppercase">
                   observacion
@@ -2128,42 +2130,66 @@ export default function CustomizedDialogs({
               />
             </label>
 
-            <div className="flex justify-center ...">
-              <div>
-                <label className="block text-center mt-5 uppercase">
-                  Imagen Observacion
-                  {items.imagen_observacion && (
-                    <img
-                      src={items.imagen_observacion}
-                      alt="Imagen de observación"
-                      className="w-full rotate-0 mt-10"
-                    />
-                  )}
-                </label>
-              </div>
-              <div>
-                <label className="block text-center mt-5 uppercase">
-                  Imagen auditoria
-                  {items.firma_auditoria && (
-                    <img
-                      src={items.firma_auditoria}
-                      alt="Imagen de auditoria"
-                      className="w-96 mt-30"
-                    />
-                  )}
-                </label>
-              </div>
-              <div>
-                <label className="block text-center mt-5 uppercase">
-                  Imagen colocadora
-                  {items.firma_colocadora && (
-                    <img
-                      src={items.firma_colocadora}
-                      alt="Imagen de firma colocadora"
-                      className="w-96 mt-30 "
-                    />
-                  )}
-                </label>
+            {/* ─── Sección de Imágenes ─── */}
+            <div className="mt-10 mb-4">
+              <h3 className="text-center text-sm font-black uppercase tracking-widest text-slate-600 mb-6 border-t border-b border-slate-300 py-2">
+                Imágenes y Firmas
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Imagen Observación */}
+                {items.imagen_observacion && (
+                  <div className="flex flex-col items-center bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+                    <div className="w-full bg-slate-700 py-2 px-4">
+                      <p className="text-xs font-bold uppercase tracking-wider text-white text-center">
+                        Imagen Observación
+                      </p>
+                    </div>
+                    <div className="p-3 w-full flex justify-center items-center bg-slate-50" style={{ minHeight: "220px" }}>
+                      <img
+                        src={items.imagen_observacion}
+                        alt="Imagen de observación"
+                        className="max-h-64 w-full object-contain rounded-lg"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Firma Auditoría */}
+                {items.firma_auditoria && (
+                  <div className="flex flex-col items-center bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+                    <div className="w-full bg-blue-700 py-2 px-4">
+                      <p className="text-xs font-bold uppercase tracking-wider text-white text-center">
+                        Firma Auditoría
+                      </p>
+                    </div>
+                    <div className="p-3 w-full flex justify-center items-center bg-slate-50" style={{ minHeight: "220px" }}>
+                      <img
+                        src={items.firma_auditoria}
+                        alt="Firma de auditoría"
+                        className="max-h-64 w-full object-contain rounded-lg"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Firma Colocadora */}
+                {items.firma_colocadora && (
+                  <div className="flex flex-col items-center bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+                    <div className="w-full bg-emerald-700 py-2 px-4">
+                      <p className="text-xs font-bold uppercase tracking-wider text-white text-center">
+                        Firma Colocadora
+                      </p>
+                    </div>
+                    <div className="p-3 w-full flex justify-center items-center bg-slate-50" style={{ minHeight: "220px" }}>
+                      <img
+                        src={items.firma_colocadora}
+                        alt="Firma colocadora"
+                        className="max-h-64 w-full object-contain rounded-lg"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </Typography>

@@ -5,7 +5,7 @@ import { useEmpresa } from "../components/ui/useEmpresa";
 import axios from "axios";
 import { API_URL } from "@/utils/constans";
 
-export function useArqueoId(id: number | undefined) {
+export function useArqueoId(id: number | undefined, source?: string) {
   const [data, setData] = useState<Arqueos[]>([]);
   const { empresa } = useEmpresa();
 
@@ -22,7 +22,7 @@ export function useArqueoId(id: number | undefined) {
       return;
     }
 
-    const fullUrl = `${base}/arqueos/${empresa}/${id}`;
+    const fullUrl = `${base}/arqueos/${empresa}/${source ?? 'principal'}/${id}`;
 
     const fetchData = async (): Promise<void> => {
       try {
@@ -36,7 +36,7 @@ export function useArqueoId(id: number | undefined) {
     void fetchData();
     const intervalId = setInterval(fetchData, 300000);
     return () => clearInterval(intervalId);
-  }, [id, empresa]);
+  }, [id, empresa, source]);
 
   return { data };
 }
