@@ -5,6 +5,7 @@ WORKDIR /app
 # Copiar el archivo .env ANTES de instalar dependencias
 COPY package*.json ./
 COPY .env ./
+ENV PUPPETEER_SKIP_DOWNLOAD=true
 RUN npm install --legacy-peer-deps
 
 COPY . .
