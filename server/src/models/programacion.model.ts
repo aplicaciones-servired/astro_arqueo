@@ -20,7 +20,8 @@ class Programacion extends Model<
   declare observacion?: string | null;
 }
 const initCRONOGRAMA = (zona: string) => {
-  const empresa = zona === "Multired" ? "cronograma_multired" : "cronograma";
+  const empresa =
+    zona === "Multired" ? "cronograma_multired" : "cronograma_servired";
   Programacion.init(
     {
       id: {
@@ -59,7 +60,8 @@ class getProgramacion extends Model<
   declare observacion?: string | null;
 }
 const initCronograma = (zona: string) => {
-  const empresa = zona === "Multired" ? "cronograma_multired" : "cronograma";
+  const empresa =
+    zona === "Multired" ? "cronograma_multired" : "cronograma_servired";
   getProgramacion.init(
     {
       id: {

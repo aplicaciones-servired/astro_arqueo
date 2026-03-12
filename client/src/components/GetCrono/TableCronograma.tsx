@@ -32,6 +32,8 @@ export const TableCronograma = ({ datos, searchFecha, searchPDV, onSearchFechaCh
         }
     }, [searchFecha, searchPDV, datos.length]);
 
+    console.log('datos', datos)
+
 
     return (
         <div>
