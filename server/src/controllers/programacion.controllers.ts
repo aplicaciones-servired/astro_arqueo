@@ -325,6 +325,88 @@ export const UpdateProgramacion = async (
   const { id } = req.params;
   const { estado, fecha, nota, zona } = req.body;
 
+  const normalizedZona = normalizeZona(zona);
+  const isMultired = normalizedZona === "multired";
+
+  // Servired/Jamundi puede venir de tablas distintas por histórico de datos.
+  if (!isMultired) {
+    try {
+      const updateValues: Record<string, any> = {};
+      if (estado !== undefined && estado !== null) updateValues.estado = estado;
+      if (fecha !== undefined && fecha !== null) updateValues.dia = fecha;
+      if (nota !== undefined) updateValues.nota = nota;
+
+      if (Object.keys(updateValues).length === 0) {
+        res.status(400).json({ message: "No hay campos para actualizar" });
+        return;
+      }
+
+      const [, legacyMeta] = await getPoolArqueo.query(
+        `UPDATE \`cronograma\`
+         SET estado = COALESCE(:estado, estado),
+             dia = COALESCE(:dia, dia),
+             nota = COALESCE(:nota, nota)
+         WHERE id = :id`,
+        {
+          replacements: {
+            id,
+            estado: updateValues.estado ?? null,
+            dia: updateValues.dia ?? null,
+            nota: updateValues.nota ?? null,
+          },
+        }
+      );
+
+      const legacyUpdated =
+        typeof legacyMeta === "number"
+          ? legacyMeta
+          : Number((legacyMeta as any)?.affectedRows ?? 0);
+
+      if (legacyUpdated > 0) {
+        res.status(200).json({
+          message: "Cronograma actualizado exitosamente",
+          data: { id, table: "cronograma" },
+        });
+        return;
+      }
+
+      const [, serviredMeta] = await getPoolArqueo.query(
+        `UPDATE \`cronograma_servired\`
+         SET estado = COALESCE(:estado, estado),
+             dia = COALESCE(:dia, dia),
+             nota = COALESCE(:nota, nota)
+         WHERE id = :id`,
+        {
+          replacements: {
+            id,
+            estado: updateValues.estado ?? null,
+            dia: updateValues.dia ?? null,
+            nota: updateValues.nota ?? null,
+          },
+        }
+      );
+
+      const serviredUpdated =
+        typeof serviredMeta === "number"
+          ? serviredMeta
+          : Number((serviredMeta as any)?.affectedRows ?? 0);
+
+      if (serviredUpdated > 0) {
+        res.status(200).json({
+          message: "Cronograma actualizado exitosamente",
+          data: { id, table: "cronograma_servired" },
+        });
+        return;
+      }
+
+      res.status(404).json({ message: "Cronograma no encontrado" });
+      return;
+    } catch (error) {
+      res.status(500).json({ message: "Error al actualizar el cronograma", error });
+      return;
+    }
+  }
+
   const empresa = zona === "Multired" ? "Multired" : "Servired";
   initCronograma(empresa);
 
