@@ -82,12 +82,12 @@ export const GetReporteDiario = () => {
         </p>
       </div>
 
-      <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+      <div className="filter-card mb-6 p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-gray-700">Filtros</h2>
           <button
             onClick={handleExportarExcel}
-            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors"
+            className="btn-success"
             disabled={datos.length === 0}
           >
             <FileDown size={20} />
@@ -103,7 +103,7 @@ export const GetReporteDiario = () => {
               type="date"
               value={fechaInicio}
               onChange={(e) => setFechaInicio(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="filter-input-date"
             />
           </div>
           <div>
@@ -114,19 +114,19 @@ export const GetReporteDiario = () => {
               type="date"
               value={fechaFin}
               onChange={(e) => setFechaFin(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="filter-input-date"
             />
           </div>
           <div className="flex items-end gap-2">
             <button
               onClick={handleFiltrar}
-              className="flex-1 px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+              className="btn-primary flex-1"
             >
               Filtrar
             </button>
             <button
               onClick={handleLimpiarFiltros}
-              className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition-colors"
+              className="btn-secondary flex-1"
             >
               Limpiar
             </button>

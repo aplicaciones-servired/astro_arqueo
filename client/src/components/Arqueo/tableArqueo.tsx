@@ -52,7 +52,7 @@ export const TableArqueo = ({
           <input
             type="date"
             placeholder="Buscar punto de venta"
-            className="block text-center w-full py-1.5 pr-5 border-indigo-200 shadow-lg shadow-blue-300/50  text-gray-700 bg-white border rounded-lg md:w-80 placeholder-gray-400 pl-11 focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+            className="filter-input-date w-full md:w-80"
             onChange={(e) => setSearchFecha(e.target.value)}
             value={searchfecha}
           />
@@ -78,7 +78,7 @@ export const TableArqueo = ({
           <input
             type="text"
             placeholder="Buscar punto de venta"
-            className="block text-center w-full py-1.5 pr-5 border border-indigo-200 rounded-md shadow-lg shadow-blue-300/50  text-gray-700 bg-white borderounded-lg md:w-80 placeholder-gray-400 pl-11 focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+            className="filter-input w-full pl-11 text-center md:w-80"
             onChange={(e) => setSearchPDV(e.target.value)}
             value={searchPDV}
           />{" "}
@@ -89,9 +89,9 @@ export const TableArqueo = ({
       <div className="flex flex-col mt-6  border-indigo-200 shadow-lg shadow-blue-300/50">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-            <div className="overflow-hidden border border-gray-200 rounded-lg">
-              <table className="min-w-full divide-y shadow-lg shadow-blue-300/50 divide-gray-200">
-                <thead className="bg-gray-50">
+            <div className="table-shell">
+              <table className="table-pro">
+                <thead className="table-head">
                   <tr>
                     <th className="py-3.5 px-4 text-sm font-semibold text-left text-gray-900">
                       Realizado por
@@ -110,11 +110,11 @@ export const TableArqueo = ({
                     </th>
                   </tr>
                 </thead>
-                <tbody className="cursor-pointer bg-white divide-y divide-gray-200 hover:border-gray-300 hover:shadow-sm w-52">
+                <tbody className="table-body table-body-clickable">
                   {filteredPDV.map((pdv, index) => (
                     <tr
                       key={index}
-                      className=" transition-colors hover:bg-blue-100"
+                      className="table-row"
                       onClick={() => {
                         setOpen(true);
                         setSelectedItem(pdv);

@@ -58,9 +58,9 @@ export const TableReporteDiario = ({ datos, zona, onObservacionUpdate }: Props) 
     <div className="flex flex-col mt-6 border-indigo-200 shadow-lg shadow-blue-300/50">
       <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-          <div className="overflow-hidden border border-gray-200 rounded-lg">
-            <table className="min-w-full divide-y shadow-lg shadow-blue-300/50 divide-gray-200">
-              <thead className="bg-gradient-to-r from-blue-500 to-indigo-600">
+          <div className="table-shell">
+            <table className="table-pro">
+              <thead className="bg-linear-to-r from-blue-500 to-indigo-600">
                 <tr>
                   <th
                     scope="col"
@@ -112,7 +112,7 @@ export const TableReporteDiario = ({ datos, zona, onObservacionUpdate }: Props) 
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="table-body">
                 {datos.length === 0 ? (
                   <tr>
                     <td colSpan={8} className="px-4 py-8 text-center text-gray-500">
@@ -128,7 +128,7 @@ export const TableReporteDiario = ({ datos, zona, onObservacionUpdate }: Props) 
                       "text-red-600 font-semibold";
 
                     return (
-                      <tr key={item.dia} className="hover:bg-gray-50 transition-colors">
+                      <tr key={item.dia} className="table-row">
                         <td className="px-4 py-4 text-sm font-medium text-gray-900">
                           {formatearFecha(item.dia)}
                         </td>

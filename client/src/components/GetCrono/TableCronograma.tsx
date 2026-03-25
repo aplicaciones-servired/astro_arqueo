@@ -42,14 +42,14 @@ export const TableCronograma = ({ datos, searchFecha, searchPDV, onSearchFechaCh
                     <input
                         type="date"
                         placeholder="Buscar punto de venta"
-                        className="block text-center w-full py-1.5 pr-5 border-indigo-200 shadow-lg shadow-blue-300/50  text-gray-700 bg-white border rounded-lg md:w-80 placeholder-gray-400 pl-11 focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                        className="filter-input-date w-full md:w-80"
                         onChange={(e) => onSearchFechaChange(e.target.value)}
                         value={searchFecha}
                     />
                     {searchFecha && (
                         <button
                             onClick={() => onSearchFechaChange('')}
-                            className="px-3 py-2 text-sm text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            className="btn-secondary px-3 py-2 text-sm"
                             title="Limpiar filtro de fecha"
                         >
                             ✕
@@ -77,14 +77,14 @@ export const TableCronograma = ({ datos, searchFecha, searchPDV, onSearchFechaCh
                     <input
                         type="text"
                         placeholder="Buscar punto de venta"
-                        className="block text-center w-full py-1.5 pr-5 border border-indigo-200 rounded-md shadow-lg shadow-blue-300/50  text-gray-700 bg-white borderounded-lg md:w-80 placeholder-gray-400 pl-11 focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                        className="filter-input w-full pl-11 text-center md:w-80"
                         onChange={(e) => onSearchPDVChange(e.target.value)}
                         value={searchPDV}
                     />
                     {searchPDV && (
                         <button
                             onClick={() => onSearchPDVChange('')}
-                            className="px-3 py-2 text-sm text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            className="btn-secondary px-3 py-2 text-sm"
                             title="Limpiar filtro de punto de venta"
                         >
                             ✕
@@ -96,9 +96,9 @@ export const TableCronograma = ({ datos, searchFecha, searchPDV, onSearchFechaCh
             <div className="flex flex-col mt-6  border-indigo-200 shadow-lg shadow-blue-300/50">
                 <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                        <div className="overflow-hidden border border-gray-200 rounded-lg">
-                            <table className="min-w-full divide-y shadow-lg shadow-blue-300/50 divide-gray-200">
-                                <thead className="bg-gray-50">
+                        <div className="table-shell">
+                            <table className="table-pro">
+                                <thead className="table-head">
                                     <tr>
                                         <th className="py-3.5 px-4 text-sm font-semibold text-left text-gray-900">Punto De Venta</th>
                                         <th className="px-4 py-3.5 text-sm font-semibold text-left text-gray-900">Empresa</th>
@@ -109,7 +109,7 @@ export const TableCronograma = ({ datos, searchFecha, searchPDV, onSearchFechaCh
                                         <th className="px-4 py-3.5 text-sm font-semibold text-left text-gray-900">Eliminar</th>
                                     </tr>
                                 </thead>
-                                <tbody className="bg-white divide-y divide-gray-200 hover:border-gray-300 hover:shadow-sm w-52">
+                                <tbody className="table-body">
                                     {datos.map((pdv, index) => (
                                         <tr key={index}>
                                             <td className="px-4 py-4 text-sm font-medium text-gray-900">{pdv.puntodeventa}</td>

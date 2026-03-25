@@ -13,7 +13,7 @@ const GetCronograma = (): JSX.Element => {
 
     return (
         <div className="container px-4 mx-auto">
-            <ExportCronogramaBtn data={data} />
+            <ExportCronogramaBtn data={data} searchFecha={searchFecha} searchPDV={searchPDV} />
             
             <TableCronograma 
                 datos={data} 

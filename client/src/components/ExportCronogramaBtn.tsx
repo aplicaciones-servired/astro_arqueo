@@ -9,9 +9,11 @@ import { useSucursales } from "@/Services/Sucursales";
 
 interface Props {
     data: Cronograma[];
+    searchFecha?: string;
+    searchPDV?: string;
 }
 
-export const ExportCronogramaBtn = ({ data }: Props) => {
+export const ExportCronogramaBtn = ({ data, searchFecha, searchPDV }: Props) => {
     const [mes, setMes] = useState(new Date().getMonth() + 1); // 1-12
     const [año, setAño] = useState(new Date().getFullYear());
     const { empresa } = useEmpresa();
@@ -29,7 +31,15 @@ export const ExportCronogramaBtn = ({ data }: Props) => {
             }
 
             // Hacer petición para obtener TODOS los datos sin paginación
-            const response = await fetch(`${API_URL}/getcronograma?zona=${empresaStorage}&page=1&pageSize=10000`);
+            let url = `${API_URL}/getcronograma?zona=${empresaStorage}&page=1&pageSize=10000`;
+            if (searchFecha) {
+                url += `&fecha=${searchFecha}`;
+            }
+            if (searchPDV) {
+                url += `&pdv=${encodeURIComponent(searchPDV)}`;
+            }
+
+            const response = await fetch(url);
 
             if (!response.ok) {
                 throw new Error("Error al obtener los datos");
@@ -77,13 +87,13 @@ export const ExportCronogramaBtn = ({ data }: Props) => {
 
     return (
         <div className="mb-4 mt-4">
-            <div className="flex gap-4 items-end bg-white p-4 rounded-lg shadow-md border border-gray-200">
+            <div className="filter-card flex flex-wrap gap-4 items-end">
                 <div>
                     <label className="block text-sm font-semibold mb-2">Mes:</label>
                     <select
                         value={mes}
                         onChange={(e) => setMes(Number(e.target.value))}
-                        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        className="filter-select"
                     >
                         {meses.map((m) => (
                             <option key={m.valor} value={m.valor}>
@@ -98,7 +108,7 @@ export const ExportCronogramaBtn = ({ data }: Props) => {
                     <select
                         value={año}
                         onChange={(e) => setAño(Number(e.target.value))}
-                        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        className="filter-select"
                     >
                         {años.map((a) => (
                             <option key={a} value={a}>
@@ -108,7 +118,7 @@ export const ExportCronogramaBtn = ({ data }: Props) => {
                     </select>
                 </div>
 
-                <Button onClick={handleExport}>
+                <Button onClick={handleExport} className="min-w-[220px]">
                     📅 Descargar Calendario
                 </Button>
             </div>

@@ -58,6 +58,10 @@ export function useArqueo(fecha?: string, PDV?: string) {
     return () => clearInterval(intervalId);
   }, [page, pageSize, empresa, fecha, PDV]);
 
+  useEffect(() => {
+    setPage(1);
+  }, [fecha, PDV]);
+
   const total = Math.ceil(state.totalClients / pageSize);
 
   const handlePageChange = useCallback((newPage: number) => {

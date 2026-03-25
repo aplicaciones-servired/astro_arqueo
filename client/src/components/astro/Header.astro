@@ -91,7 +91,7 @@ console.log(currentUrl.pathname); // /ruta/actual
       <!-- Botón Menú Móvil (Hamburguesa) -->
       <button
         id="menu-btn"
-        class="md:hidden text-gray-700 focus:outline-none p-2"
+        class="md:hidden rounded-xl border border-blue-300 bg-blue-100/60 p-2 text-gray-700 transition hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-300"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -112,24 +112,25 @@ console.log(currentUrl.pathname); // /ruta/actual
     <!-- Menú Móvil Desplegable -->
     <div
       id="mobile-menu"
-      class="hidden flex-col mt-4 space-y-4 border-t border-blue-300 pt-4 md:hidden"
+      class="hidden flex-col mt-4 rounded-2xl border border-blue-300/70 bg-blue-100/50 p-4 shadow-sm md:hidden"
     >
       <SignedIn>
-        <ul class="flex flex-col space-y-3 font-semibold text-center">
+        <ul class="flex flex-col gap-2 font-semibold text-gray-900">
           {
             menuItems.map((item) =>
               item.hasChildren ? (
-                <li class="block">
+                <li class="block rounded-xl bg-white/70 px-3 py-2 shadow-xs">
                   <details class="group">
-                    <summary class="cursor-pointer hover:text-blue-600 list-none">
-                      {item.name} ▼
+                    <summary class="flex list-none items-center justify-between rounded-lg py-1 text-[1rem] hover:text-blue-700">
+                      <span>{item.name}</span>
+                      <span class="text-sm text-blue-700 transition group-open:rotate-180">▼</span>
                     </summary>
-                    <ul class="mt-2 pl-4 space-y-2">
+                    <ul class="mt-2 space-y-1 border-t border-blue-200/70 pt-2 pl-2">
                       {item.children?.map((child) => (
                         <li>
                           <HeaderLink
                             href={child.url}
-                            class="block hover:text-blue-600 text-sm"
+                            class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-blue-100 hover:text-blue-700"
                           >
                             {child.name}
                           </HeaderLink>
@@ -139,15 +140,20 @@ console.log(currentUrl.pathname); // /ruta/actual
                   </details>
                 </li>
               ) : (
-                <HeaderLink href={item.url} class="block hover:text-blue-600">
-                  {item.name}
-                </HeaderLink>
+                <li class="rounded-xl bg-white/70 px-3 py-2 shadow-xs">
+                  <HeaderLink
+                    href={item.url}
+                    class="block rounded-lg py-1 text-[1rem] transition hover:text-blue-700"
+                  >
+                    {item.name}
+                  </HeaderLink>
+                </li>
               )
             )
           }
         </ul>
         <!-- UserButton Móvil -->
-        <div class="flex justify-center pt-2">
+        <div class="mt-3 flex items-center justify-center rounded-xl border border-blue-200 bg-white/70 px-3 py-2">
           <UserButton
             afterSignOutUrl="/"
             showName
@@ -166,43 +172,35 @@ console.log(currentUrl.pathname); // /ruta/actual
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const dropdownButtons = document.querySelectorAll("[data-dropdown]");
+    const menuBtn = document.getElementById("menu-btn");
+    const mobileMenu = document.getElementById("mobile-menu");
 
-    dropdownButtons.forEach((button) => {
-      const parent = button.closest("li");
-      const menu = parent?.querySelector(".dropdown-menu");
+    if (!menuBtn || !mobileMenu) return;
 
-      // Toggle en mobile
-      button.addEventListener("click", (e) => {
-        if (window.innerWidth < 768) {
-          e.preventDefault();
-          menu?.classList.toggle("hidden");
-        }
-      });
+    const closeMobileMenu = () => {
+      mobileMenu.classList.add("hidden");
+      mobileMenu.classList.remove("flex");
+      menuBtn.setAttribute("aria-expanded", "false");
+    };
 
-      // Mantener abierto en desktop cuando el mouse está sobre el menú
-      if (parent && menu) {
-        let timeoutId: number;
+    menuBtn.setAttribute("aria-expanded", "false");
+    menuBtn.setAttribute("aria-controls", "mobile-menu");
 
-        const show = () => {
-          if (window.innerWidth >= 768) {
-            clearTimeout(timeoutId);
-            menu.classList.remove("hidden");
-          }
-        };
+    menuBtn.addEventListener("click", () => {
+      const isOpen = !mobileMenu.classList.contains("hidden");
 
-        const hide = () => {
-          if (window.innerWidth >= 768) {
-            timeoutId = window.setTimeout(() => {
-              menu.classList.add("hidden");
-            }, 100);
-          }
-        };
+      if (isOpen) {
+        closeMobileMenu();
+      } else {
+        mobileMenu.classList.remove("hidden");
+        mobileMenu.classList.add("flex");
+        menuBtn.setAttribute("aria-expanded", "true");
+      }
+    });
 
-        parent.addEventListener("mouseenter", show);
-        parent.addEventListener("mouseleave", hide);
-        menu.addEventListener("mouseenter", show);
-        menu.addEventListener("mouseleave", hide);
+    window.addEventListener("resize", () => {
+      if (window.innerWidth >= 768) {
+        closeMobileMenu();
       }
     });
   });

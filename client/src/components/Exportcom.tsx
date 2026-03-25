@@ -128,7 +128,7 @@ export const Exportcom = ({ data, tipo }: PropsExport) => {
 
   return (
     <section className="container px-4 mt-5 ">
-      <div className="mb-6 p-4 bg-white border border-indigo-200 rounded-lg shadow-lg shadow-blue-300/50">
+      <div className="filter-card mb-6">
         <h3 className="text-lg font-medium text-gray-700 mb-4">
           Exportar {tipo === "arqueo" ? "Arqueos" : tipo === "visita" ? "Visitas" : tipo === "ArqueosInfo" ? "Arqueo Informacion" : tipo === "ArqueoManual" ? "Arqueo Manual" : "Cronogramas "}
         </h3>
@@ -141,7 +141,7 @@ export const Exportcom = ({ data, tipo }: PropsExport) => {
                 type="date"
                 value={fechaInicio}
                 onChange={(e) => setFechaInicio(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                className="filter-input-date"
               />
             </label>
           </div>
@@ -153,13 +153,13 @@ export const Exportcom = ({ data, tipo }: PropsExport) => {
                 type="date"
                 value={fechaFin}
                 onChange={(e) => setFechaFin(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                className="filter-input-date"
               />
             </label>
           </div>
 
           <div className="flex items-end">
-            <Button onClick={exportarRegistros}>Exportar</Button>
+            <Button onClick={exportarRegistros} className="min-w-[140px]">Exportar</Button>
           </div>
         </div>
       </div>
