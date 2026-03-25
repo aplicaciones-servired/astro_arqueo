@@ -2,105 +2,111 @@
 @import "sonner/dist/styles.css";
 
 @layer base {
-	button {
-		@apply cursor-pointer;
-	}
+  input {
+    @apply text-center;
+  }
 
-	button:disabled {
-		@apply cursor-not-allowed;
-	}
+  a {
+    @apply cursor-pointer;
+  }
+
+  button {
+    @apply cursor-pointer;
+  }
+
+  button:disabled {
+    @apply cursor-not-allowed;
+  }
 }
 
 @layer components {
-	.table-shell {
-		@apply overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_14px_30px_-18px_rgba(15,23,42,0.45)];
-	}
+  .table-shell {
+    @apply overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_14px_30px_-18px_rgba(15,23,42,0.45)];
+  }
 
-	.table-pro {
-		@apply min-w-[680px] w-full table-auto divide-y divide-slate-200;
-	}
+  .table-pro {
+    @apply min-w-[680px] w-full table-auto divide-y divide-slate-200;
+  }
 
-	.table-head {
-		@apply bg-slate-100/80;
-	}
+  .table-head {
+    @apply bg-slate-100/80;
+  }
 
-	.table-head th {
-		@apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-700;
-	}
+  .table-head th {
+    @apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-700;
+  }
 
-	.table-pro tbody td {
-		@apply px-4 py-3.5 text-sm text-slate-700 align-middle;
-	}
+  .table-pro tbody td {
+    @apply px-4 py-3.5 text-sm text-slate-700 align-middle;
+  }
 
-	.table-pro tbody tr:nth-child(even) {
-		@apply bg-slate-50/40;
-	}
+  .table-pro tbody tr:nth-child(even) {
+    @apply bg-slate-50/40;
+  }
 
-	.table-body {
-		@apply bg-white divide-y divide-slate-100;
-	}
+  .table-body {
+    @apply bg-white divide-y divide-slate-100;
+  }
 
-	.table-body-clickable {
-		@apply cursor-pointer;
-	}
+  .table-body-clickable {
+    @apply cursor-pointer;
+  }
 
-	.table-row {
-		@apply transition-colors duration-150 hover:bg-cyan-50;
-	}
+  .table-row {
+    @apply transition-colors duration-150 hover:bg-cyan-50;
+  }
 
-	.filter-card {
-		@apply rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_12px_30px_-20px_rgba(15,23,42,0.55)];
-	}
+  .filter-card {
+    @apply rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_12px_30px_-20px_rgba(15,23,42,0.55)];
+  }
 
-	.filter-input {
-		@apply w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-700 shadow-sm outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200;
-	}
+  .filter-input {
+    @apply w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-700 shadow-sm outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200;
+  }
 
-	.filter-input-date {
-		@apply w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-700 shadow-sm outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 text-center md:text-left;
-	}
+  .filter-input-date {
+    @apply w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-700 shadow-sm outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 text-center md:text-left;
+  }
 
-	.filter-select {
-		@apply w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-700 shadow-sm outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200;
-	}
+  .filter-select {
+    @apply w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-700 shadow-sm outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200;
+  }
 
-	.btn-primary {
-		@apply inline-flex items-center justify-center gap-2 rounded-xl bg-linear-to-r from-blue-600 to-cyan-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60;
-	}
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-linear-to-r from-blue-600 to-cyan-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60;
+  }
 
-	.btn-secondary {
-		@apply inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100;
-	}
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100;
+  }
 
-	.btn-success {
-		@apply inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60;
-	}
+  .btn-success {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60;
+  }
 
-	.pager-shell {
-		@apply mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-[0_12px_30px_-20px_rgba(15,23,42,0.55)];
-	}
+  .pager-shell {
+    @apply mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-[0_12px_30px_-20px_rgba(15,23,42,0.55)];
+  }
 
-	.pager-btn {
-		@apply inline-flex min-w-[120px] items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-cyan-50 hover:border-cyan-300 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400;
-	}
+  .pager-btn {
+    @apply inline-flex min-w-[120px] items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-cyan-50 hover:border-cyan-300 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400;
+  }
 
-	.pager-pill {
-		@apply rounded-xl border border-cyan-200 bg-cyan-50 px-3 py-1.5 text-sm font-semibold text-cyan-700;
-	}
+  .pager-pill {
+    @apply rounded-xl border border-cyan-200 bg-cyan-50 px-3 py-1.5 text-sm font-semibold text-cyan-700;
+  }
 
-	@media (max-width: 768px) {
-		.table-pro {
-			@apply min-w-[640px];
-		}
+  @media (max-width: 768px) {
+    .table-pro {
+      @apply min-w-[640px];
+    }
 
-		.table-head th {
-			@apply text-[11px] px-3 py-2.5;
-		}
+    .table-head th {
+      @apply text-[11px] px-3 py-2.5;
+    }
 
-		.table-pro tbody td {
-			@apply px-3 py-2.5 text-[13px];
-		}
-	}
+    .table-pro tbody td {
+      @apply px-3 py-2.5 text-[13px];
+    }
+  }
 }
-
-
