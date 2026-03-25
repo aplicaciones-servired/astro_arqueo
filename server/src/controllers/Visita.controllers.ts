@@ -64,19 +64,20 @@ export const getVisita = async (req: Request, res: Response): Promise<void> => {
         // Query TBUsuarios to find the user by login (supervisor field)
         const usuario = await TBUsuarios.findOne({
           where: { login: rowData.supervisor},
-          attributes: ["nombre"],
+          attributes: ["nombre" , "perfil"],
           raw: true,
         });
 
         const puntodeventa = await Gamble.findOne({
           where: { CODIGO: rowData.sucursal },
-          attributes: ["NOMBRE"],
+          attributes: ["NOMBRE"], 
           raw: true,
         });
 
 
         return {
           nombreSupervisor: usuario?.nombre || "SIN NOMBRE REGISTRADO",
+          perfilSupervisor: usuario?.perfil || "SIN PERFIL REGISTRADO",
           nombrePuntoDeVenta: puntodeventa?.NOMBRE || "SIN NOMBRE REGISTRADO",
           ...rowData,
         };

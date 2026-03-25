@@ -73,26 +73,29 @@ const TableVista = ({
                 </thead>
                 <tbody className="cursor-pointer bg-white divide-y divide-gray-200 hover:border-gray-300 hover:shadow-sm w-52">
                   {filteredPDV.map((pdv, index) => (
-                    <tr
-                      key={index}
-                      className=" transition-colors hover:bg-blue-100"
-                    >
-                      <td className="px-4 py-4 text-sm font-medium text-gray-900">
-                        {pdv.nombreSupervisor}
-                      </td>
-                      <td className="px-4 py-4 text-sm text-gray-700">
-                        {pdv.nombres}
-                      </td>
-                      <td className="px-4 py-4 text-sm text-gray-700">
-                        {pdv.nombrePuntoDeVenta}
-                      </td>
-                      <td className="px-4 py-4 text-sm text-gray-700">
-                        {getFormattedDate(pdv.fechavisita)}
-                      </td>
-                      <td className="px-4 py-4 text-sm text-gray-700">
-                        {pdv.horavisita}
-                      </td>
-                    </tr>
+                    (pdv.perfilSupervisor === "AUDITORIA-SERVIRED" ||
+                      pdv.perfilSupervisor === "AUDITORIA-MULTIRED") && (
+                      <tr
+                        key={index}
+                        className=" transition-colors hover:bg-blue-100"
+                      >
+                        <td className="px-4 py-4 text-sm font-medium text-gray-900">
+                          {pdv.nombreSupervisor}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-gray-700">
+                          {pdv.nombres}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-gray-700">
+                          {pdv.nombrePuntoDeVenta}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-gray-700">
+                          {getFormattedDate(pdv.fechavisita)}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-gray-700">
+                          {pdv.horavisita}
+                        </td>
+                      </tr>
+                    )
                   ))}
                 </tbody>
               </table>

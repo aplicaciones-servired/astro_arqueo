@@ -6,5 +6,6 @@ export interface Visitas {
   nombrePuntoDeVenta: string;
   fechavisita: string;
   nombreSupervisor: string;
+  perfilSupervisor: string;
   supervisor: string;
 }

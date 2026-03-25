@@ -63,9 +63,7 @@ export function useArqueo(fecha?: string, PDV?: string) {
   const handlePageChange = useCallback((newPage: number) => {
     setPage(newPage);
   }, []);
-
-  console.log('data', data)
-
+  
   return {
     data,
     page,
