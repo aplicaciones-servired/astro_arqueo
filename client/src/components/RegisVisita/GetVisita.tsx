@@ -18,6 +18,11 @@ const TableVista = ({
 }: PropsFooter): JSX.Element => {
   const { searchFecha, setSearchFecha, filteredPDV } = useFilterPro(datos);
   const { empresa } = useEmpresa();
+  const visitasAuditoria = filteredPDV.filter(
+    (pdv) =>
+      pdv.perfilSupervisor === "AUDITORIA-SERVIRED" ||
+      pdv.perfilSupervisor === "AUDITORIA-MULTIRED"
+  );
 
   useEffect(() => {
     setFecha_visita(searchFecha);
@@ -39,7 +44,7 @@ const TableVista = ({
             className="cursor-pointer middle none center mt-1 w-52 mr-3 rounded-lg bg-linear-to-tr from-blue-600 to-pink-400 py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
             onClick={() =>
               exportarVisitasAExcel({
-                registros: filteredPDV as Visitas[],
+                registros: visitasAuditoria as Visitas[],
                 nombreArchivo: "visitas",
                 empresa: empresa,
               })
@@ -72,9 +77,8 @@ const TableVista = ({
                   </tr>
                 </thead>
                 <tbody className="cursor-pointer bg-white divide-y divide-gray-200 hover:border-gray-300 hover:shadow-sm w-52">
-                  {filteredPDV.map((pdv, index) => (
-                    (pdv.perfilSupervisor === "AUDITORIA-SERVIRED" ||
-                      pdv.perfilSupervisor === "AUDITORIA-MULTIRED") && (
+                  {visitasAuditoria.map((pdv, index) => (
+              
                       <tr
                         key={index}
                         className=" transition-colors hover:bg-blue-100"
@@ -95,8 +99,7 @@ const TableVista = ({
                           {pdv.horavisita}
                         </td>
                       </tr>
-                    )
-                  ))}
+                    ))}
                 </tbody>
               </table>
             </div>
