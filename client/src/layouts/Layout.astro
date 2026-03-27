@@ -28,12 +28,12 @@ const {
     <link rel="icon" type="image/png" href="/arq.png" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
-    <Header />
   </head>
 
   <body>
     <ClerkWrapper client:load>
       <ToasterProvider client:load />
+      <Header />
       <main transition:animate="slide">
         <slot />
       </main>
