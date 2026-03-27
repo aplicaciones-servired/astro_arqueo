@@ -89,6 +89,7 @@ export const GetArqueoManual = async (
   try {
     const datos = await ArqueoManualModel.findAll({
       where: whereClause,
+      order: [["fecha", "DESC"]],
       offset: offset,
       limit: pageSize,
     });
