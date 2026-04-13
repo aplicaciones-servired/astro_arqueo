@@ -91,12 +91,14 @@ export default function CronogramaForm() {
         let exitososTotal = 0;
         for (const punto of puntosConDias) {
             const dias = diasPorPunto[punto];
+            const sucursal = sucursales.find(s => s.NOMBRE === punto);
             for (const fecha of dias) {
                 const ok = await CronogramaSer({
                     puntovdt: punto,
                     empresa,
                     nota,
                     fecha,
+                    codigoSucursal: sucursal?.CODIGO,
                 });
                 if (ok) exitososTotal++;
             }

@@ -106,6 +106,7 @@ export const PostProgramacion = async (
   const puntodeventa = data.puntovdt;
   const dia = data.fecha;
   const nota = data.nota;
+  const codigoSucursal = data.codigoSucursal;
 
   const normalizedZona = normalizeZona(zona);
   const isMultired = normalizedZona === "multired";
@@ -127,6 +128,7 @@ export const PostProgramacion = async (
       empresa,
       nota,
       estado: "En Espera",
+      codigoSucursal
     };
 
     const idColumn = columns.find((c) => c.Field === "id");

@@ -11,6 +11,7 @@ class Programacion extends Model<
   InferCreationAttributes<Programacion>
 > {
   declare id?: number;
+  declare codigoSucursal?: string | null;
   declare puntodeventa: string;
   declare dia: Date;
   declare empresa: string;
@@ -29,6 +30,7 @@ const initCRONOGRAMA = (zona: string) => {
         autoIncrement: true,
         primaryKey: true,
       },
+      codigoSucursal: { type: DataTypes.STRING, allowNull: true },
       puntodeventa: { type: DataTypes.STRING },
       dia: { type: DataTypes.STRING },
       empresa: { type: DataTypes.STRING },
@@ -51,6 +53,7 @@ class getProgramacion extends Model<
   InferCreationAttributes<getProgramacion>
 > {
   declare id: number;
+  declare codigoSucursal?: string | null;
   declare puntodeventa: string;
   declare dia: Date;
   declare empresa: string;
@@ -69,6 +72,7 @@ const initCronograma = (zona: string) => {
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4,
       },
+      codigoSucursal: { type: DataTypes.STRING, allowNull: true },
       puntodeventa: { type: DataTypes.STRING },
       dia: { type: DataTypes.STRING },
       empresa: { type: DataTypes.STRING },

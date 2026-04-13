@@ -7,9 +7,10 @@ interface Crono {
   empresa: string;
   nota?: string;
   fecha: string | Date;
+  codigoSucursal?: number;
 }
 
-export async function CronogramaSer({ puntovdt, empresa, nota, fecha }: Crono) {
+export async function CronogramaSer({ puntovdt, empresa, nota, fecha, codigoSucursal }: Crono) {
   if (!puntovdt || !empresa || !fecha) {
     toast.warning("Todos los campos son obligatorios");
     return;
@@ -21,12 +22,14 @@ export async function CronogramaSer({ puntovdt, empresa, nota, fecha }: Crono) {
     //     empresa,
     //     nota,
     //     fecha,
+    //     codigoSucursal,
     //   }),
     toast.promise(axios.post(`${API_URL}/cronograma`, {
         puntovdt,
         empresa,
         nota,
         fecha,
+        codigoSucursal,
       }),
 
       {
