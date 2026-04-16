@@ -5,6 +5,7 @@ import {
 } from "../models/arqueo.manual";
 import { Request, Response } from "express";
 import { uploadToMinIO } from "../utils/uploadMinIO";
+import { notifyBackendError } from "../utils/errorMail";
 
 export const PostArqueoManual = async (
   req: Request,
@@ -44,6 +45,7 @@ export const PostArqueoManual = async (
     res.status(200).json({ message: "Arqueo manual creado", programacion });
   } catch (error) {
     console.error("Error al crear arqueo manual:", error);
+    await notifyBackendError({ controller: "PostArqueoManual", req, error });
     res.status(500).json({ message: "Error al crear el arqueo manual", error });
   }
 };
@@ -97,6 +99,7 @@ export const GetArqueoManual = async (
     res.status(200).json({ message: "informacion obtenida", datos, count, page, pageSize });
   } catch (error) {
     console.error("Error al obtener arqueo manual:", error);
+    await notifyBackendError({ controller: "GetArqueoManual", req, error });
     res.status(500).json({ message: "Error al obtener el arqueo manual", error });
   }
 };

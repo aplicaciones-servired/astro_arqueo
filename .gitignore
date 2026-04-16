@@ -36,5 +36,8 @@ REPORTE_DIARIO.md
 .env.local
 .env.development
 .env.production
+.env.example
 GUIA_SUBIDA_IMAGENES.md
-GUIA_SUBIDA_IMAGENES2.
+GUIA_SUBIDA_IMAGENES2.md
+README.md
+    

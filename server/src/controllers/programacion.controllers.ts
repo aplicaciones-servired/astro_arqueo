@@ -8,6 +8,7 @@ import { QueryTypes } from "sequelize";
 import { getPoolArqueo } from "../connections/dbArqueo";
 import { MINIO_PUBLIC_ORIGIN } from "../connections/minio";
 import { randomUUID } from "crypto";
+import { notifyBackendError } from "../utils/errorMail";
 
 interface TableColumnInfo {
   Field: string;
@@ -181,6 +182,7 @@ export const PostProgramacion = async (
     });
   } catch (error: any) {
     console.error("Error al crear programacion:", error);
+    await notifyBackendError({ controller: "PostProgramacion", req, error });
     res.status(500).json({
       message: "Error al crear la programacion",
       detail: error?.original?.sqlMessage || error?.message || "Unknown error",
@@ -266,6 +268,7 @@ export const Programacionget = async (
         .json({ count: (countResult as any).total, datos, page, pageSize });
       return;
     } catch (error) {
+      await notifyBackendError({ controller: "Programacionget_nonMultired", req, error });
       res.status(500).json({ message: "Internal Server Error" });
       return;
     }
@@ -316,6 +319,7 @@ export const Programacionget = async (
 
     res.status(200).json({ count: count, datos: Getcrono, page, pageSize });
   } catch (error) {
+    await notifyBackendError({ controller: "Programacionget", req, error });
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -404,6 +408,7 @@ export const UpdateProgramacion = async (
       res.status(404).json({ message: "Cronograma no encontrado" });
       return;
     } catch (error) {
+      await notifyBackendError({ controller: "UpdateProgramacion_nonMultired", req, error });
       res.status(500).json({ message: "Error al actualizar el cronograma", error });
       return;
     }
@@ -431,6 +436,7 @@ export const UpdateProgramacion = async (
       data: cronograma 
     });
   } catch (error) {
+    await notifyBackendError({ controller: "UpdateProgramacion", req, error });
     res.status(500).json({ message: "Error al actualizar el cronograma", error });
   }
 };
@@ -467,6 +473,7 @@ export const GetProgramacion = async (
       res.status(200).json({ datos });
       return;
     } catch (error) {
+      await notifyBackendError({ controller: "GetProgramacion_nonMultired", req, error });
       res.status(500).json({ message: "Internal Server Error" });
       return;
     }
@@ -501,6 +508,7 @@ export const GetProgramacion = async (
     // ✅ Enviamos el array ya transformado
     res.status(200).json({ datos: originalString });
   } catch (error) {
+    await notifyBackendError({ controller: "GetProgramacion", req, error });
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -561,6 +569,7 @@ export const ProgramacionInforme = async (
       res.status(200).json({ count: (countResult as any).total, datos });
       return;
     } catch (error) {
+      await notifyBackendError({ controller: "ProgramacionInforme_nonMultired", req, error });
       res.status(500).json({ message: "Internal Server Error" });
       return;
     }
@@ -590,6 +599,7 @@ export const ProgramacionInforme = async (
     });
     res.status(200).json({ count, datos: rows });
   } catch (error) {
+    await notifyBackendError({ controller: "ProgramacionInforme", req, error });
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -615,6 +625,7 @@ export const EliminarProgramacion = async (
     console.log('first', eliminar)
     res.status(200).json({ message: "Cronograma eliminado exitosamente" });
   } catch (error) {
+    await notifyBackendError({ controller: "EliminarProgramacion", req, error });
     res.status(500).json({ message: "error al eliminar el cronograma" });
   }
 };

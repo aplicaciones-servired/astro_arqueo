@@ -3,6 +3,7 @@ import { TBUsuarios } from "../models/Tbusuario.model";
 import { getPoolArqueo } from "../connections/dbArqueo";
 import { QueryTypes } from "sequelize";
 import { MINIO_PUBLIC_ORIGIN } from "../connections/minio";
+import { notifyBackendError } from "../utils/errorMail";
 
 // Convierte una URL de MinIO almacenada en BD (puede tener hostname interno Docker como 'minio')
 // a una URL accesible desde el navegador usando MINIO_PUBLIC_ORIGIN.
@@ -134,6 +135,7 @@ export const getArqueo = async (req: Request, res: Response): Promise<void> => {
     res.status(200).json({ count, datos: datosConSupervisor, page, pageSize });
   } catch (error) {
     console.error("Error en getArqueo:", error);
+    await notifyBackendError({ controller: "getArqueo", req, error });
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -256,6 +258,7 @@ export const getArqueos = async (
     res.status(200).json({ datos: datosConTransformacion });
   } catch (error) {
     console.error("Error en getArqueos:", error);
+    await notifyBackendError({ controller: "getArqueos", req, error });
     res.status(500).json({ message: "Internal Server Error" });
   }
 };

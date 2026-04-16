@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Op } from "sequelize";
 import { initCronograma, getProgramacion } from "../models/programacion.model";
+import { notifyBackendError } from "../utils/errorMail";
 
 export const GetReporteDiario = async (
   req: Request,
@@ -101,6 +102,7 @@ export const GetReporteDiario = async (
     });
   } catch (error) {
     console.error("Error en GetReporteDiario:", error);
+    await notifyBackendError({ controller: "GetReporteDiario", req, error });
     res.status(500).json({ 
       message: "Error al obtener el reporte diario", 
       error 
@@ -141,6 +143,7 @@ export const UpdateObservacionDiaria = async (
     });
   } catch (error) {
     console.error("Error al actualizar observación:", error);
+    await notifyBackendError({ controller: "UpdateObservacionDiaria", req, error });
     res.status(500).json({ 
       message: "Error al actualizar la observación", 
       error 

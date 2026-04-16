@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { initChatBoxModel, Visita } from "../models/visitas.models";
 import { TBUsuarios } from "../models/Tbusuario.model";
 import { Gamble } from "../models/Gamble.model";
+import { notifyBackendError } from "../utils/errorMail";
 const { Op, fn, col, where: sequelizeWhere } = require("sequelize");
 
 export const getVisita = async (req: Request, res: Response): Promise<void> => {
@@ -87,6 +88,7 @@ export const getVisita = async (req: Request, res: Response): Promise<void> => {
     res.status(200).json({ count, datos: datosConSupervisor, page, pageSize });
   } catch (error) {
     console.error("Error en getVisita:", error);
+    await notifyBackendError({ controller: "getVisita", req, error });
     res.status(500).json({ 
       message: "Internal Server Error",
       error: error instanceof Error ? error.message : String(error)

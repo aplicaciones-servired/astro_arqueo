@@ -1,6 +1,7 @@
 import { Op } from "sequelize";
 import { Gamble } from "../models/Gamble.model";
 import { Request, Response } from "express";
+import { notifyBackendError } from "../utils/errorMail";
 
 export const GetSucursales = async (
   req: Request,
@@ -38,6 +39,7 @@ export const GetSucursales = async (
 
     res.status(200).json({ message: "informacion obtenida", datos });
   } catch (error) {
+    await notifyBackendError({ controller: "GetSucursales", req, error });
     res.status(500).json({ message: "Error al obtener las sucursales", error });
   }
 };
