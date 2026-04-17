@@ -154,6 +154,7 @@ export const InserArqueoManual = ({ onSuccess }: InserArqueoManualProps) => {
             setSelectedFile(null);
             setPreviewUrl(null);
             onSuccess?.();
+            window.location.reload();
         };
     }
 
