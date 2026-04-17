@@ -24,38 +24,39 @@ export function useArqueoManual(fecha?: string, PDV?: string) {
     totalClients: 0,
   });
   const [totalClients, setTotalClients] = useState();
+  const [refreshKey, setRefreshKey] = useState(0);
   const { empresa } = useEmpresa();
 
-  useEffect(() => {
-    const fetchData = async (): Promise<void> => {
-      try {
-        let url = `${API_URL}/getarqueomanual?zona=${empresa}&page=${page}&pageSize=${pageSize}` ;
-        if (fecha) {
-          url += `&fecha=${fecha}`;
-        }
-        if (PDV) {
-          url += `&puntodeventa=${PDV}`;
-        }
-
-        const response = await axios.get<ArqueoManualResponse>(url);
-
-        if (response.status === 200) {
-          setData(response.data.datos);
-          setTotalClients(response.data.count);
-          setState((prev) => ({
-            ...prev,
-            totalClients: response.data.count,
-          }));
-        }
-      } catch {
-        toast.error("Error al cargar los datos", { duration: 1000 });
+  const fetchData = useCallback(async (): Promise<void> => {
+    try {
+      let url = `${API_URL}/getarqueomanual?zona=${empresa}&page=${page}&pageSize=${pageSize}`;
+      if (fecha) {
+        url += `&fecha=${fecha}`;
       }
-    };
+      if (PDV) {
+        url += `&puntodeventa=${PDV}`;
+      }
 
+      const response = await axios.get<ArqueoManualResponse>(url);
+
+      if (response.status === 200) {
+        setData(response.data.datos);
+        setTotalClients(response.data.count);
+        setState((prev) => ({
+          ...prev,
+          totalClients: response.data.count,
+        }));
+      }
+    } catch {
+      toast.error("Error al cargar los datos", { duration: 1000 });
+    }
+  }, [empresa, page, pageSize, fecha, PDV]);
+
+  useEffect(() => {
     void fetchData();
     const intervalId = setInterval(fetchData, 300000);
     return () => clearInterval(intervalId);
-  }, [page, pageSize, empresa, fecha, PDV]);
+  }, [fetchData, refreshKey]);
 
   useEffect(() => {
     setPage(1);
@@ -67,11 +68,16 @@ export function useArqueoManual(fecha?: string, PDV?: string) {
     setPage(newPage);
   }, []);
 
+  const refetch = useCallback(() => {
+    setRefreshKey((prev) => prev + 1);
+  }, []);
+
   return {
     data,
     page,
     totalClients,
     handlePageChange,
     total,
+    refetch,
   };
 }

@@ -4,7 +4,11 @@ import { ArqueoManualForm } from "@/Services/InsertArqueoMa";
 import { useEmpresa } from "@/components/ui/useEmpresa";
 import { empresas } from "@/utils/constans";
 
-export const InserArqueoManual = () => {
+interface InserArqueoManualProps {
+    onSuccess?: () => void;
+}
+
+export const InserArqueoManual = ({ onSuccess }: InserArqueoManualProps) => {
 
     const [calculo, setCalculo] = useState<number>(0);
     const [brutabase, setBrutabase] = useState<number>(0);
@@ -115,8 +119,6 @@ export const InserArqueoManual = () => {
         const Faltante_sobrante = totalingresoConBase - efectivocajafuertevalue;
         setCalculo(Faltante_sobrante);
 
-        console.log('Cálculo:', Faltante_sobrante);
-
     }, [form, form.ventabruta, form.base, form.efectivocajafuerte]);
 
 
@@ -151,7 +153,7 @@ export const InserArqueoManual = () => {
             });
             setSelectedFile(null);
             setPreviewUrl(null);
-            window.location.reload();
+            onSuccess?.();
         };
     }
 

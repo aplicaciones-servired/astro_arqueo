@@ -29,10 +29,10 @@ export async function ArqueoManualForm({
   empresa,
   imagen,
 }: ArqueoManual) {
-  
+ 
   if (!puntodeventa || !nombre || !documento || !base || !ventabruta || !totalingreso || !efectivocajafuerte || !sobrantefaltante || !valor || !imagen) {
     toast.warning("Todos los campos son obligatorios");
-    return;
+    return false;
   }
 
   try {
@@ -53,20 +53,15 @@ export async function ArqueoManualForm({
       formData.append('imagen', imagen);
     }
 
-    toast.promise(
-          axios.post(`${API_URL}/arqueomanual/${empresa}`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          }),
+    const request = axios.post(`${API_URL}/arqueomanual/${empresa}`, formData);
 
-          {
-              loading: "Insertando arqueo manual...",
-              success: "Se registró correctamente el arqueo manual",
-              error: (err: any) => "Error al registrar: " + String(err.message || err),
-              duration: 3000,
-          }
-      );
+    await toast.promise(request, {
+      loading: "Insertando arqueo manual...",
+      success: "Se registró correctamente el arqueo manual",
+      error: (err: any) => "Error al registrar: " + String(err.message || err),
+      duration: 3000,
+    });
+
     return true;
   } catch (error) {
     console.error("Error en ArqueoManualForm:", error);

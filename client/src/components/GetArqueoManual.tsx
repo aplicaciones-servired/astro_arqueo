@@ -10,13 +10,13 @@ const GetarqueoManualComponent = (): JSX.Element => {
     const [fecha, setFecha] = useState("");
     const [PDV, setPDV] = useState("");
 
-    const { data, page, handlePageChange, total } = useArqueoManual(fecha, PDV);
+    const { data, page, handlePageChange, total, refetch } = useArqueoManual(fecha, PDV);
 
     return (
         <div className="container px-4 mx-auto">
             <Exportcom data={data} tipo="ArqueoManual" />
 
-            <InserArqueoManual />
+            <InserArqueoManual onSuccess={refetch} />
 
             <TableArqueoManual
                 datos={data}
