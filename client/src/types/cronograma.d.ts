@@ -6,5 +6,6 @@ export interface Cronograma {
   nota: string
   estado: string
   imagen: string | null
-  observacion: string 
+  observacion: string
+  source_table?: "cronograma" | "cronograma_servired" | "cronograma_multired"
 }

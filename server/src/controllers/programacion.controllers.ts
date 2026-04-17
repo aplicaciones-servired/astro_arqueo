@@ -243,9 +243,9 @@ export const Programacionget = async (
       ) AS combined`;
 
     const dataSQL = `
-      SELECT ${cols} FROM \`cronograma\` ${whereSQL}
+      SELECT ${cols}, 'cronograma' AS source_table FROM \`cronograma\` ${whereSQL}
       UNION ALL
-      SELECT ${cols} FROM \`cronograma_servired\` ${whereSQL}
+      SELECT ${cols}, 'cronograma_servired' AS source_table FROM \`cronograma_servired\` ${whereSQL}
       ORDER BY dia DESC, id DESC
       LIMIT :pageSize OFFSET :offset`;
 
@@ -329,7 +329,7 @@ export const UpdateProgramacion = async (
   res: Response
 ): Promise<void> => {
   const { id } = req.params;
-  const { estado, fecha, nota, zona } = req.body;
+  const { estado, fecha, nota, zona, sourceTable } = req.body;
 
   const normalizedZona = normalizeZona(zona);
   const isMultired = normalizedZona === "multired";
@@ -344,6 +344,43 @@ export const UpdateProgramacion = async (
 
       if (Object.keys(updateValues).length === 0) {
         res.status(400).json({ message: "No hay campos para actualizar" });
+        return;
+      }
+
+      const isValidSourceTable =
+        sourceTable === "cronograma" || sourceTable === "cronograma_servired";
+
+      if (isValidSourceTable) {
+        const [, sourceMeta] = await getPoolArqueo.query(
+          `UPDATE \`${sourceTable}\`
+           SET estado = COALESCE(:estado, estado),
+               dia = COALESCE(:dia, dia),
+               nota = COALESCE(:nota, nota)
+           WHERE id = :id`,
+          {
+            replacements: {
+              id,
+              estado: updateValues.estado ?? null,
+              dia: updateValues.dia ?? null,
+              nota: updateValues.nota ?? null,
+            },
+          }
+        );
+
+        const sourceUpdated =
+          typeof sourceMeta === "number"
+            ? sourceMeta
+            : Number((sourceMeta as any)?.affectedRows ?? 0);
+
+        if (sourceUpdated > 0) {
+          res.status(200).json({
+            message: "Cronograma actualizado exitosamente",
+            data: { id, table: sourceTable },
+          });
+          return;
+        }
+
+        res.status(404).json({ message: "Cronograma no encontrado" });
         return;
       }
 

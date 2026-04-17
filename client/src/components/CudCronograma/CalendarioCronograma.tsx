@@ -83,6 +83,7 @@ export const CalendarioCronograma = () => {
       fecha: nuevaFecha,
       nota: cronogramaSeleccionado.nota,
       zona: empresa,
+      sourceTable: cronogramaSeleccionado.source_table,
     });
 
     setGuardando(false);

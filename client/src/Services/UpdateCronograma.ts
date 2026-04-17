@@ -8,6 +8,7 @@ interface UpdateCronogramaParams {
   fecha: string;
   nota?: string;
   zona: string;
+  sourceTable?: string;
 }
 
 export const updateCronograma = async (params: UpdateCronogramaParams): Promise<boolean> => {
@@ -17,6 +18,7 @@ export const updateCronograma = async (params: UpdateCronogramaParams): Promise<
       fecha: params.fecha,
       nota: params.nota,
       zona: params.zona,
+      sourceTable: params.sourceTable,
     });
 
     if (response.status === 200) {
