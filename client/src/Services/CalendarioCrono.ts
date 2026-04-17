@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useEmpresa } from "../components/ui/useEmpresa";
 import axios from "axios";
@@ -8,41 +8,47 @@ import type { Cronograma } from "@/types/cronograma";
 export function useCalendarioCronogramas() {
   const [data, setData] = useState<Cronograma[]>([]);
   const [loading, setLoading] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
   const { empresa } = useEmpresa();
 
-  useEffect(() => {
-    const fetchData = async (): Promise<void> => {
-      if (!empresa) {
-        setData([]);
-        return;
-      }
-      
-      setLoading(true);
-      setData([]); // Limpiar datos anteriores antes de cargar nuevos
-      
-      try {
-        const response = await axios.get(`${API_URL}/getcronograma`, {
-          params: { 
-            zona: empresa,
-            page: 1,
-            pageSize: 10000
-          },
-        });
-        setData(response.data.datos || []);
-      } catch (error) {
-        console.error('Error al cargar cronogramas:', error);
-        toast.error("Error al cargar cronogramas", { duration: 2000 });
-        setData([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchData = useCallback(async (): Promise<void> => {
+    if (!empresa) {
+      setData([]);
+      return;
+    }
 
-    void fetchData();
+    setLoading(true);
+    setData([]);
+
+    try {
+      const response = await axios.get(`${API_URL}/getcronograma`, {
+        params: {
+          zona: empresa,
+          page: 1,
+          pageSize: 10000,
+        },
+      });
+      setData(response.data.datos || []);
+    } catch (error) {
+      console.error('Error al cargar cronogramas:', error);
+      toast.error("Error al cargar cronogramas", { duration: 2000 });
+      setData([]);
+    } finally {
+      setLoading(false);
+    }
   }, [empresa]);
+
+  useEffect(() => {
+    void fetchData();
+  }, [fetchData, refreshKey]);
+
+  const refetch = useCallback(async (): Promise<void> => {
+    setRefreshKey((prev) => prev + 1);
+  }, []);
 
   return {
     data,
     loading,
+    refetch,
   };
 }

@@ -12,7 +12,7 @@ export const CalendarioCronograma = () => {
   const [mes, setMes] = useState(new Date().getMonth() + 1);
   const [año, setAño] = useState(new Date().getFullYear());
   const { data: sucursales } = useSucursales();
-  const { data: cronogramas, loading } = useCalendarioCronogramas();
+  const { data: cronogramas, loading, refetch } = useCalendarioCronogramas();
   const { empresa } = useEmpresa();
 
   // Estado para el modal de edición
@@ -74,7 +74,7 @@ export const CalendarioCronograma = () => {
 
   // Guardar cambios del cronograma
   const handleGuardar = async () => {
-    if (!cronogramaSeleccionado || !empresa) return;
+    if (!cronogramaSeleccionado || !empresa || guardando) return;
 
     setGuardando(true);
     const success = await updateCronograma({
@@ -87,9 +87,9 @@ export const CalendarioCronograma = () => {
 
     setGuardando(false);
     if (success) {
+      await refetch();
       setModalAbierto(false);
-      // Recargar página para actualizar datos
-      window.location.reload();
+      setCronogramaSeleccionado(null);
     }
   };
 
