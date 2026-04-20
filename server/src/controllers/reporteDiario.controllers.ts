@@ -63,12 +63,14 @@ export const GetReporteDiario = async (
     // Agrupar por día
     const reportePorDia = cronogramas.reduce((acc: any, item: any) => {
       const dia = item.dia;
+      const estado = (item.estado || "").toString().trim().toLowerCase();
       
       if (!acc[dia]) {
         acc[dia] = {
           dia: dia,
           totalCronogramas: 0,
           realizados: 0,
+          No_Se_Pudo_Realizar: 0,
           cerrados: 0,
           pendientes: 0,
           observacion: item.observacion || ""
@@ -77,12 +79,14 @@ export const GetReporteDiario = async (
 
       acc[dia].totalCronogramas++;
       
-      if (item.estado === "Realizado") {
+      if (estado === "realizado") {
         acc[dia].realizados++;
-      } else if (item.estado === "Cerrado") {
+      } else if (estado === "cerrado") {
         acc[dia].cerrados++;
-      } else if (item.estado === "En Espera") {
+      } else if (estado === "en espera") {
         acc[dia].pendientes++;
+      } else if (estado === "no se pudo realizar" || estado.includes("no se pudo realizar")) {
+        acc[dia].No_Se_Pudo_Realizar++;
       }
 
       // Si hay una observación más reciente, la mantenemos

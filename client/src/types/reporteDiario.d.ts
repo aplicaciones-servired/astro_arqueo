@@ -5,4 +5,5 @@ export interface ReporteDiario {
   cerrados: number;
   pendientes: number;
   observacion: string;
+  No_Se_Pudo_Realizar: number;
 }

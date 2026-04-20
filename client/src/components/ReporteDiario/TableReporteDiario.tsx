@@ -80,6 +80,13 @@ export const TableReporteDiario = ({ datos, zona, onObservacionUpdate }: Props) 
                   >
                     Realizados
                   </th>
+
+                  <th
+                    scope="col"
+                    className="px-4 py-3.5 text-sm font-bold text-center text-white"
+                  >
+                    No se pudo realizar
+                  </th>
                   <th
                     scope="col"
                     className="px-4 py-3.5 text-sm font-bold text-center text-white"
@@ -115,17 +122,17 @@ export const TableReporteDiario = ({ datos, zona, onObservacionUpdate }: Props) 
               <tbody className="table-body">
                 {datos.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="px-4 py-8 text-center text-gray-500">
+                    <td colSpan={9} className="px-4 py-8 text-center text-gray-500">
                       No hay datos para mostrar
                     </td>
                   </tr>
                 ) : (
                   datos.map((item) => {
                     const porcentaje = calcularPorcentaje(item.realizados, item.totalCronogramas);
-                    const colorPorcentaje = 
+                    const colorPorcentaje =
                       parseFloat(porcentaje) >= 80 ? "text-green-600 font-semibold" :
-                      parseFloat(porcentaje) >= 50 ? "text-yellow-600 font-semibold" :
-                      "text-red-600 font-semibold";
+                        parseFloat(porcentaje) >= 50 ? "text-yellow-600 font-semibold" :
+                          "text-red-600 font-semibold";
 
                     return (
                       <tr key={item.dia} className="table-row">
@@ -141,16 +148,20 @@ export const TableReporteDiario = ({ datos, zona, onObservacionUpdate }: Props) 
                           </span>
                         </td>
                         <td className="px-4 py-4 text-sm text-center">
+                          <span className="px-3 py-1 text-xs font-semibold text-blue-800 bg-blue-100 rounded-full">
+                            {item.No_Se_Pudo_Realizar}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4 text-sm text-center">
                           <span className="px-3 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded-full">
                             {item.cerrados}
                           </span>
                         </td>
                         <td className="px-4 py-4 text-sm text-center">
-                          <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
-                            item.pendientes > 0 
-                              ? "text-yellow-800 bg-yellow-100" 
+                          <span className={`px-3 py-1 text-xs font-semibold rounded-full ${item.pendientes > 0
+                              ? "text-yellow-800 bg-yellow-100"
                               : "text-gray-600 bg-gray-100"
-                          }`}>
+                            }`}>
                             {item.pendientes}
                           </span>
                         </td>
@@ -211,36 +222,47 @@ export const TableReporteDiario = ({ datos, zona, onObservacionUpdate }: Props) 
       </div>
 
       {datos.length > 0 && (
-        <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <h3 className="text-sm font-semibold text-blue-900 mb-2">Resumen del período:</h3>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
-            <div>
-              <span className="text-gray-600">Total de días:</span>
-              <span className="ml-2 font-semibold text-gray-900">{datos.length}</span>
+        <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-3">
+          <h3 className="mb-3 text-sm font-semibold text-slate-800">Resumen del período</h3>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+            <div className="rounded-md border border-slate-200 bg-white px-3 py-2">
+              <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500">Total de días</p>
+              <p className="mt-1 text-lg font-bold text-slate-900">{datos.length}</p>
             </div>
-            <div>
-              <span className="text-gray-600">Total cronogramas:</span>
-              <span className="ml-2 font-semibold text-gray-900">
+
+            <div className="rounded-md border border-slate-200 bg-white px-3 py-2">
+              <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500">Total cronogramas</p>
+              <p className="mt-1 text-lg font-bold text-slate-900">
                 {datos.reduce((sum, item) => sum + item.totalCronogramas, 0)}
-              </span>
+              </p>
             </div>
-            <div>
-              <span className="text-gray-600">Total realizados:</span>
-              <span className="ml-2 font-semibold text-green-600">
+
+            <div className="rounded-md border border-green-200 bg-green-50 px-3 py-2">
+              <p className="text-[11px] font-medium uppercase tracking-wide text-green-700">Realizados</p>
+              <p className="mt-1 text-lg font-bold text-green-800">
                 {datos.reduce((sum, item) => sum + item.realizados, 0)}
-              </span>
+              </p>
             </div>
-            <div>
-              <span className="text-gray-600">Total cerrados:</span>
-              <span className="ml-2 font-semibold text-blue-600">
+
+            <div className="rounded-md border border-blue-200 bg-blue-50 px-3 py-2">
+              <p className="text-[11px] font-medium uppercase tracking-wide text-blue-700">No se pudo realizar</p>
+              <p className="mt-1 text-lg font-bold text-blue-800">
+                {datos.reduce((sum, item) => sum + (item.No_Se_Pudo_Realizar ?? 0), 0)}
+              </p>
+            </div>
+
+            <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2">
+              <p className="text-[11px] font-medium uppercase tracking-wide text-red-700">Cerrados</p>
+              <p className="mt-1 text-lg font-bold text-red-800">
                 {datos.reduce((sum, item) => sum + item.cerrados, 0)}
-              </span>
+              </p>
             </div>
-            <div>
-              <span className="text-gray-600">Total pendientes:</span>
-              <span className="ml-2 font-semibold text-yellow-600">
+
+            <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2">
+              <p className="text-[11px] font-medium uppercase tracking-wide text-amber-700">Pendientes</p>
+              <p className="mt-1 text-lg font-bold text-amber-800">
                 {datos.reduce((sum, item) => sum + item.pendientes, 0)}
-              </span>
+              </p>
             </div>
           </div>
         </div>

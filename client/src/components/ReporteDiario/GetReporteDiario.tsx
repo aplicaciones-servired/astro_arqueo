@@ -24,6 +24,7 @@ export const GetReporteDiario = () => {
     try {
       const response = await getReporteDiario(zona, fechaInicio, fechaFin);
       setDatos(response.datos);
+      console.log('first', response.datos);
     } catch (error) {
       toast.error("Error al cargar el reporte diario");
       console.error(error);
