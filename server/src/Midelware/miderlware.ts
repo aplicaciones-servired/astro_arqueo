@@ -3,7 +3,7 @@ import multer from "multer";
 export const confirmupload = multer({ 
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 20 * 1024 * 1024, // Límite de 20MB 
+    fileSize: 50 * 1024 * 1024, // Limite de 50MB
   },
   fileFilter: (req, file, cb) => {
     // Aceptar imágenes y PDFs
