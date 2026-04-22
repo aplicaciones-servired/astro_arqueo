@@ -3,10 +3,13 @@ import Button from "@/components/ui/Button";
 import { ArqueoManualForm } from "@/Services/InsertArqueoMa";
 import { useEmpresa } from "@/components/ui/useEmpresa";
 import { empresas } from "@/utils/constans";
+import { toast } from "sonner";
 
 interface InserArqueoManualProps {
-    onSuccess?: () => void;
+    onSuccess?: () => void | Promise<void>;
 }
+
+const MAX_UPLOAD_MB = 50;
 
 export const InserArqueoManual = ({ onSuccess }: InserArqueoManualProps) => {
 
@@ -15,6 +18,7 @@ export const InserArqueoManual = ({ onSuccess }: InserArqueoManualProps) => {
     const { empresa, setEmpresa } = useEmpresa();
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [form, setForm] = useState({
         puntodeventa: "",
@@ -57,13 +61,13 @@ export const InserArqueoManual = ({ onSuccess }: InserArqueoManualProps) => {
         const esPDF = file.type === 'application/pdf';
 
         if (!esImagen && !esPDF) {
-            alert('Por favor selecciona un archivo de imagen (PNG, JPG, GIF) o PDF válido');
+            toast.error('Por favor selecciona un archivo de imagen (PNG, JPG, GIF) o PDF valido');
             return;
         }
 
-        // Validar tamaño (máximo 20MB)
-        if (file.size > 20 * 1024 * 1024) {
-            alert('El archivo es demasiado grande. Máximo 20MB permitido.');
+        // Validar tamano segun limite del backend
+        if (file.size > MAX_UPLOAD_MB * 1024 * 1024) {
+            toast.error(`El archivo es demasiado grande. Maximo ${MAX_UPLOAD_MB}MB permitido.`);
             return;
         }
 
@@ -125,9 +129,14 @@ export const InserArqueoManual = ({ onSuccess }: InserArqueoManualProps) => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const { puntodeventa, nombre, documento, base, ventabruta, efectivocajafuerte, valor } = form;
+        if (isSubmitting) return;
 
-        const ok = await ArqueoManualForm({
+        const { puntodeventa, nombre, documento, base, ventabruta, efectivocajafuerte, valor } = form;
+        setIsSubmitting(true);
+
+        const loadingToastId = toast.loading("Insertando arqueo manual...");
+
+        const result = await ArqueoManualForm({
             puntodeventa,
             nombre,
             documento,
@@ -140,7 +149,10 @@ export const InserArqueoManual = ({ onSuccess }: InserArqueoManualProps) => {
             empresa,
             imagen: selectedFile
         });
-        if (ok) {
+
+        toast.dismiss(loadingToastId);
+
+        if (result.ok) {
             setForm({
                 puntodeventa: "",
                 nombre: "",
@@ -153,9 +165,13 @@ export const InserArqueoManual = ({ onSuccess }: InserArqueoManualProps) => {
             });
             setSelectedFile(null);
             setPreviewUrl(null);
-            onSuccess?.();
-            window.location.reload();
-        };
+            await onSuccess?.();
+            toast.success(result.message, { duration: 3000 });
+        } else {
+            toast.error(result.message, { duration: 4000 });
+        }
+
+        setIsSubmitting(false);
     }
 
     return (
@@ -358,7 +374,7 @@ export const InserArqueoManual = ({ onSuccess }: InserArqueoManualProps) => {
                                 <p className="mb-2 text-sm text-gray-700">
                                     <span className="font-semibold">Click para subir</span> o arrastra y suelta
                                 </p>
-                                <p className="text-xs text-gray-600">PNG, JPG, GIF o PDF (MÁX. 20MB)</p>
+                                <p className="text-xs text-gray-600">PNG, JPG, GIF o PDF (MAX. 50MB)</p>
                             </div>
                             <input
                                 id="dropzone-file"
@@ -371,7 +387,9 @@ export const InserArqueoManual = ({ onSuccess }: InserArqueoManualProps) => {
                     )}
                 </div>
 
-                <Button>Insertar Arqueo</Button>
+                <Button type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? "Insertando..." : "Insertar Arqueo"}
+                </Button>
             </form>
         </section>
     );
