@@ -11,15 +11,18 @@ interface DeletCronogramaProps {
     puntodeventa?: string;
     estado?: string;
     dia?: string;
+    sourceTable?: string;
 }
 
-export function DeletCronograma({ id, puntodeventa, estado, dia }: DeletCronogramaProps) {
+export function DeletCronograma({ id, puntodeventa, estado, dia, sourceTable }: DeletCronogramaProps) {
     const [isOpen, setIsOpen] = useState(false);
     const { empresa } = useEmpresa();
 
     const handleDelete = async () => {
         try {
-            const response = await axios.delete(`${API_URL}/deletecronograma?id=${id}&zona=${empresa}`);
+            const response = await axios.delete(
+                `${API_URL}/deletecronograma?id=${id}&zona=${empresa}&sourceTable=${encodeURIComponent(sourceTable ?? "")}`
+            );
             toast.success(response.data.message, { duration: 2000 });
             if (response.status === 200) {
                 window.location.reload();

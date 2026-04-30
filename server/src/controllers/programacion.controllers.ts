@@ -649,17 +649,43 @@ export const EliminarProgramacion = async (
 ): Promise<void> => {
   const id = req.query.id as string;
   const zona = req.query.zona as string;
-
-  console.log('first', id, zona);
-
-  const empresa = zona === "Multired" ? "Multired" : "Servired";
-  initCronograma(empresa);
+  const sourceTable = req.query.sourceTable as string;
+  const normalizedZona = normalizeZona(zona);
+  const isMultired = normalizedZona === "multired";
+  const allowedSourceTables = new Set(["cronograma", "cronograma_servired", "cronograma_multired"]);
 
   try {
-     const eliminar = await getProgramacion.destroy({
-      where: { id: id },
-    });
-    console.log('first', eliminar)
+    const tablesToTry =
+      sourceTable && allowedSourceTables.has(sourceTable)
+        ? [sourceTable]
+        : isMultired
+          ? ["cronograma_multired"]
+          : ["cronograma", "cronograma_servired"];
+
+    let totalDeleted = 0;
+
+    for (const tableName of tablesToTry) {
+      const [, meta] = await getPoolArqueo.query(
+        `DELETE FROM \`${tableName}\` WHERE id = :id`,
+        {
+          replacements: { id },
+        }
+      );
+
+      const deletedRows =
+        typeof meta === "number" ? meta : Number((meta as any)?.affectedRows ?? 0);
+      totalDeleted += deletedRows;
+
+      if (deletedRows > 0 && sourceTable) {
+        break;
+      }
+    }
+
+    if (totalDeleted === 0) {
+      res.status(404).json({ message: "Cronograma no encontrado" });
+      return;
+    }
+
     res.status(200).json({ message: "Cronograma eliminado exitosamente" });
   } catch (error) {
     await notifyBackendError({ controller: "EliminarProgramacion", req, error });

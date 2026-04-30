@@ -142,7 +142,13 @@ export const TableCronograma = ({ datos, searchFecha, searchPDV, onSearchFechaCh
                                                 </button>
                                             </td>
                                             <td>
-                                                <DeletCronograma id={pdv.id} puntodeventa={pdv.puntodeventa} estado={pdv.estado} dia={pdv.dia} />
+                                                <DeletCronograma
+                                                    id={pdv.id}
+                                                    puntodeventa={pdv.puntodeventa}
+                                                    estado={pdv.estado}
+                                                    dia={pdv.dia}
+                                                    sourceTable={pdv.source_table}
+                                                />
                                             </td>
                                         </tr>
                                     ))}
