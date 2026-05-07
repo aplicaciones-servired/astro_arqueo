@@ -7,14 +7,17 @@ WORKDIR /app
 # Copiar package.json y package-lock.json primero (para cachear capas)
 COPY package*.json ./
 
-# Instalar dependencias
-RUN npm ci --omit=dev
+# Instalar todas las dependencias (incluyendo devDependencies para compilar TypeScript)
+RUN npm ci
 
 # Copiar el resto del código
 COPY . .
 
 # Compilar TypeScript
 RUN npm run build
+
+# Limpiar dependencias de desarrollo para reducir tamaño de imagen
+RUN npm prune --omit=dev
 
 # Exponer el puerto
 EXPOSE 3000
