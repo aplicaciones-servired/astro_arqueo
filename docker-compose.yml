@@ -6,7 +6,6 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-    container_name: arqueo-server-1
     image: arqueo-server
     networks:
       - red-gane-int
