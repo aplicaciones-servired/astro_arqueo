@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "node ./node_modules/typescript/bin/tsc",
-    "start": "npm run build && node --env-file=.env ./dist/index.js",
+    "start": "npm run build && node ./dist/index.js",
     "dev": "tsx watch --env-file=.env ./src/index.ts"
   },
   "dependencies": {
