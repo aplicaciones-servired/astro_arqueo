@@ -7,10 +7,10 @@ WORKDIR /app
 # Instalar dependencias
 COPY . .
 
-RUN yarn
+RUN npm install
 
 # Exponer el puerto
 EXPOSE 3000
 
 # Comando para ejecutar la aplicaciÃ³n
-CMD ["yarn", "start"]
+CMD ["npm", "start"]
