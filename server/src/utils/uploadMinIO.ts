@@ -1,5 +1,5 @@
 import { minioClient, BUCKET_NAME } from '../connections/minio';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 /**
  * Sube un archivo a MinIO y retorna la URL pública
@@ -16,7 +16,7 @@ export const uploadToMinIO = async (
   try {
     // Generar nombre único para el archivo
     const fileExtension = originalName.split('.').pop();
-    const fileName = `${uuidv4()}.${fileExtension}`;
+    const fileName = `${randomUUID()}.${fileExtension}`;
     
     // Subir archivo a MinIO
     await minioClient.putObject(
