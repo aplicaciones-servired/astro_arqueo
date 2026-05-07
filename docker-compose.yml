@@ -6,7 +6,7 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-    image: api_arqueo
+    image: arqueo-server
     networks:
       - red-gane-int
     env_file:

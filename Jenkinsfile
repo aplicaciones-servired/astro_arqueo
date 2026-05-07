@@ -75,7 +75,7 @@ pipeline {
     stage('delete images server') {
       steps {
         script {
-          def images = 'api_arqueo'
+          def images = 'arqueo-server'
           if (sh(script: "docker images -q ${images}", returnStdout: true).trim()) {
             sh "docker rmi ${images}"
           } else {
