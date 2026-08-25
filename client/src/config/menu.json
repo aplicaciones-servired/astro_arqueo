@@ -35,6 +35,10 @@
         {
           "name": "editar Cronogramas",
           "url": "/updatecronograma"
+        },
+        {
+          "name": "Eliminar Cronogramas",
+          "url": "/eliminar-cronograma"
         }
       ]
     },

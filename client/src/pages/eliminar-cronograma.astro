@@ -1,0 +1,21 @@
+---
+export const prerender = false;
+
+import Layout from "@/layouts/Layout.astro";
+import { SignedIn } from "@clerk/astro/react";
+import { CalendarioAnualEliminar } from "@/components/GetCrono/CalendarioAnualEliminar";
+---
+
+<Layout title="Eliminar Cronogramas">
+  <main class="container mx-auto px-4 py-8">
+    <div class="mb-6">
+      <h1 class="text-3xl font-bold text-gray-800">Eliminar Cronogramas</h1>
+      <p class="text-gray-600 mt-2">
+        Selecciona los días con cronograma que deseas eliminar
+      </p>
+    </div>
+    <SignedIn>
+      <CalendarioAnualEliminar client:only="react" />
+    </SignedIn>
+  </main>
+</Layout>

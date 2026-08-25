@@ -643,6 +643,58 @@ export const ProgramacionInforme = async (
 
 
 
+interface DeleteItem {
+  id: string | number;
+  sourceTable?: string;
+}
+
+export const EliminarProgramaciones = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { items, zona } = req.body as { items: DeleteItem[]; zona: string };
+
+  if (!Array.isArray(items) || items.length === 0) {
+    res.status(400).json({ message: "items es requerido y debe ser un array no vacío" });
+    return;
+  }
+
+  const normalizedZona = normalizeZona(zona);
+  const isMultired = normalizedZona === "multired";
+  const allowedSourceTables = new Set(["cronograma", "cronograma_servired", "cronograma_multired"]);
+
+  try {
+    let totalDeleted = 0;
+
+    for (const item of items) {
+      const tablesToTry =
+        item.sourceTable && allowedSourceTables.has(item.sourceTable)
+          ? [item.sourceTable]
+          : isMultired
+            ? ["cronograma_multired"]
+            : ["cronograma", "cronograma_servired"];
+
+      for (const tableName of tablesToTry) {
+        const [, meta] = await getPoolArqueo.query(
+          `DELETE FROM \`${tableName}\` WHERE id = :id`,
+          { replacements: { id: item.id } }
+        );
+
+        const deletedRows =
+          typeof meta === "number" ? meta : Number((meta as any)?.affectedRows ?? 0);
+        totalDeleted += deletedRows;
+
+        if (deletedRows > 0 && item.sourceTable) break;
+      }
+    }
+
+    res.status(200).json({ message: `${totalDeleted} cronograma(s) eliminado(s)`, deletedCount: totalDeleted });
+  } catch (error) {
+    await notifyBackendError({ controller: "EliminarProgramaciones", req, error });
+    res.status(500).json({ message: "Error al eliminar cronogramas" });
+  }
+};
+
 export const EliminarProgramacion = async (
   req: Request,
   res: Response

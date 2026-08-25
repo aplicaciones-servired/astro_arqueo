@@ -29,3 +29,15 @@ export function DeletCrom({ id, empresa, sourceTable }: DeletCronogramaProps) {
 
   return { handleDelete, message };
 }
+
+interface DeleteBatchItem {
+  id: string | number;
+  sourceTable?: string;
+}
+
+export async function DeletCromBatch(items: DeleteBatchItem[], zona: string): Promise<number> {
+  const response = await axios.delete(`${API_URL}/deletecronogramas`, {
+    data: { items, zona },
+  });
+  return response.data.deletedCount as number;
+}

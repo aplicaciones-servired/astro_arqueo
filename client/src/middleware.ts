@@ -15,6 +15,7 @@ const isProtectedRoute = createRouteMatcher([
   "/api(.*)",
   "/sign-in(.*)",
   "/sign-up(.*)",
+  "/eliminar-cronograma(.*)",
 ]);
 
 // Página de login
