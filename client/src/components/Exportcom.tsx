@@ -12,6 +12,8 @@ import { exportarAExcelGlob } from "./Exportar/ExporGlob";
 import { exportarVisitasAExcel } from "./Exportar/ExportVisita";
 import { ArqueoManual } from "@/types/arqueomanual";
 
+const PERFILES_AUDITORIA = ["AUDITORIA-SERVIRED", "AUDITORIA-MULTIRED"];
+
 interface PropsExport {
   data: Arqueos[] | Cronograma[] | Visitas[] | ArqueoManual[];
   tipo: "arqueo" | "cronograma" | "visita" | "ArqueosInfo" | "ArqueoManual";
@@ -39,7 +41,8 @@ export const Exportcom = ({ data, tipo }: PropsExport) => {
 
       const unicos = new Map<string, { supervisor: string; nombre: string }>();
       todos.forEach((item: any) => {
-        if (item.supervisor && !unicos.has(item.supervisor)) {
+        const esAuditoria = PERFILES_AUDITORIA.includes(item.perfilSupervisor);
+        if (esAuditoria && item.supervisor && !unicos.has(item.supervisor)) {
           unicos.set(item.supervisor, {
             supervisor: item.supervisor,
             nombre: item.nombreSupervisor || item.supervisor,
@@ -98,19 +101,21 @@ export const Exportcom = ({ data, tipo }: PropsExport) => {
       const response = await axios.get(url);
       const todos: any[] = response.data?.datos ?? response.data ?? [];
 
-      const registrosPorFecha = todos.filter((item: any) => {
-        let itemFecha: string;
+      const registrosPorFecha = todos
+        .filter((item: any) => (tipo === "visita" ? PERFILES_AUDITORIA.includes(item.perfilSupervisor) : true))
+        .filter((item: any) => {
+          let itemFecha: string;
 
-        if (tipo === "arqueo" || tipo === "visita" || tipo === "ArqueosInfo") {
-          itemFecha = new Date(item.fechavisita).toISOString().split("T")[0];
-        } else if (tipo === "ArqueoManual") {
-          itemFecha = new Date(item.fecha).toISOString().split("T")[0];
-        } else {
-          itemFecha = new Date(item.dia).toISOString().split("T")[0];
-        }
+          if (tipo === "arqueo" || tipo === "visita" || tipo === "ArqueosInfo") {
+            itemFecha = new Date(item.fechavisita).toISOString().split("T")[0];
+          } else if (tipo === "ArqueoManual") {
+            itemFecha = new Date(item.fecha).toISOString().split("T")[0];
+          } else {
+            itemFecha = new Date(item.dia).toISOString().split("T")[0];
+          }
 
-        return itemFecha >= fechaInicio && itemFecha <= fechaFin;
-      });
+          return itemFecha >= fechaInicio && itemFecha <= fechaFin;
+        });
 
       const registrosFiltrados = tipo === "visita" && supervisorSeleccionado
         ? registrosPorFecha.filter((item: any) => item.supervisor === supervisorSeleccionado)
