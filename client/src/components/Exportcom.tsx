@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { Arqueos } from "@/types/arqueo";
 import { exportarAExcel } from "./Exportar/Export";
@@ -24,6 +24,38 @@ export const Exportcom = ({ data, tipo }: PropsExport) => {
   const [supervisoresDisponibles, setSupervisoresDisponibles] = useState<{ supervisor: string; nombre: string }[]>([]);
 
   const { empresa } = useEmpresa();
+
+  const cargarSupervisores = async (): Promise<void> => {
+    if (!empresa || !fechaInicio || !fechaFin || tipo !== "visita") return;
+
+    const base =
+      typeof API_URL === "string" ? API_URL.replace(/\/+$/, "") : API_URL;
+    if (!base) return;
+
+    try {
+      const url = `${base}/visita?zona=${empresa}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&pageSize=1000000`;
+      const response = await axios.get(url);
+      const todos: any[] = response.data?.datos ?? response.data ?? [];
+
+      const unicos = new Map<string, { supervisor: string; nombre: string }>();
+      todos.forEach((item: any) => {
+        if (item.supervisor && !unicos.has(item.supervisor)) {
+          unicos.set(item.supervisor, {
+            supervisor: item.supervisor,
+            nombre: item.nombreSupervisor || item.supervisor,
+          });
+        }
+      });
+      setSupervisoresDisponibles([...unicos.values()]);
+    } catch {
+      setSupervisoresDisponibles([]);
+    }
+  };
+
+  useEffect(() => {
+    setSupervisorSeleccionado("");
+    cargarSupervisores();
+  }, [empresa, tipo, fechaInicio, fechaFin]);
 
   const exportarRegistros = async (): Promise<void> => {
     if (!fechaInicio || !fechaFin) {
@@ -65,19 +97,6 @@ export const Exportcom = ({ data, tipo }: PropsExport) => {
 
       const response = await axios.get(url);
       const todos: any[] = response.data?.datos ?? response.data ?? [];
-
-      if (tipo === "visita") {
-        const unicos = new Map<string, { supervisor: string; nombre: string }>();
-        todos.forEach((item: any) => {
-          if (item.supervisor && !unicos.has(item.supervisor)) {
-            unicos.set(item.supervisor, {
-              supervisor: item.supervisor,
-              nombre: item.nombreSupervisor || item.supervisor,
-            });
-          }
-        });
-        setSupervisoresDisponibles([...unicos.values()]);
-      }
 
       const registrosPorFecha = todos.filter((item: any) => {
         let itemFecha: string;
