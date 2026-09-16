@@ -20,8 +20,9 @@ interface PropsExport {
 export const Exportcom = ({ data, tipo }: PropsExport) => {
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFin, setFechaFin] = useState("");
+  const [supervisorSeleccionado, setSupervisorSeleccionado] = useState("");
+  const [supervisoresDisponibles, setSupervisoresDisponibles] = useState<{ supervisor: string; nombre: string }[]>([]);
 
-  // changed code: obtener empresa desde context/hook
   const { empresa } = useEmpresa();
 
   const exportarRegistros = async (): Promise<void> => {
@@ -65,7 +66,20 @@ export const Exportcom = ({ data, tipo }: PropsExport) => {
       const response = await axios.get(url);
       const todos: any[] = response.data?.datos ?? response.data ?? [];
 
-      const registrosFiltrados = todos.filter((item: any) => {
+      if (tipo === "visita") {
+        const unicos = new Map<string, { supervisor: string; nombre: string }>();
+        todos.forEach((item: any) => {
+          if (item.supervisor && !unicos.has(item.supervisor)) {
+            unicos.set(item.supervisor, {
+              supervisor: item.supervisor,
+              nombre: item.nombreSupervisor || item.supervisor,
+            });
+          }
+        });
+        setSupervisoresDisponibles([...unicos.values()]);
+      }
+
+      const registrosPorFecha = todos.filter((item: any) => {
         let itemFecha: string;
 
         if (tipo === "arqueo" || tipo === "visita" || tipo === "ArqueosInfo") {
@@ -78,6 +92,10 @@ export const Exportcom = ({ data, tipo }: PropsExport) => {
 
         return itemFecha >= fechaInicio && itemFecha <= fechaFin;
       });
+
+      const registrosFiltrados = tipo === "visita" && supervisorSeleccionado
+        ? registrosPorFecha.filter((item: any) => item.supervisor === supervisorSeleccionado)
+        : registrosPorFecha;
 
       if (registrosFiltrados.length === 0) {
         throw new Error("No hay registros para exportar en el rango seleccionado");
@@ -157,6 +175,26 @@ export const Exportcom = ({ data, tipo }: PropsExport) => {
               />
             </label>
           </div>
+
+          {tipo === "visita" && supervisoresDisponibles.length > 0 && (
+            <div className="flex-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Supervisor
+                <select
+                  value={supervisorSeleccionado}
+                  onChange={(e) => setSupervisorSeleccionado(e.target.value)}
+                  className="filter-input-date"
+                >
+                  <option value="">Todos los supervisores</option>
+                  {supervisoresDisponibles.map((s) => (
+                    <option key={s.supervisor} value={s.supervisor}>
+                      {s.nombre}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+          )}
 
           <div className="flex items-end">
             <Button onClick={exportarRegistros} className="min-w-[140px]">Exportar</Button>
