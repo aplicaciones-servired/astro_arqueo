@@ -311,11 +311,11 @@ export default function CustomizedDialogs({
               </SectionCard>
             )}
 
-            {/* ── 9. Atención y Servicios (requisitos 36–44) ── */}
+            {/* ── 9. Lista de Chequeo de CIS (requisitos 36–44) ── */}
             {([36,37,38,39,40,41,42,43,44] as const).some(
               (n) => (items as any)[`requisito${n}`]?.length > 0
             ) && (
-              <SectionCard title="Atención y Servicios" accent="bg-cyan-700">
+              <SectionCard title="Lista de Chequeo de CIS" accent="bg-cyan-700">
                 <div className="divide-y divide-slate-100">
                   {(
                     [
