@@ -285,6 +285,15 @@ export default async function generatePDF(data: any) {
     33: "¿Conoce los reportes de operaciones en efectivo (R.O.E) firmas, huellas? (Transacciones >= $10.000.000)",
     34: "¿El Supervisor Cial realiza las visitas?",
     35: "¿Conoce los términos SARL, SARLAFT, SARO, operación inusual y operación sospechosa?",
+    36: "¿Considera que recibe atención oportuna por parte del proceso de cartera?",
+    37: "¿Considera que recibe atención oportuna por parte del proceso de sistemas?",
+    38: "¿Considera que recibe atención oportuna por parte de la zona (fuerza de ventas)?",
+    39: "¿Considera que recibe atención oportuna por parte del proceso de tangibles (raspas,...)?",
+    40: "¿Se ha quedado sin venta por falta de rollos de chance?",
+    41: "¿Se ha quedado sin venta por falta de rollos de papelería blanca?",
+    42: "¿Considera que recibe atención oportuna para anulación de formularios?",
+    43: "¿Considera que recibe atención oportuna para anulación de recaudos de convenios?",
+    44: "¿Algo adicional que considere agregar?",
   };
 
   // Requisitos y Observaciones (Preguntas)
@@ -303,8 +312,8 @@ export default async function generatePDF(data: any) {
   const requisitosInfo = [];
   let hasObservaciones = false;
 
-  // Recorrer todos los requisitos (1-35) - 3 columnas: Pregunta | Respuesta | Observación
-  for (let i = 1; i <= 35; i++) {
+  // Recorrer todos los requisitos (1-44) - 3 columnas: Pregunta | Respuesta | Observación
+  for (let i = 1; i <= 44; i++) {
     const requisitoKey = `requisito${i}` as keyof typeof items;
     const observacionKey = `observacion${i}` as keyof typeof items;
 

@@ -311,7 +311,35 @@ export default function CustomizedDialogs({
               </SectionCard>
             )}
 
-            {/* ── 9. Información Adicional ── */}
+            {/* ── 9. Atención y Servicios (requisitos 36–44) ── */}
+            {([36,37,38,39,40,41,42,43,44] as const).some(
+              (n) => (items as any)[`requisito${n}`]?.length > 0
+            ) && (
+              <SectionCard title="Atención y Servicios" accent="bg-cyan-700">
+                <div className="divide-y divide-slate-100">
+                  {(
+                    [
+                      { n: 36, q: "¿Considera que recibe atención oportuna por parte del proceso de cartera?" },
+                      { n: 37, q: "¿Considera que recibe atención oportuna por parte del proceso de sistemas?" },
+                      { n: 38, q: "¿Considera que recibe atención oportuna por parte de la zona (fuerza de ventas)?" },
+                      { n: 39, q: "¿Considera que recibe atención oportuna por parte del proceso de tangibles (raspas,...)?" },
+                      { n: 40, q: "¿Se ha quedado sin venta por falta de rollos de chance?" },
+                      { n: 41, q: "¿Se ha quedado sin venta por falta de rollos de papelería blanca?" },
+                      { n: 42, q: "¿Considera que recibe atención oportuna para anulación de formularios?" },
+                      { n: 43, q: "¿Considera que recibe atención oportuna para anulación de recaudos de convenios?" },
+                      { n: 44, q: "¿Algo adicional que considere agregar?" },
+                    ] as { n: number; q: string }[]
+                  ).map(({ n, q }) => {
+                    const resp = (items as any)[`requisito${n}`];
+                    const obs  = (items as any)[`observacion${n}`];
+                    if (!resp?.length) return null;
+                    return <ReqRow key={n} question={q} answer={resp} observation={obs} />;
+                  })}
+                </div>
+              </SectionCard>
+            )}
+
+            {/* ── 10. Información Adicional ── */}
             <SectionCard title="Información Adicional" accent="bg-slate-600">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <Field label="Fecha Visita" value={items.fechavisita} />

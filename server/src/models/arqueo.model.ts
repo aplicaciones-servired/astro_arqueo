@@ -38,7 +38,64 @@ class arqueo extends Model<
   declare totalbilletescaja: string;
   declare totalmonedascaja: string;
   declare totalpremioscaja: string;
+  declare canti_billete_cienmil: string;
+  declare total_billete_cienmil: string;
+  declare canti_billete_cincuentamil: string;
+  declare total_billete_cincuentamil: string;
+  declare canti_billete_veintemil: string;
+  declare total_billete_veintemil: string;
+  declare canti_billete_diezmil: string;
+  declare total_billete_diezmil: string;
+  declare canti_billete_cincomil: string;
+  declare total_billete_cincomil: string;
+  declare canti_billete_dosmil: string;
+  declare total_billete_dosmil: string;
+  declare canti_billete_mil: string;
+  declare total_billete_mil: string;
+  declare canti_moneda_mil: string;
+  declare total_moneda_mil: string;
+  declare canti_moneda_quinientos: string;
+  declare total_moneda_quinientos: string;
+  declare canti_moneda_docientos: string;
+  declare total_moneda_docientos: string;
+  declare canti_moneda_cien: string;
+  declare total_moneda_cien: string;
+  declare canti_moneda_cincuenta: string;
+  declare total_moneda_ciencuenta: string;
+  declare total_efectivo: string;
+  declare canti_billete_cienmil1: string;
+  declare canti_billete_cincuentamil1: string;
+  declare canti_billete_veintemil1: string;
+  declare canti_billete_diezmil1: string;
+  declare canti_billete_cincomil1: string;
+  declare canti_billete_dosmil1: string;
+  declare canti_billete_mil1: string;
+  declare total_billete_cienmil1: string;
+  declare total_billete_cincuentamil1: string;
+  declare total_billete_veintemil1: string;
+  declare total_billete_diezmil1: string;
+  declare total_billete_cincomil1: string;
+  declare total_billete_dosmil1: string;
+  declare total_billete_mil1: string;
+  declare canti_moneda_mil1: string;
+  declare canti_moneda_quinientos1: string;
+  declare canti_moneda_docientos1: string;
+  declare canti_moneda_cien1: string;
+  declare canti_moneda_cincuenta1: string;
+  declare total_moneda_mil1: string;
+  declare total_moneda_quinientos1: string;
+  declare total_moneda_docientos1: string;
+  declare total_moneda_cien1: string;
+  declare total_moneda_ciencuenta1: string;
+  declare total_efectivo1: string;
+  declare total_premios_pagados1: string;
   declare total: string;
+  declare total_premios_pagados: string;
+  declare base_efectivos: string;
+  declare tirilla_recaudos: string;
+  declare entrega_colocador: string;
+  declare sobrantefaltante_caja: string;
+  declare colocador_cajafuerte: string;
   declare rollos_bnet: string;
   declare rollos_fisicos: string;
   declare diferencia: string;
@@ -149,6 +206,31 @@ class arqueo extends Model<
   declare requisito33: string;
   declare requisito34: string;
   declare requisito35: string;
+  declare observacion29?: string;
+  declare observacion30?: string;
+  declare observacion31?: string;
+  declare observacion32?: string;
+  declare observacion33?: string;
+  declare observacion34?: string;
+  declare observacion35?: string;
+  declare requisito36: string;
+  declare observacion36?: string;
+  declare requisito37: string;
+  declare observacion37?: string;
+  declare requisito38: string;
+  declare observacion38?: string;
+  declare requisito39: string;
+  declare observacion39?: string;
+  declare requisito40: string;
+  declare observacion40?: string;
+  declare requisito41: string;
+  declare observacion41?: string;
+  declare requisito42: string;
+  declare observacion42?: string;
+  declare requisito43: string;
+  declare observacion43?: string;
+  declare requisito44: string;
+  declare observacion44?: string;
   declare imagen_observacion: string;
   declare nombre_observacion: string;
   declare firma_auditoria: string;
@@ -188,7 +270,64 @@ class arqueoBK extends Model<
   declare totalbilletescaja: string;
   declare totalmonedascaja: string;
   declare totalpremioscaja: string;
+  declare canti_billete_cienmil: string;
+  declare total_billete_cienmil: string;
+  declare canti_billete_cincuentamil: string;
+  declare total_billete_cincuentamil: string;
+  declare canti_billete_veintemil: string;
+  declare total_billete_veintemil: string;
+  declare canti_billete_diezmil: string;
+  declare total_billete_diezmil: string;
+  declare canti_billete_cincomil: string;
+  declare total_billete_cincomil: string;
+  declare canti_billete_dosmil: string;
+  declare total_billete_dosmil: string;
+  declare canti_billete_mil: string;
+  declare total_billete_mil: string;
+  declare canti_moneda_mil: string;
+  declare total_moneda_mil: string;
+  declare canti_moneda_quinientos: string;
+  declare total_moneda_quinientos: string;
+  declare canti_moneda_docientos: string;
+  declare total_moneda_docientos: string;
+  declare canti_moneda_cien: string;
+  declare total_moneda_cien: string;
+  declare canti_moneda_cincuenta: string;
+  declare total_moneda_ciencuenta: string;
+  declare total_efectivo: string;
+  declare canti_billete_cienmil1: string;
+  declare canti_billete_cincuentamil1: string;
+  declare canti_billete_veintemil1: string;
+  declare canti_billete_diezmil1: string;
+  declare canti_billete_cincomil1: string;
+  declare canti_billete_dosmil1: string;
+  declare canti_billete_mil1: string;
+  declare total_billete_cienmil1: string;
+  declare total_billete_cincuentamil1: string;
+  declare total_billete_veintemil1: string;
+  declare total_billete_diezmil1: string;
+  declare total_billete_cincomil1: string;
+  declare total_billete_dosmil1: string;
+  declare total_billete_mil1: string;
+  declare canti_moneda_mil1: string;
+  declare canti_moneda_quinientos1: string;
+  declare canti_moneda_docientos1: string;
+  declare canti_moneda_cien1: string;
+  declare canti_moneda_cincuenta1: string;
+  declare total_moneda_mil1: string;
+  declare total_moneda_quinientos1: string;
+  declare total_moneda_docientos1: string;
+  declare total_moneda_cien1: string;
+  declare total_moneda_ciencuenta1: string;
+  declare total_efectivo1: string;
+  declare total_premios_pagados1: string;
   declare total: string;
+  declare total_premios_pagados: string;
+  declare base_efectivos: string;
+  declare tirilla_recaudos: string;
+  declare entrega_colocador: string;
+  declare sobrantefaltante_caja: string;
+  declare colocador_cajafuerte: string;
   declare rollos_bnet: string;
   declare rollos_fisicos: string;
   declare diferencia: string;
@@ -299,6 +438,31 @@ class arqueoBK extends Model<
   declare requisito33: string;
   declare requisito34: string;
   declare requisito35: string;
+  declare observacion29?: string;
+  declare observacion30?: string;
+  declare observacion31?: string;
+  declare observacion32?: string;
+  declare observacion33?: string;
+  declare observacion34?: string;
+  declare observacion35?: string;
+  declare requisito36: string;
+  declare observacion36?: string;
+  declare requisito37: string;
+  declare observacion37?: string;
+  declare requisito38: string;
+  declare observacion38?: string;
+  declare requisito39: string;
+  declare observacion39?: string;
+  declare requisito40: string;
+  declare observacion40?: string;
+  declare requisito41: string;
+  declare observacion41?: string;
+  declare requisito42: string;
+  declare observacion42?: string;
+  declare requisito43: string;
+  declare observacion43?: string;
+  declare requisito44: string;
+  declare observacion44?: string;
   declare imagen_observacion: string;  // TEXT -> URL MinIO
   declare nombre_observacion: string;
   declare firma_auditoria: string;     // TEXT -> URL MinIO
@@ -344,7 +508,64 @@ const initChatBoxModel = (zona: string) => {
       totalbilletescaja: { type: DataTypes.STRING },
       totalmonedascaja: { type: DataTypes.STRING },
       totalpremioscaja: { type: DataTypes.STRING },
+      canti_billete_cienmil: { type: DataTypes.STRING },
+      total_billete_cienmil: { type: DataTypes.STRING },
+      canti_billete_cincuentamil: { type: DataTypes.STRING },
+      total_billete_cincuentamil: { type: DataTypes.STRING },
+      canti_billete_veintemil: { type: DataTypes.STRING },
+      total_billete_veintemil: { type: DataTypes.STRING },
+      canti_billete_diezmil: { type: DataTypes.STRING },
+      total_billete_diezmil: { type: DataTypes.STRING },
+      canti_billete_cincomil: { type: DataTypes.STRING },
+      total_billete_cincomil: { type: DataTypes.STRING },
+      canti_billete_dosmil: { type: DataTypes.STRING },
+      total_billete_dosmil: { type: DataTypes.STRING },
+      canti_billete_mil: { type: DataTypes.STRING },
+      total_billete_mil: { type: DataTypes.STRING },
+      canti_moneda_mil: { type: DataTypes.STRING },
+      total_moneda_mil: { type: DataTypes.STRING },
+      canti_moneda_quinientos: { type: DataTypes.STRING },
+      total_moneda_quinientos: { type: DataTypes.STRING },
+      canti_moneda_docientos: { type: DataTypes.STRING },
+      total_moneda_docientos: { type: DataTypes.STRING },
+      canti_moneda_cien: { type: DataTypes.STRING },
+      total_moneda_cien: { type: DataTypes.STRING },
+      canti_moneda_cincuenta: { type: DataTypes.STRING },
+      total_moneda_ciencuenta: { type: DataTypes.STRING },
+      total_efectivo: { type: DataTypes.STRING },
+      canti_billete_cienmil1: { type: DataTypes.STRING },
+      canti_billete_cincuentamil1: { type: DataTypes.STRING },
+      canti_billete_veintemil1: { type: DataTypes.STRING },
+      canti_billete_diezmil1: { type: DataTypes.STRING },
+      canti_billete_cincomil1: { type: DataTypes.STRING },
+      canti_billete_dosmil1: { type: DataTypes.STRING },
+      canti_billete_mil1: { type: DataTypes.STRING },
+      total_billete_cienmil1: { type: DataTypes.STRING },
+      total_billete_cincuentamil1: { type: DataTypes.STRING },
+      total_billete_veintemil1: { type: DataTypes.STRING },
+      total_billete_diezmil1: { type: DataTypes.STRING },
+      total_billete_cincomil1: { type: DataTypes.STRING },
+      total_billete_dosmil1: { type: DataTypes.STRING },
+      total_billete_mil1: { type: DataTypes.STRING },
+      canti_moneda_mil1: { type: DataTypes.STRING },
+      canti_moneda_quinientos1: { type: DataTypes.STRING },
+      canti_moneda_docientos1: { type: DataTypes.STRING },
+      canti_moneda_cien1: { type: DataTypes.STRING },
+      canti_moneda_cincuenta1: { type: DataTypes.STRING },
+      total_moneda_mil1: { type: DataTypes.STRING },
+      total_moneda_quinientos1: { type: DataTypes.STRING },
+      total_moneda_docientos1: { type: DataTypes.STRING },
+      total_moneda_cien1: { type: DataTypes.STRING },
+      total_moneda_ciencuenta1: { type: DataTypes.STRING },
+      total_efectivo1: { type: DataTypes.STRING },
+      total_premios_pagados1: { type: DataTypes.STRING },
       total: { type: DataTypes.STRING },
+      total_premios_pagados: { type: DataTypes.STRING },
+      base_efectivos: { type: DataTypes.STRING },
+      tirilla_recaudos: { type: DataTypes.STRING },
+      entrega_colocador: { type: DataTypes.STRING },
+      sobrantefaltante_caja: { type: DataTypes.STRING },
+      colocador_cajafuerte: { type: DataTypes.STRING },
       rollos_bnet: { type: DataTypes.STRING },
       rollos_fisicos: { type: DataTypes.STRING },
       diferencia: { type: DataTypes.STRING },
@@ -449,12 +670,37 @@ const initChatBoxModel = (zona: string) => {
       requisito28: { type: DataTypes.STRING },
       observacion28: { type: DataTypes.STRING },
       requisito29: { type: DataTypes.STRING },
+      observacion29: { type: DataTypes.STRING },
       requisito30: { type: DataTypes.STRING },
+      observacion30: { type: DataTypes.STRING },
       requisito31: { type: DataTypes.STRING },
+      observacion31: { type: DataTypes.STRING },
       requisito32: { type: DataTypes.STRING },
+      observacion32: { type: DataTypes.STRING },
       requisito33: { type: DataTypes.STRING },
+      observacion33: { type: DataTypes.STRING },
       requisito34: { type: DataTypes.STRING },
+      observacion34: { type: DataTypes.STRING },
       requisito35: { type: DataTypes.STRING },
+      observacion35: { type: DataTypes.STRING },
+      requisito36: { type: DataTypes.STRING },
+      observacion36: { type: DataTypes.STRING },
+      requisito37: { type: DataTypes.STRING },
+      observacion37: { type: DataTypes.STRING },
+      requisito38: { type: DataTypes.STRING },
+      observacion38: { type: DataTypes.STRING },
+      requisito39: { type: DataTypes.STRING },
+      observacion39: { type: DataTypes.STRING },
+      requisito40: { type: DataTypes.STRING },
+      observacion40: { type: DataTypes.STRING },
+      requisito41: { type: DataTypes.STRING },
+      observacion41: { type: DataTypes.STRING },
+      requisito42: { type: DataTypes.STRING },
+      observacion42: { type: DataTypes.STRING },
+      requisito43: { type: DataTypes.STRING },
+      observacion43: { type: DataTypes.STRING },
+      requisito44: { type: DataTypes.STRING },
+      observacion44: { type: DataTypes.STRING },
       imagen_observacion: { type: DataTypes.STRING },
       nombre_observacion: { type: DataTypes.STRING },
       firma_auditoria: { type: DataTypes.STRING },
@@ -508,7 +754,64 @@ const initBackupModel = (zona: string) => {
       totalbilletescaja: { type: DataTypes.STRING },
       totalmonedascaja: { type: DataTypes.STRING },
       totalpremioscaja: { type: DataTypes.STRING },
+      canti_billete_cienmil: { type: DataTypes.STRING },
+      total_billete_cienmil: { type: DataTypes.STRING },
+      canti_billete_cincuentamil: { type: DataTypes.STRING },
+      total_billete_cincuentamil: { type: DataTypes.STRING },
+      canti_billete_veintemil: { type: DataTypes.STRING },
+      total_billete_veintemil: { type: DataTypes.STRING },
+      canti_billete_diezmil: { type: DataTypes.STRING },
+      total_billete_diezmil: { type: DataTypes.STRING },
+      canti_billete_cincomil: { type: DataTypes.STRING },
+      total_billete_cincomil: { type: DataTypes.STRING },
+      canti_billete_dosmil: { type: DataTypes.STRING },
+      total_billete_dosmil: { type: DataTypes.STRING },
+      canti_billete_mil: { type: DataTypes.STRING },
+      total_billete_mil: { type: DataTypes.STRING },
+      canti_moneda_mil: { type: DataTypes.STRING },
+      total_moneda_mil: { type: DataTypes.STRING },
+      canti_moneda_quinientos: { type: DataTypes.STRING },
+      total_moneda_quinientos: { type: DataTypes.STRING },
+      canti_moneda_docientos: { type: DataTypes.STRING },
+      total_moneda_docientos: { type: DataTypes.STRING },
+      canti_moneda_cien: { type: DataTypes.STRING },
+      total_moneda_cien: { type: DataTypes.STRING },
+      canti_moneda_cincuenta: { type: DataTypes.STRING },
+      total_moneda_ciencuenta: { type: DataTypes.STRING },
+      total_efectivo: { type: DataTypes.STRING },
+      canti_billete_cienmil1: { type: DataTypes.STRING },
+      canti_billete_cincuentamil1: { type: DataTypes.STRING },
+      canti_billete_veintemil1: { type: DataTypes.STRING },
+      canti_billete_diezmil1: { type: DataTypes.STRING },
+      canti_billete_cincomil1: { type: DataTypes.STRING },
+      canti_billete_dosmil1: { type: DataTypes.STRING },
+      canti_billete_mil1: { type: DataTypes.STRING },
+      total_billete_cienmil1: { type: DataTypes.STRING },
+      total_billete_cincuentamil1: { type: DataTypes.STRING },
+      total_billete_veintemil1: { type: DataTypes.STRING },
+      total_billete_diezmil1: { type: DataTypes.STRING },
+      total_billete_cincomil1: { type: DataTypes.STRING },
+      total_billete_dosmil1: { type: DataTypes.STRING },
+      total_billete_mil1: { type: DataTypes.STRING },
+      canti_moneda_mil1: { type: DataTypes.STRING },
+      canti_moneda_quinientos1: { type: DataTypes.STRING },
+      canti_moneda_docientos1: { type: DataTypes.STRING },
+      canti_moneda_cien1: { type: DataTypes.STRING },
+      canti_moneda_cincuenta1: { type: DataTypes.STRING },
+      total_moneda_mil1: { type: DataTypes.STRING },
+      total_moneda_quinientos1: { type: DataTypes.STRING },
+      total_moneda_docientos1: { type: DataTypes.STRING },
+      total_moneda_cien1: { type: DataTypes.STRING },
+      total_moneda_ciencuenta1: { type: DataTypes.STRING },
+      total_efectivo1: { type: DataTypes.STRING },
+      total_premios_pagados1: { type: DataTypes.STRING },
       total: { type: DataTypes.STRING },
+      total_premios_pagados: { type: DataTypes.STRING },
+      base_efectivos: { type: DataTypes.STRING },
+      tirilla_recaudos: { type: DataTypes.STRING },
+      entrega_colocador: { type: DataTypes.STRING },
+      sobrantefaltante_caja: { type: DataTypes.STRING },
+      colocador_cajafuerte: { type: DataTypes.STRING },
       rollos_bnet: { type: DataTypes.STRING },
       rollos_fisicos: { type: DataTypes.STRING },
       diferencia: { type: DataTypes.STRING },
@@ -613,12 +916,37 @@ const initBackupModel = (zona: string) => {
       requisito28: { type: DataTypes.STRING },
       observacion28: { type: DataTypes.STRING },
       requisito29: { type: DataTypes.STRING },
+      observacion29: { type: DataTypes.STRING },
       requisito30: { type: DataTypes.STRING },
+      observacion30: { type: DataTypes.STRING },
       requisito31: { type: DataTypes.STRING },
+      observacion31: { type: DataTypes.STRING },
       requisito32: { type: DataTypes.STRING },
+      observacion32: { type: DataTypes.STRING },
       requisito33: { type: DataTypes.STRING },
+      observacion33: { type: DataTypes.STRING },
       requisito34: { type: DataTypes.STRING },
+      observacion34: { type: DataTypes.STRING },
       requisito35: { type: DataTypes.STRING },
+      observacion35: { type: DataTypes.STRING },
+      requisito36: { type: DataTypes.STRING },
+      observacion36: { type: DataTypes.STRING },
+      requisito37: { type: DataTypes.STRING },
+      observacion37: { type: DataTypes.STRING },
+      requisito38: { type: DataTypes.STRING },
+      observacion38: { type: DataTypes.STRING },
+      requisito39: { type: DataTypes.STRING },
+      observacion39: { type: DataTypes.STRING },
+      requisito40: { type: DataTypes.STRING },
+      observacion40: { type: DataTypes.STRING },
+      requisito41: { type: DataTypes.STRING },
+      observacion41: { type: DataTypes.STRING },
+      requisito42: { type: DataTypes.STRING },
+      observacion42: { type: DataTypes.STRING },
+      requisito43: { type: DataTypes.STRING },
+      observacion43: { type: DataTypes.STRING },
+      requisito44: { type: DataTypes.STRING },
+      observacion44: { type: DataTypes.STRING },
       imagen_observacion: { type: DataTypes.TEXT }, // URL MinIO en backup
       nombre_observacion: { type: DataTypes.STRING },
       firma_auditoria: { type: DataTypes.TEXT },    // URL MinIO en backup
