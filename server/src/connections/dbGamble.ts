@@ -14,6 +14,7 @@ const getPoolGamble = new Sequelize(DB_INFO_NAME, DB_INFO_USER_NAME, DB_INFO_PAS
   port: Number(DB_INFO_PORT),
   dialect: "mysql",
   timezone: '-05:00',
+  dialectOptions: { connectTimeout: 10000 },
 });
 
 export { getPoolGamble };

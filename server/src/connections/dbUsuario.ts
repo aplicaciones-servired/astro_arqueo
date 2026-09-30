@@ -7,12 +7,15 @@ const DB_USUARIO_HOST = process.env.DB_USUARIO_HOST as string
 const DB_USUARIO_PASSWORD = process.env.DB_USUARIO_PASSWORD as string
 const DB_USUARIO_USER = process.env.DB_USUARIO_USER as string
 const DB_USUARIO_NAME = process.env.DB_USUARIO_NAME as string
+const DB_USUARIO_PORT = Number(process.env.DB_USUARIO_PORT || 3306)
 const DB_DIALECT_USUARIO = process.env.DB_DIALECT_USUARIO as string
 
 const getPoolUsuario = new Sequelize(DB_USUARIO_NAME, DB_USUARIO_USER, DB_USUARIO_PASSWORD, {
   host: DB_USUARIO_HOST,
-  dialect: "mysql",
+  port: DB_USUARIO_PORT,
+  dialect: 'mysql',
   timezone: '-05:00',
+  dialectOptions: { connectTimeout: 10000 },
 });
 
 export { getPoolUsuario };

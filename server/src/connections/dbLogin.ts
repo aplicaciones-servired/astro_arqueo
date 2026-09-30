@@ -6,7 +6,8 @@ const getPoolLogin = new Sequelize(DB_SERVIRE_USE, DB_SERVIRE_USER, DB_SERVIRE_P
   port: DB_PORT,
   dialect: 'mysql',
   timezone: '-05:00',
-  logging: false
+  logging: false,
+  dialectOptions: { connectTimeout: 10000 }
 });
 
 export { getPoolLogin }
