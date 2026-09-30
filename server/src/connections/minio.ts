@@ -28,7 +28,7 @@ export const MINIO_PUBLIC_ORIGIN = `http://${publicHost}:${publicPort}`;
       await minioClient.makeBucket(BUCKET_NAME, 'us-east-1');
       console.log(`✅ Bucket "${BUCKET_NAME}" creado en MinIO`);
     } else {
-      console.log(`✅ Conectado a MinIO - Bucket: ${BUCKET_NAME}`);
+      console.log(`✅ Conectado a MinIO - ${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT} - Bucket: ${BUCKET_NAME}`);
     }
     
     // Configurar política pública para lectura (siempre)
@@ -46,6 +46,6 @@ export const MINIO_PUBLIC_ORIGIN = `http://${publicHost}:${publicPort}`;
     console.log(`✅ Política pública configurada para bucket: ${BUCKET_NAME}`);
     
   } catch (err: any) {
-    console.error('❌ Error conectando a MinIO:', err.message);
+    console.error(`❌ Error conectando a MinIO (${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}):`, err.message);
   }
 })();
