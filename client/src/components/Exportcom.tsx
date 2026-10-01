@@ -131,7 +131,7 @@ export const Exportcom = ({ data, tipo }: PropsExport) => {
           nombreArchivo: "Arqueos",
           empresa: empresa,
         });
-      } if (tipo === "ArqueosInfo") {
+      } else if (tipo === "ArqueosInfo") {
         exportarAExcelGlob({
           registros: registrosFiltrados as Arqueos[],
           nombreArchivo: "ArqueosInfo",

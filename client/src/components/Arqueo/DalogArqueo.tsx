@@ -6,6 +6,7 @@ import { useArqueoId } from "@/Services/Arqueoid";
 import Button from "../ui/Button";
 import generatePDF from "./PdfArqueo";
 import MapaUbicacion from "./MapaUbicacion";
+import { getPreguntaArqueo, SECCIONES_ARQUEO } from "@/utils/constans";
 
 // ─── Helpers de UI ────────────────────────────────────────────────────────────
 
@@ -238,106 +239,29 @@ export default function CustomizedDialogs({
               </SectionCard>
             )}
 
-            {/* ── 7. Verificación del PDV (requisitos 1–21) ── */}
-            {([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] as const).some(
-              (n) => (items as any)[`requisito${n}`]?.length > 0
-            ) && (
-              <SectionCard title="Verificación del PDV" accent="bg-blue-700">
-                <div className="divide-y divide-slate-100">
-                  {(
-                    [
-                      { n: 1,  q: "¿Tiene la puerta asegurada?" },
-                      { n: 2,  q: "¿Elementos de aseo, sillas, computador, iluminación en buen estado?" },
-                      { n: 3,  q: "¿Aviso de videovigilancia y cámaras?" },
-                      { n: 4,  q: "¿Utiliza Superflex?" },
-                      { n: 5,  q: "¿Tiene caja fuerte?" },
-                      { n: 6,  q: "¿Tiene caja digital auxiliar? ¿Conoce las bases de efectivo asignadas para caja digital y principal?" },
-                      { n: 7,  q: "¿Las recargas se hacen a través la Red propia de la Cia?" },
-                      { n: 8,  q: "¿Cumple con los topes de efectivo establecidos en caja digital y principal?" },
-                      { n: 9,  q: "¿Tiene los premios descargados? ¿Conoce los requisitos y montos máximos para pago de premios?" },
-                      { n: 10, q: "¿La lotería física tiene impreso el nombre de la Cia o de Servicios Transaccionales?" },
-                      { n: 11, q: "¿Publicidad exhibida actualizada?" },
-                      { n: 12, q: "¿Aviso externo de \"Vigilado y Controlado Mintic\" y \"Colaborador Autorizado\"?" },
-                      { n: 13, q: "¿Afiche MINTIC SUPERGIROS (contiene aviso de canales de comunicación, o tarifario condiciones del servicio, sticker tirilla electrónica CRC)?" },
-                      { n: 14, q: "¿Calendario resultados Superastro diligenciado (tiene que tener los resultados)?" },
-                      { n: 15, q: "¿Presta servicio de Western Union (es obligatorio para cajeros digitales)?" },
-                      { n: 16, q: "¿Calendarios de acumulados (Baloto - Miloto - Colorloto)?" },
-                      { n: 17, q: "¿Tablero de resultados y acumulados actualizados?" },
-                      { n: 18, q: "¿Licencia de funcionamiento de Beneficencia del Valle con año actualizado?" },
-                      { n: 19, q: "¿Tiene equipos de Betplay y/o máquinas de ruta? Si los tiene debe tener el aviso \"Autoriza Coljuegos\"" },
-                      { n: 20, q: "¿Tiene aviso código QR para PQR?" },
-                      { n: 21, q: "¿Verificar el cableado?" },
-                    ] as { n: number; q: string }[]
-                  ).map(({ n, q }) => {
-                    const resp = (items as any)[`requisito${n}`];
-                    const obs  = (items as any)[`observacion${n}`];
-                    if (!resp?.length) return null;
-                    return <ReqRow key={n} question={q} answer={resp} observation={obs} />;
-                  })}
-                </div>
-              </SectionCard>
-            )}
+            {/* ── 7-9. Requisitos y observaciones (preguntas 1-44) ── */}
+            {SECCIONES_ARQUEO.map((seccion) => {
+              const respondidas: number[] = [];
+              for (let n = seccion.desde; n <= seccion.hasta; n++) {
+                if ((items as any)[`requisito${n}`]?.length) respondidas.push(n);
+              }
+              if (respondidas.length === 0) return null;
 
-            {/* ── 8. Cajero / Colocador (requisitos 22–35) ── */}
-            {([22,23,24,25,26,27,28,29,30,31,32,33,34,35] as const).some(
-              (n) => (items as any)[`requisito${n}`]?.length > 0
-            ) && (
-              <SectionCard title="Cajero y/o Colocador" accent="bg-emerald-700">
-                <div className="divide-y divide-slate-100">
-                  {(
-                    [
-                      { n: 22, q: "¿Tiene prendas emblemáticas y presentación adecuada?" },
-                      { n: 23, q: "¿El usuario corresponde a la cédula del mismo?" },
-                      { n: 24, q: "¿Tiene usuario de giros? ¿Presta el servicio?" },
-                      { n: 25, q: "¿Tiene usuario de la ONJ (para Baloto, Miloto, Colorloto)?" },
-                      { n: 26, q: "¿Tiene usuario de SUPERFLEX?" },
-                      { n: 27, q: "¿Tiene usuario de CORREDOR EMPRESARIAL (astro, chance millonario, Betplay)?" },
-                      { n: 28, q: "¿Está realizando recaudo en tesorería BNET a la compañera?" },
-                      { n: 29, q: "¿Está comercializando el portafolio completo?" },
-                      { n: 30, q: "¿Solicita el documento de identificación al cliente?" },
-                      { n: 31, q: "¿Conoce Supervoucher, funciona?" },
-                      { n: 32, q: "¿Conoce el procedimiento para remitentes y destinatarios menores de edad?" },
-                      { n: 33, q: "¿Conoce los reportes de operaciones en efectivo (R.O.E) firmas, huellas? (Transacciones >= $10.000.000)" },
-                      { n: 34, q: "¿El Supervisor Cial realiza las visitas?" },
-                      { n: 35, q: "¿Conoce los términos SARL, SARLAFT, SARO, operación inusual y operación sospechosa?" },
-                    ] as { n: number; q: string }[]
-                  ).map(({ n, q }) => {
-                    const resp = (items as any)[`requisito${n}`];
-                    const obs  = (items as any)[`observacion${n}`];
-                    if (!resp?.length) return null;
-                    return <ReqRow key={n} question={q} answer={resp} observation={obs} />;
-                  })}
-                </div>
-              </SectionCard>
-            )}
-
-            {/* ── 9. Lista de Chequeo de CIS (requisitos 36–44) ── */}
-            {([36,37,38,39,40,41,42,43,44] as const).some(
-              (n) => (items as any)[`requisito${n}`]?.length > 0
-            ) && (
-              <SectionCard title="Lista de Chequeo de CIS" accent="bg-cyan-700">
-                <div className="divide-y divide-slate-100">
-                  {(
-                    [
-                      { n: 36, q: "¿Considera que recibe atención oportuna por parte del proceso de cartera?" },
-                      { n: 37, q: "¿Considera que recibe atención oportuna por parte del proceso de sistemas?" },
-                      { n: 38, q: "¿Considera que recibe atención oportuna por parte de la zona (fuerza de ventas)?" },
-                      { n: 39, q: "¿Considera que recibe atención oportuna por parte del proceso de tangibles (raspas,...)?" },
-                      { n: 40, q: "¿Se ha quedado sin venta por falta de rollos de chance?" },
-                      { n: 41, q: "¿Se ha quedado sin venta por falta de rollos de papelería blanca?" },
-                      { n: 42, q: "¿Considera que recibe atención oportuna para anulación de formularios?" },
-                      { n: 43, q: "¿Considera que recibe atención oportuna para anulación de recaudos de convenios?" },
-                      { n: 44, q: "¿Algo adicional que considere agregar?" },
-                    ] as { n: number; q: string }[]
-                  ).map(({ n, q }) => {
-                    const resp = (items as any)[`requisito${n}`];
-                    const obs  = (items as any)[`observacion${n}`];
-                    if (!resp?.length) return null;
-                    return <ReqRow key={n} question={q} answer={resp} observation={obs} />;
-                  })}
-                </div>
-              </SectionCard>
-            )}
+              return (
+                <SectionCard key={seccion.titulo} title={seccion.titulo} accent={seccion.accent}>
+                  <div className="divide-y divide-slate-100">
+                    {respondidas.map((n) => (
+                      <ReqRow
+                        key={n}
+                        question={getPreguntaArqueo(n)}
+                        answer={(items as any)[`requisito${n}`]}
+                        observation={(items as any)[`observacion${n}`]}
+                      />
+                    ))}
+                  </div>
+                </SectionCard>
+              );
+            })}
 
             {/* ── 10. Información Adicional ── */}
             <SectionCard title="Información Adicional" accent="bg-slate-600">
